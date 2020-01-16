@@ -12,10 +12,10 @@ const SideNav: React.FC = () => {
                         className="fas fa-users"/>Clients</a></li>
                     <li className="nav-item"><a className="nav-link"><i className="fas fa-concierge-bell"/>Services</a>
                     </li>
-                    <li className="nav-item"><a className="nav-link"><i
+                    <li className="nav-item"><a href='/' className="nav-link"><i
                         className="fas fa-toolbox"/>Admin</a>
                     </li>
-                    <li className="nav-item"><a className="nav-link"><i
+                    <li className="nav-item"><a href='/' className="nav-link"><i
                         className="fas fa-clipboard-list"/>Reports</a>
                     </li>
                     <hr/>

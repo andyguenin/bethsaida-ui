@@ -9,9 +9,9 @@ const TopNav: React.FC = () => {
             </a>
             <ul className="navbar-nav px-3">
                 <li className="nav-item text-nowrap">
-                    <a href="#" className="top-nav-link" data-toggle="tooltip" data-placement="bottom"
+                    <a href="/" className="top-nav-link" data-toggle="tooltip" data-placement="bottom"
                        title="Settings"><i className="fa fa-cogs fa-2x"/></a>
-                    <a href="#" className="top-nav-link" data-toggle="tooltip" data-placement="bottom"
+                    <a href="/" className="top-nav-link" data-toggle="tooltip" data-placement="bottom"
                        title="Profile"><i className="fa fa-user fa-2x"/></a></li>
             </ul>
         </nav>)

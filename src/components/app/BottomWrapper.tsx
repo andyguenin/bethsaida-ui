@@ -20,8 +20,10 @@ export class BottomWrapper extends React.Component<IBottomWrapperProps> {
                     <div className="row">
                         <SideNav/>
                         <div className="col-md-10 content main-content">
-                            {this.contentTitle()}
-                            {this.props.children}
+                            <div className='container-fluid'>
+                                {this.contentTitle()}
+                                {this.props.children}
+                            </div>
                         </div>
                     </div>
                 </div>

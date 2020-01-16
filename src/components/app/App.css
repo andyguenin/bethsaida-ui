@@ -53,3 +53,6 @@ a.nav-link {
 .spacer {
   height: 60px;
   /* Height of navbar */ }
+
+div .noshow {
+  display: none; }
