@@ -23,9 +23,12 @@ export class Loader extends React.Component<IProps> {
                 </div>
             )
         } else {
-            return <Fragment></Fragment>
+            if (this.props.children) {
+                return this.props.children
+            } else {
+                return <Fragment/>
+            }
         }
-
     }
 }
 

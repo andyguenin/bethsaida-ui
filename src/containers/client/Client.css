@@ -1,5 +1,4 @@
-.bethsaida-thumbnail {
-  max-width: 250px; }
-
-.bethsaida-thumbnail img {
-  max-width: 250px; }
+td.bethsaida-thumbnail {
+  width: 250px; }
+  td.bethsaida-thumbnail img {
+    width: 250px; }

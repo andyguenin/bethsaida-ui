@@ -1,12 +1,6 @@
-export const Start = 'start'
-export const Finish = 'finish'
-export const Success = 'success'
-export const Failure = 'failure'
-export const Always = 'always'
+import {ThunkAction, ThunkDispatch} from "redux-thunk";
+import {AppState} from "../reducers/AppState";
+import {AllAction} from "./Actions";
 
-export type AsyncStatus =
-    typeof Start |
-    typeof Finish |
-    typeof Success |
-    typeof Failure |
-    typeof Always
+export type AsyncAction = ThunkAction<void, AppState, void, AllAction>
+export type AsyncDispatch = ThunkDispatch<AppState, void, AllAction>
