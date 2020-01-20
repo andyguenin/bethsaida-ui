@@ -1,6 +1,5 @@
 import React, {ChangeEvent, Fragment} from 'react';
 import Client from "../../data/Client";
-import {useHistory} from 'react-router-dom';
 
 
 interface IProps {
@@ -44,46 +43,35 @@ export class ModifyClient extends React.Component<IProps> {
                               onChange={this.handleUpdate}/>
 
 
-        const image = (() => {
-            if (this.state.file) {
-                return (<img className='col-sm-6' id='photo-preview' src={this.state.file} alt='client-photo'/>);
-            } else {
-                if (this.props.client?.image) {
-                    return (<img className='col-sm-6' id='photo-preview' src={this.props.client?.image}
-                                 alt='client-photo'/>);
-                } else {
-                    return (<div className='col-sm-6'>No photo uploaded.</div>);
-                }
-            }
-        })();
-
-
-        if ((this.state.deleteImage && !this.state.file)|| !this.props.client || !this.props.client.image) {
-            return upload;
-        }
-        if (this.props.client?.image || this.state.file) {
-            const file = this.state.deleteImage ? this.state.file : this.props.client.image
+        const displayImage = (file: string, name: string) => {
             return (
                 <div className='col-sm-6'>
-                        <img id='photo-preview' src={file}
-                             alt='client-photo'/>
+                    <img id='photo-preview' src={file}
+                         alt={'photo of ' + name}/>
                     <button type='button' className='btn btn-info reupload' onClick={() => this.setState({
                         ...this.state,
                         deleteImage: true,
                         file: undefined
                     })}>Delete Image</button>
                 </div>);
+        };
+
+        if (this.state.file) {
+            return displayImage(this.state.file, this.props.client?.fullName || '');
+        } else {
+            if(this.props.client?.image && !this.state.deleteImage) {
+                return displayImage(this.props.client.image, this.props.client.fullName || '');
+            } else {
+                return upload;
+            }
         }
-
-        return upload;
-
     }
 
     render() {
         return (
             <Fragment>
                 <div className='row'>
-                    <div className='col-11'>
+                    <div className='offset-1 col-10'>
                         <form>
                             <div className='form-group row'>
                                 <label htmlFor='first_name' className='col-sm-2'>First Name</label>
@@ -114,6 +102,21 @@ export class ModifyClient extends React.Component<IProps> {
                             </div>
                             <div className='form-group row'>
                                 <label htmlFor='photo' className='col-sm-2'>Client Photo</label>
+                                <div className='col-sm-2'>
+                                    <div className="btn-group">
+                                        <button type="button" className="btn btn-danger dropdown-toggle"
+                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Action
+                                        </button>
+                                        <div className="dropdown-menu">
+                                            <a className="dropdown-item" href="#">Action</a>
+                                            <a className="dropdown-item" href="#">Another action</a>
+                                            <a className="dropdown-item" href="#">Something else here</a>
+                                            <div className="dropdown-divider"></div>
+                                            <a className="dropdown-item" href="#">Separated link</a>
+                                        </div>
+                                    </div>
+                                </div>
                                 {this.displayImage()}
                             </div>
                             <div className="form-group row">

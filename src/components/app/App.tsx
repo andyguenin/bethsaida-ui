@@ -9,6 +9,7 @@ import NewClient from "../../containers/client/NewClient";
 import EditClient from "../../containers/client/EditClient";
 import NotFound from "./NotFound";
 import ShowClient from "../../containers/client/ShowClient";
+import FormUpload from "./FileUpload";
 
 export default class App extends React.Component<{}> {
 
@@ -19,6 +20,7 @@ export default class App extends React.Component<{}> {
                 <div className='container-fluid' id='main-container'>
                     <Router>
                         <Switch>
+                            <Route exact path="/upload" component={FormUpload} />
                             <Route exact path="/client/new" component={NewClient}/>
                             <Route exact path="/client/edit/:id" component={EditClient} />
                             <Route exact path="/client/:id" component={ShowClient} />

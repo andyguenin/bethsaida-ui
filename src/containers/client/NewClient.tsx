@@ -4,8 +4,6 @@ import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
 import {Title} from "../../components/app/Title";
 import {ModifyClient} from "../../components/client/ModifyClient";
-import {GetSingleClient} from "../../services/Client";
-import {withRouter, RouteChildrenProps} from 'react-router-dom'
 
 const mapStateToProps = (state: AppState) => ({
     client: state.client,
@@ -37,7 +35,7 @@ class NewClient extends React.Component<Props> {
         return (
             <Fragment>
                 <Title name="New Client" />
-                {/*<ModifyClient client={this.props.client.workingClient} />*/}
+                <ModifyClient client={this.props.client.workingClient} cancelAction={() => window.location.href='/client'}/>
             </Fragment>
         )
     }

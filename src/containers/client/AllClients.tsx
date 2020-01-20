@@ -4,7 +4,6 @@ import {AppState} from "../../reducers/AppState";
 import {Loader} from "../../components/app/loader/Loader"
 import './Client.scss';
 import {AsyncDispatch} from "../../actions/Async";
-import {store} from '../../index';
 import {GetAllClients} from "../../services/Client";
 import {Title} from "../../components/app/Title";
 import Client from "../../data/Client";
@@ -47,7 +46,7 @@ class AllClients extends React.Component<Props> {
                             <table className="table table-striped client-table">
                                 <thead className='thead-light'>
                                 <tr>
-                                    <th></th>
+                                    <th> </th>
                                     <th>Name</th>
                                 </tr>
                                 </thead>
@@ -65,7 +64,7 @@ class AllClients extends React.Component<Props> {
     private singleRow(client: Client) {
         return (
                 <tr className='clickable-row' key={client.fullName} onClick={() =>{window.location.href='/client/' + client.id}}>
-                    <td className='bethsaida-thumbnail'><img src={client.image}/></td>
+                    <td className='bethsaida-thumbnail'><img src={client.image} alt={'photo of ' + client.fullName}/></td>
                     <td>
                         <b>{client.fullName}</b>
                     </td>

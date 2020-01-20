@@ -49,7 +49,7 @@ class ShowClient extends React.Component<Props> {
                             <img width='100%' className='' src={this.props.client.workingClient.image}
                                  alt={'picture of ' + this.props.client.workingClient.fullName}/>
                             <h4 className='prof-attrib'>Date of birth: </h4>{this.props.client.workingClient.dateOfBirth.jsDate}
-                            {this.props.client.workingClient.nicknames.length == 0 ?
+                            {this.props.client.workingClient.nicknames.length === 0 ?
                                 null :
                                 <Fragment>
                                     <h4 className='prof-attrib'>Nicknames:</h4>
