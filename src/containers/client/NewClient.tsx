@@ -4,6 +4,7 @@ import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
 import {Title} from "../../components/app/Title";
 import {ModifyClient} from "../../components/client/ModifyClient";
+import FileContainer from "../../components/app/FileContainer";
 
 const mapStateToProps = (state: AppState) => ({
     client: state.client,
@@ -33,10 +34,10 @@ class NewClient extends React.Component<Props> {
 
     render() {
         return (
-            <Fragment>
+            <FileContainer>
                 <Title name="New Client" />
                 <ModifyClient client={this.props.client.workingClient} cancelAction={() => window.location.href='/client'}/>
-            </Fragment>
+            </FileContainer>
         )
     }
 }

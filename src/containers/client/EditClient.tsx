@@ -7,6 +7,7 @@ import {withRouter, RouteChildrenProps} from 'react-router-dom'
 import {GetSingleClient} from "../../services/Client";
 import {ModifyClient} from "../../components/client/ModifyClient";
 import {Loader} from "../../components/app/loader/Loader";
+import FileContainer from "../../components/app/FileContainer";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -42,7 +43,7 @@ class EditClient extends React.Component<Props> {
 
     public render() {
         return (
-            <Fragment>
+            <FileContainer>
                 <Title name="Edit Client"/>
                 <Loader loading={this.props.base.loadingStatusEnabled}>
                     <ModifyClient
@@ -50,7 +51,7 @@ class EditClient extends React.Component<Props> {
                         cancelAction={() => window.location.href = '/client/' + this.props.match?.params.id}
                     />
                 </Loader>
-            </Fragment>
+            </FileContainer>
         )
     }
 }

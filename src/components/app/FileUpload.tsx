@@ -1,4 +1,5 @@
 import React, {FormEvent, Fragment} from 'react';
+import FileContainer from "./FileContainer";
 
 
 interface IProps {
@@ -16,13 +17,13 @@ class FormUpload extends React.Component<IProps> {
 
     render() {
         return (
-            <Fragment>
+            <FileContainer>
                 {/*<form action='http://localhost:8090/api/v1/client/imageupload' method='post'*/}
                 {/*         encType='multipart/form-data'>*/}
                 <input type='file' name='fileUpload'/>
                 <input type='submit' onSubmit={this.onSubmit}/>
                 {/*</form>*/}
-            </Fragment>
+            </FileContainer>
         )
     }
 }

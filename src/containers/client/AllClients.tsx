@@ -7,6 +7,7 @@ import {AsyncDispatch} from "../../actions/Async";
 import {GetAllClients} from "../../services/Client";
 import {Title} from "../../components/app/Title";
 import Client from "../../data/Client";
+import FileContainer from "../../components/app/FileContainer";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -38,8 +39,8 @@ class AllClients extends React.Component<Props> {
 
     public render() {
         return (
-            <Fragment>
-                <Title name='Client List'/>
+            <FileContainer>
+                <Title name='All Clients'/>
                 <Loader loading={this.props.base.loadingStatusEnabled}>
                     <div className={'row ' + (this.props.base.loadingStatusEnabled ? 'nowshow' : '')}>
                         <div className='col-md-12'>
@@ -57,14 +58,14 @@ class AllClients extends React.Component<Props> {
                         </div>
                     </div>
                 </Loader>
-            </Fragment>
+            </FileContainer>
         );
     }
 
     private singleRow(client: Client) {
         return (
                 <tr className='clickable-row' key={client.fullName} onClick={() =>{window.location.href='/client/' + client.id}}>
-                    <td className='bethsaida-thumbnail'><img src={client.image} alt={'photo of ' + client.fullName}/></td>
+                    <td className='bethsaida-thumbnail'><img src={client.clientPhoto} alt={'photo of ' + client.fullName}/></td>
                     <td>
                         <b>{client.fullName}</b>
                     </td>

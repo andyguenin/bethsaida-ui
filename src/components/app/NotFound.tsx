@@ -1,13 +1,14 @@
 import React, {Fragment} from 'react'
+import FileContainer from "./FileContainer";
 
 class NotFound extends React.Component<{}> {
 
     render() {
         return (
-            <Fragment>
+            <FileContainer>
                 <h1>Not Found</h1>
                 This page is not found.
-            </Fragment>
+            </FileContainer>
         )
     }
 }

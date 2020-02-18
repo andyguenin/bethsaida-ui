@@ -8,17 +8,19 @@ import axios from 'axios';
 
 function parseClient(input: any): Client {
     return new Client(
+        input['id'],
         input['firstName'],
         input['middleName'],
         input['lastName'],
-        input['photoIdTag'],
+        input['clientPhoto'],
+        input['photoId'],
+        input['phone'],
         input['nicknames'],
         new BDate(
             input['dateOfBirth']['year'],
             input['dateOfBirth']['month'],
             input['dateOfBirth']['day']
-        ),
-        input['id']
+        )
     )
 }
 

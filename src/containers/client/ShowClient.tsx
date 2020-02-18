@@ -4,6 +4,7 @@ import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
 import {GetSingleClient} from "../../services/Client";
 import {withRouter, RouteChildrenProps} from 'react-router-dom'
+import FileContainer from "../../components/app/FileContainer";
 
 const mapStateToProps = (state: AppState) => ({
     client: state.client,
@@ -42,11 +43,11 @@ class ShowClient extends React.Component<Props> {
             // @ts-ignore
             // @ts-ignore
             return (
-                <Fragment>
+                <FileContainer>
                     <h1>{this.props.client.workingClient.fullName}</h1>
                     <div className='row profile-body'>
                         <div className='col-md-3 profile-side'>
-                            <img width='100%' className='' src={this.props.client.workingClient.image}
+                            <img width='100%' className='' src={this.props.client.workingClient.photoId}
                                  alt={'picture of ' + this.props.client.workingClient.fullName}/>
                             <h4 className='prof-attrib'>Date of birth: </h4>{this.props.client.workingClient.dateOfBirth.jsDate}
                             {this.props.client.workingClient.nicknames.length === 0 ?
@@ -74,10 +75,10 @@ class ShowClient extends React.Component<Props> {
                         </div>
                     </div>
                     {/*<ModifyClient client={this.props.client.workingClient} />*/}
-                </Fragment>
+                </FileContainer>
             )
         } else {
-            return <Fragment/>
+            return <FileContainer/>
         }
 
     }

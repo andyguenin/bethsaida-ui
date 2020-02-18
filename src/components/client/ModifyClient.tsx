@@ -7,15 +7,39 @@ interface IProps {
     cancelAction: () => void
 }
 
-interface IState {
+interface IPhotoState {
+    id: string,
     deleteImage?: boolean
     file?: string
 }
 
+interface IState {
+    clientPhoto: IPhotoState
+    photoId: IPhotoState
+    getPhotoById(id: string): IPhotoState
+}
+
 export class ModifyClient extends React.Component<IProps> {
     state: IState = {
-        file: undefined,
-        deleteImage: undefined
+        clientPhoto: {
+            id: "clientPhoto",
+            file: undefined,
+            deleteImage: undefined
+        },
+        photoId: {
+            id: "photoId",
+            file: undefined,
+            deleteImage: undefined
+        },
+        getPhotoById(id: string): IPhotoState {
+            if (id === "clientPhoto") {
+                return this.clientPhoto;
+            } else if (id === "photoId") {
+                return this.photoId
+            } else {
+                throw new RangeError("id " + id + " not found")
+            }
+        }
     }
 
     constructor(props: IProps) {
@@ -29,38 +53,44 @@ export class ModifyClient extends React.Component<IProps> {
         client: undefined
     };
 
-    private handleUpdate(e: ChangeEvent<HTMLInputElement>): void {
-        console.log('abcdefg')
-        if (e.target && e.target.files) {
-            this.setState(Object.assign({}, this.state, {
-                file: URL.createObjectURL(e.target.files[0])
-            }))
+    private newState(id: string, newPhotoState: IPhotoState): IState {
+        console.log(this.state);
+        let retObj: any = {};
+        retObj[id] = Object.assign({}, this.state.getPhotoById(id), newPhotoState);
+        console.log(Object.assign({}, this.state, retObj));
+        return Object.assign({}, this.state, retObj);
+    }
+
+    private handleUpdate(id: string): (e: ChangeEvent<HTMLInputElement>) => void {
+        return (e) => {
+            if (e.target && e.target.files) {
+                this.setState(this.newState(id, {id: id, deleteImage: false, file: URL.createObjectURL(e.target.files[0])}));
+            }
         }
     }
 
-    private displayImage() {
-        const upload = <input type='file' className='form-control col-sm-4' id='photo-upload'
-                              onChange={this.handleUpdate}/>
+    private displayImage(id: string) {
+        const upload = <input type='file' className='form-control col-sm-4' id={id}
+                              onChange={this.handleUpdate(id)}/>
 
 
-        const displayImage = (file: string, name: string) => {
+        const state = this.state.getPhotoById(id);
+        const displayImage = (file: string, name: string, id: string) => {
             return (
-                <div className='col-sm-6'>
-                    <img id='photo-preview' src={file}
+                <div className='col-sm-6 uploaded-image'>
+                    <img id={'photo-preview-' + id} src={file}
                          alt={'photo of ' + name}/>
-                    <button type='button' className='btn btn-info reupload' onClick={() => this.setState({
-                        ...this.state,
-                        deleteImage: true,
-                        file: undefined
-                    })}>Delete Image</button>
+                    <button type='button' className='btn btn-info reupload' onClick={() => {
+
+                        this.setState(this.newState(id, {id: id, file: undefined, deleteImage: true}))}}>Delete Image</button>
                 </div>);
         };
 
-        if (this.state.file) {
-            return displayImage(this.state.file, this.props.client?.fullName || '');
+        if (state.file) {
+            return displayImage(state.file, this.props.client?.fullName || '', id);
         } else {
-            if(this.props.client?.image && !this.state.deleteImage) {
-                return displayImage(this.props.client.image, this.props.client.fullName || '');
+            if(this.props.client?.clientPhoto && !state.deleteImage) {
+                return displayImage(this.props.client.clientPhoto, this.props.client.fullName || '', id);
             } else {
                 return upload;
             }
@@ -101,23 +131,46 @@ export class ModifyClient extends React.Component<IProps> {
                                 />
                             </div>
                             <div className='form-group row'>
-                                <label htmlFor='photo' className='col-sm-2'>Client Photo</label>
-                                <div className='col-sm-2'>
-                                    <div className="btn-group">
-                                        <button type="button" className="btn btn-danger dropdown-toggle"
-                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Action
-                                        </button>
-                                        <div className="dropdown-menu">
-                                            <a className="dropdown-item" href="#">Action</a>
-                                            <a className="dropdown-item" href="#">Another action</a>
-                                            <a className="dropdown-item" href="#">Something else here</a>
-                                            <div className="dropdown-divider"></div>
-                                            <a className="dropdown-item" href="#">Separated link</a>
-                                        </div>
-                                    </div>
+                                <label htmlFor='gender' className='col-sm-2'>Gender</label>
+                                <div className='form-check form-check-inline'>
+                                    <input type='radio' id='male' name='gender' className='form-check-input'/>
+                                    <label htmlFor='male' className='form-check-label'>Male</label>
                                 </div>
-                                {this.displayImage()}
+                                <div className='form-check form-check-inline'>
+                                    <input type='radio' id='female' name='gender' className='form-check-input' />
+                                    <label htmlFor='female' className='form-check-label'>Female</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input type='radio' id='other' name='gender' className='form-check-input' />
+                                    <label htmlFor='other' className='form-check-label'>Other</label>
+                                </div>
+                            </div>
+                            <div className='form-group row'>
+                                <label htmlFor='race' className='col-sm-2'>Race</label>
+                                <div className='form-check form-check-inline'>
+                                    <input type='radio' id='nonwhite' name='race' className='form-check-input' />
+                                    <label htmlFor='nonwhite' className='form-check-label'>Non-White</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input type='radio' id='white' name='race' className='form-check-input' />
+                                    <label htmlFor='white' className='form-check-label'>White</label>
+                                </div>
+                            </div>
+                            <div className='form-group row'>
+                                <label htmlFor='phone' className='col-sm-2'>Phone</label>
+                                <input type='text' className='form-control col-sm-10' id='phone'/>
+                            </div>
+                            <div className='form-group row'>
+                                <label htmlFor='clientPhoto' className='col-sm-2'>Client Photo</label>
+                                {this.displayImage("clientPhoto")}
+                            </div>
+                            <div className='form-group row'>
+                                <label htmlFor='clientId' className='col-sm-2'>Photo ID</label>
+                                {this.displayImage("photoId")}
+                            </div>
+                            <div className='form-group row'>
+                                <label htmlFor='clientId' className='col-sm-2'>Notes</label>
+                                <textarea className='form-control col-sm-10' />
                             </div>
                             <div className="form-group row">
                                 <div className='offset-sm-3 col-sm-3'>
