@@ -32,13 +32,14 @@
     "universal-cookie": "^4.0.3"
   },
   "scripts": {
-    "start": "npm-run-all -p watch-css start-react",
+    "start": "REACT_APP_ENV=prod npm-run-all -p watch-css start-react",
     "start-react": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "REACT_APP_ENV=prod react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar src/ -o src/",
-    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive"
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "build:dev": "env-cmd -f .env.dev npm run build"
   },
   "eslintConfig": {
     "extends": "react-app"

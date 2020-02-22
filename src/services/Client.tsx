@@ -2,9 +2,10 @@ import {toggleLoadingStatus} from "../actions/Base";
 import {AsyncAction} from "../actions/Async";
 import Client from "../data/Client";
 import BDate from "../data/BDate";
-import {setClientData, setWorkingClient} from "../actions/Client";
-import axios from 'axios';
-
+import {setClientData} from "../actions/Client";
+import {apiRequest, RequestType} from "../util/HttpRequest";
+import Environment from "../environment/Environment";
+import Env from "../environment/Env";
 
 function parseClient(input: any): Client {
     return new Client(
@@ -28,25 +29,29 @@ function parseClient(input: any): Client {
 export const GetAllClients = (): AsyncAction =>
     (dispatch, state, x) => {
         dispatch(toggleLoadingStatus(true));
-        axios.get('http://localhost:8090/api/v1/client').then(
-            result => {
-                const data = result.data.map(parseClient)
-                dispatch(setClientData(data));
-                dispatch(toggleLoadingStatus(false))
+        apiRequest(Env.get().fullUrl() + '/client', RequestType.GET, (xhr: XMLHttpRequest) => {
+            if(xhr.readyState == XMLHttpRequest.DONE) {
+                const result = JSON.parse(xhr.responseText);
+                if((result as []).length != 0) {
+                    const data = result.data.map(parseClient);
+                    dispatch(setClientData(data));
+                }
+                dispatch(toggleLoadingStatus(false));
             }
-        )
+        });
     };
+
 
 
 export const GetSingleClient = (id: string): AsyncAction =>
     (dispatch, state, x) => {
         dispatch(toggleLoadingStatus(true));
-        axios.get('http://localhost:8090/api/v1/client/' + id).then(
-            result => {
-                const data = parseClient(result.data);
-                dispatch(setWorkingClient(data));
-                dispatch(toggleLoadingStatus(false));
-            }
-        )
+        // axios.get('http://localhost:8090/api/v1/client/' + id).then(
+        //     result => {
+        //         const data = parseClient(result.data);
+        //         dispatch(setWorkingClient(data));
+        //         dispatch(toggleLoadingStatus(false));
+        //     }
+        // )
     };
 

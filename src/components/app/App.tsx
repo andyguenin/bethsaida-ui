@@ -10,6 +10,7 @@ import EditClient from "../../containers/client/EditClient";
 import NotFound from "./NotFound";
 import ShowClient from "../../containers/client/ShowClient";
 import FormUpload from "./FileUpload";
+import Logout from "../login/Logout";
 import Login from "../login/Login";
 
 export default class App extends React.Component<{}> {
@@ -19,6 +20,7 @@ export default class App extends React.Component<{}> {
             <Router>
                 <Switch>
                     <Route exact path='/login' component={Login}/>
+                    <Route exact path='/logout' component={Logout}/>
                     <Route exact path="/upload" component={FormUpload}/>
                     <Route exact path="/client/new" component={NewClient}/>
                     <Route exact path="/client/edit/:id" component={EditClient}/>

@@ -1,6 +1,20 @@
 import Cookies from 'universal-cookie';
 
-export default class LoginCredentials {
+export default class Credentials {
+    public static setCredentials(auth: string) {
+        const cookie = new Cookies();
+        cookie.set('jwt', auth, {'path': '/'});
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() + 3);
+        cookie.set('expires', currentDate, {'path': '/'});
+    }
+
+    public static clearCredentials() {
+        const cookie = new Cookies();
+        cookie.set('jwt', undefined, {'path': '/'});
+        cookie.set('expires', undefined, {'path': '/'});
+    }
+
     get jwt(): string | undefined {
         return this._jwt;
     }
@@ -18,13 +32,21 @@ export default class LoginCredentials {
     }
 
     public isLoggedIn() {
-        return this.expires !== undefined && this.expires.getMilliseconds() > new Date().getMilliseconds();
+        if (this.expires !== undefined) {
+            const timingValid = this.expires > new Date();
+            if(!timingValid) {
+                Credentials.clearCredentials();
+            }
+            return timingValid;
+        } else {
+            return false;
+        }
     }
 
     constructor() {
         this.cookies = new Cookies();
         this._jwt = this.cookies.get('jwt');
-        this._expires = this.cookies.get('expires')
+        this._expires = new Date(this.cookies.get('expires'));
     }
 
     private cookies: Cookies;

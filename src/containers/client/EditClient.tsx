@@ -46,10 +46,10 @@ class EditClient extends React.Component<Props> {
             <FileContainer>
                 <Title name="Edit Client"/>
                 <Loader loading={this.props.base.loadingStatusEnabled}>
-                    <ModifyClient
-                        client={this.props.client.workingClient}
-                        cancelAction={() => window.location.href = '/client/' + this.props.match?.params.id}
-                    />
+                    {/*<ModifyClient*/}
+                    {/*    client={this.props.client.workingClient}*/}
+                    {/*    cancelAction={() => window.location.href = '/client/' + this.props.match?.params.id}*/}
+                    {/*/>*/}
                 </Loader>
             </FileContainer>
         )

@@ -10,6 +10,7 @@ import {rootReducer} from "./reducers/RootReducer";
 import {AppState} from "./reducers/AppState";
 
 
+
 const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export const store = createStore(rootReducer, undefined,
@@ -18,6 +19,8 @@ export const store = createStore(rootReducer, undefined,
        ),
 
 )
+
+console.log(process.env)
 
 ReactDOM.render(
     <Provider store={store}><App /></Provider>

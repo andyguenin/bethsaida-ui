@@ -36,7 +36,7 @@ class NewClient extends React.Component<Props> {
         return (
             <FileContainer>
                 <Title name="New Client" />
-                <ModifyClient client={this.props.client.workingClient} cancelAction={() => window.location.href='/client'}/>
+                {/*<ModifyClient client={this.props.client.workingClient} cancelAction={() => window.location.href='/client'}/>*/}
             </FileContainer>
         )
     }

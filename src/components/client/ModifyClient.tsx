@@ -1,5 +1,6 @@
 import React, {ChangeEvent, Fragment} from 'react';
 import Client from "../../data/Client";
+import ClientBuilder from "../../data/ClientBuilder";
 
 
 interface IProps {
@@ -17,10 +18,11 @@ interface IState {
     clientPhoto: IPhotoState
     photoId: IPhotoState
     getPhotoById(id: string): IPhotoState
+    client: ClientBuilder
 }
 
-export class ModifyClient extends React.Component<IProps> {
-    state: IState = {
+export class ModifyClient extends React.Component<IProps, IState> {
+    private defaultState: IState = {
         clientPhoto: {
             id: "clientPhoto",
             file: undefined,
@@ -39,13 +41,15 @@ export class ModifyClient extends React.Component<IProps> {
             } else {
                 throw new RangeError("id " + id + " not found")
             }
-        }
+        },
+        client: new ClientBuilder()
     }
 
     constructor(props: IProps) {
         super(props);
 
         this.handleUpdate = this.handleUpdate.bind(this)
+        this.state = this.defaultState;
     }
 
     static defaultProps = {
@@ -54,10 +58,8 @@ export class ModifyClient extends React.Component<IProps> {
     };
 
     private newState(id: string, newPhotoState: IPhotoState): IState {
-        console.log(this.state);
         let retObj: any = {};
         retObj[id] = Object.assign({}, this.state.getPhotoById(id), newPhotoState);
-        console.log(Object.assign({}, this.state, retObj));
         return Object.assign({}, this.state, retObj);
     }
 
@@ -98,8 +100,10 @@ export class ModifyClient extends React.Component<IProps> {
     }
 
     render() {
+        console.log(this);
         return (
             <Fragment>
+                <div>client: {JSON.stringify(this.state.client)}</div>
                 <div className='row'>
                     <div className='offset-1 col-10'>
                         <form>
@@ -107,27 +111,27 @@ export class ModifyClient extends React.Component<IProps> {
                                 <label htmlFor='first_name' className='col-sm-2'>First Name</label>
                                 <input type='text' className='form-control col-sm-10' id='first_name'
                                        placeholder='First Name'
-                                       defaultValue={this.props.client?.firstName}
+                                       value={this.state.client?.firstName}
                                 />
                             </div>
                             <div className='form-group row'>
                                 <label htmlFor='middle_name' className='col-sm-2'>Middle Name</label>
                                 <input type='text' className='form-control col-sm-10' id='middle_name'
                                        placeholder='Middle Name'
-                                       defaultValue={this.props.client?.middleName}
+                                       value={this.state.client?.middleName}
                                 />
                             </div>
                             <div className='form-group row'>
                                 <label htmlFor='last_name' className='col-sm-2'>Last Name</label>
                                 <input type='text' className='form-control col-sm-10' id='last_name'
                                        placeholder='Last Name'
-                                       defaultValue={this.props.client?.lastName}
+                                       value={this.state.client?.lastName}
                                 />
                             </div>
                             <div className='form-group row'>
                                 <label htmlFor='date_of_birth' className='col-sm-2'>Date of Birth</label>
                                 <input type='date' className='form-control col-sm-10' id='month'
-                                       defaultValue={this.props.client?.dateOfBirth.jsDate}
+                                       value={this.state.client?.dateOfBirth?.jsDate}
                                 />
                             </div>
                             <div className='form-group row'>
