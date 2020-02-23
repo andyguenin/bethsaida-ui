@@ -32,9 +32,9 @@
     "universal-cookie": "^4.0.3"
   },
   "scripts": {
-    "start": "REACT_APP_ENV=prod npm-run-all -p watch-css start-react",
+    "start": "npm-run-all -p watch-css start-react",
     "start-react": "react-scripts start",
-    "build": "REACT_APP_ENV=prod react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar src/ -o src/",

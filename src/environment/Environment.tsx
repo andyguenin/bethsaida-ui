@@ -1,6 +1,8 @@
 export default abstract class Environment {
     abstract host: string;
     abstract apiPath: string;
+    protected isProd: boolean = false;
+
 
     public fullUrl(): string{
         return this.host + this.apiPath;
@@ -12,5 +14,9 @@ export default abstract class Environment {
 
     public getUserConfirmUrl(): string {
         return this.getAuthenticationUrl() + '/confirm';
+    }
+
+    public isNonProd(): boolean {
+        return !this.isProd;
     }
 }

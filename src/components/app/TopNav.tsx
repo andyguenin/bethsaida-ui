@@ -2,6 +2,7 @@ import React from 'react';
 import ddb from '../../assets/ddb.svg';
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 
+
 class TopNav extends React.Component<RouteComponentProps<any>> {
 
     logout() {
@@ -10,6 +11,7 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
 
     render() {
         return (
+
             <nav className="navbar navbar-expand-md navbar-light bg-light fixed-top shadow">
                 <a className="navbar-brand" href="/"><img src={ddb} height='50px'/> </a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse"
@@ -48,9 +50,11 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
                     {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}
                     {/*    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>*/}
                     {/*</form>*/}
-                    <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout</button>
+                    <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
+                    </button>
                 </div>
             </nav>
+
         )
     }
 
