@@ -1,6 +1,7 @@
 import Environment from "./Environment";
 import Dev from "./Dev";
 import Prod from "./Prod";
+import Edge from "./Edge";
 
 export default class Env {
 
@@ -20,13 +21,15 @@ export default class Env {
         switch (envName) {
             case 'prod':
                 return new Prod();
+            case 'edge':
+                return new Edge();
             case 'dev':
                 return new Dev();
             case 'default':
             default:
                 console.log(window.location.host);
                 if (window.location.host !== 'bethsaida.downtowndailybread.org') {
-                    return new Dev();
+                    return new Edge();
                 } else {
                     return new Prod();
                 }
