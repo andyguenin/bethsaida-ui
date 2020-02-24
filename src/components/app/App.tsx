@@ -19,29 +19,22 @@ export default class App extends React.Component<{}> {
     public render() {
         return (
             <Fragment>
-                {Env.get().isNonProd() ? <DevInfo/> : <Fragment/>}
-                <Router>
-                    <Switch>
-                        <Route exact path='/login' component={Login}/>
-                        <Route exact path='/logout' component={Logout}/>
-                        <Route exact path="/upload" component={FormUpload}/>
-                        <Route exact path="/client/new" component={NewClient}/>
-                        <Route exact path="/client/edit/:id" component={EditClient}/>
-                        <Route exact path="/client/:id" component={ShowClient}/>
-                        <Route exact path="/client" component={ClientList}/>
-                        <Route exact path="/" component={Home}/>
-                        <Route path="/" component={NotFound}/>
-                    </Switch>
-                </Router>
+                <DevInfo>
+                    <Router>
+                        <Switch>
+                            <Route exact path='/login' component={Login}/>
+                            <Route exact path='/logout' component={Logout}/>
+                            <Route exact path="/upload" component={FormUpload}/>
+                            <Route exact path="/client/new" component={NewClient}/>
+                            <Route exact path="/client/edit/:id" component={EditClient}/>
+                            <Route exact path="/client/:id" component={ShowClient}/>
+                            <Route exact path="/client" component={ClientList}/>
+                            <Route exact path="/" component={Home}/>
+                            <Route path="/" component={NotFound}/>
+                        </Switch>
+                    </Router>
+                </DevInfo>
             </Fragment>
-            // <Fragment>
-            //     <TopNav/>
-            //     <div className='container-fluid' id='main-container'>
-            //         <Router>
-            //
-            //         </Router>
-            //     </div>
-            // </Fragment>
         )
     }
 }

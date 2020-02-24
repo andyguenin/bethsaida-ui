@@ -12,7 +12,7 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
     render() {
         return (
 
-            <nav className="navbar navbar-expand-md navbar-light bg-light fixed-top shadow">
+            <nav className="navbar navbar-expand-md navbar-light bg-light shadow">
                 <a className="navbar-brand" href="/"><img src={ddb} height='50px'/> </a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
