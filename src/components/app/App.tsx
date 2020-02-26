@@ -12,7 +12,6 @@ import FormUpload from "./FileUpload";
 import Logout from "../login/Logout";
 import Login from "../login/Login";
 import DevInfo from "./DevInfo";
-import Env from '../../environment/Env'
 
 export default class App extends React.Component<{}> {
 

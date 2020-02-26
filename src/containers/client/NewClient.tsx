@@ -1,10 +1,11 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
 import {Title} from "../../components/app/Title";
-import {ModifyClient} from "../../components/client/ModifyClient";
 import FileContainer from "../../components/app/FileContainer";
+import {ModifyClient} from "../../components/client/ModifyClient";
+import ClientBuilder from "../../data/ClientBuilder";
 
 const mapStateToProps = (state: AppState) => ({
     client: state.client,
@@ -24,19 +25,22 @@ const connector = connect(
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
-type Props = PropsFromRedux & {}
+type Props = PropsFromRedux & {
+    abc: string
+}
 
 class NewClient extends React.Component<Props> {
-
-    componentDidMount(): void {
-        // this.props.loadClient()
-    }
 
     render() {
         return (
             <FileContainer>
                 <Title name="New Client" />
-                {/*<ModifyClient client={this.props.client.workingClient} cancelAction={() => window.location.href='/client'}/>*/}
+                <ModifyClient
+                    clientBuilder={ClientBuilder.emptyBuilder()}
+                    cancelAction={() => window.location.href='/client'}
+                    submitAction={(c: ClientBuilder) => {alert(c); console.log(c); return true}}
+                    submitText='Create Client'
+                />
             </FileContainer>
         )
     }

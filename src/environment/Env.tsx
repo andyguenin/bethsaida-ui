@@ -10,7 +10,6 @@ export default class Env {
     public static get(): Environment {
         if(this.env === undefined) {
             this.env = this.loadEnvironment();
-            console.log(process.env['REACT_APP_ENV'] || 'default')
         }
         return this.env;
     }
@@ -27,7 +26,6 @@ export default class Env {
                 return new Dev();
             case 'default':
             default:
-                console.log(window.location.host);
                 if (window.location.host !== 'bethsaida.downtowndailybread.org') {
                     return new Edge();
                 } else {

@@ -7,7 +7,7 @@ export default class DevInfo extends React.Component<{}> {
         return (
             <div>
                 <div className='devinfo'>
-                    EDGE ENVIRONMENT<br />
+                    EDGE ENVIRONMENT - FOR TESTING PURPOSES ONLY<br />
                     Build id: {buildinfo['id']}<br />
                     Build time: {buildinfo['time']}
                 </div>

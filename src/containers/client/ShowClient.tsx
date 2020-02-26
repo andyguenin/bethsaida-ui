@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
@@ -6,7 +6,6 @@ import {GetSingleClient} from "../../services/Client";
 import {withRouter, RouteChildrenProps} from 'react-router-dom'
 import FileContainer from "../../components/app/FileContainer";
 import Client from "../../data/Client";
-import ClientBuilder from "../../data/ClientBuilder";
 
 const mapStateToProps = (state: AppState) => ({
     client: state.client,

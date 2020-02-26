@@ -25,7 +25,6 @@ export const apiRequest = (
     const xhr = new XMLHttpRequest();
     xhr.open(reqTypeMapping(requestType), url, true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    console.log(cred)
     if(cred.isLoggedIn()) {
         xhr.setRequestHeader("Authorization", "Bearer " + cred.jwt);
     }

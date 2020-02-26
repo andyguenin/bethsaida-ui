@@ -4,7 +4,6 @@ import Credentials from "../../data/Credentials";
 import {apiRequest, RequestType} from "../../util/HttpRequest";
 import {Redirect, RouteComponentProps, withRouter} from 'react-router-dom';
 import ddb from '../../assets/ddb.svg'
-import Environment from "../../environment/Environment";
 import Env from "../../environment/Env";
 
 
@@ -87,7 +86,7 @@ class Login extends React.Component<RouteComponentProps<any>, IState> {
                     <div className='col-sm-9 col-md-7 col-log-5 mx-auto'>
                         <div className='card card-signin my-5'>
                             <div className='card-body'>
-                                <img src={ddb} />
+                                <img src={ddb} alt='Downtown Daily Bread'/>
                                 <div className='vspace' />
                                 {this.getErrorMessage()}
                                 <form className='form-signin' onSubmit={this.submitLogin}>

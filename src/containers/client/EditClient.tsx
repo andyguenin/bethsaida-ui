@@ -1,11 +1,10 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
 import {Title} from "../../components/app/Title";
 import {withRouter, RouteChildrenProps} from 'react-router-dom'
 import {GetSingleClient} from "../../services/Client";
-import {ModifyClient} from "../../components/client/ModifyClient";
 import {Loader} from "../../components/app/loader/Loader";
 import FileContainer from "../../components/app/FileContainer";
 

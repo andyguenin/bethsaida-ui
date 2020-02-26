@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {connect, ConnectedProps} from 'react-redux';
 import {AppState} from "../../reducers/AppState";
 import {Loader} from "../../components/app/loader/Loader"

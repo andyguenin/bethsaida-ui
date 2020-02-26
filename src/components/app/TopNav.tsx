@@ -13,7 +13,7 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
         return (
 
             <nav className="navbar navbar-expand-md navbar-light bg-light shadow">
-                <a className="navbar-brand" href="/"><img src={ddb} height='50px'/> </a>
+                <a className="navbar-brand" href="/"><img src={ddb} height='50px' alt='Downtown Daily Bread'/> </a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false"
@@ -27,7 +27,7 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
                             <a className="nav-link" href="/">Home</a>
                         </li>
                         <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="#" id='clientDropdown' role='button'
+                            <a className="nav-link dropdown-toggle" href="/client" id='clientDropdown' role='button'
                                data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Client</a>
                             <div className='dropdown-menu' aria-labelledby='clientDropdown'>
                                 <a className='dropdown-item' href='/client/new'>New Client</a>
@@ -35,14 +35,14 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
                             </div>
                         </li>
                         <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button"
+                            <a className="nav-link dropdown-toggle" href="/services" id="servicesDropdown" role="button"
                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Services
                             </a>
                             <div className="dropdown-menu" aria-labelledby="servicesDropdown">
-                                <a className="dropdown-item" href="#">New Service</a>
-                                <a className="dropdown-item" href="#">Active Services</a>
-                                <a className="dropdown-item" href="#">Service History</a>
+                                {/*<a className="dropdown-item" href="#">New Service</a>*/}
+                                {/*<a className="dropdown-item" href="#">Active Services</a>*/}
+                                {/*<a className="dropdown-item" href="#">Service History</a>*/}
                             </div>
                         </li>
                     </ul>

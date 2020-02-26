@@ -1,7 +1,10 @@
 import BDate from "./BDate";
 import Client from "./Client";
+import {Race} from "./Race";
+import {Gender} from "./Gender";
 
-export default class ClientBuilder{
+
+export default class ClientBuilder {
     get id(): string | undefined {
         return this._id;
     }
@@ -26,7 +29,7 @@ export default class ClientBuilder{
         return this._photoId;
     }
 
-    get phone(): number | undefined {
+    get phone(): string | undefined {
         return this._phone;
     }
 
@@ -34,8 +37,20 @@ export default class ClientBuilder{
         return this._nicknames;
     }
 
-    get dateOfBirth(): BDate | undefined {
+    get dateOfBirth(): string | undefined {
         return this._dateOfBirth;
+    }
+
+    get race(): Race | undefined {
+        return this._race;
+    }
+
+    get gender(): Gender | undefined {
+        return this._gender;
+    }
+
+    get intakeDate(): string | undefined {
+        return this._intakeDate
     }
 
     public setId(value?: string): ClientBuilder {
@@ -68,7 +83,7 @@ export default class ClientBuilder{
         return this;
     }
 
-    public setPhone(value?: number): ClientBuilder {
+    public setPhone(value?: string): ClientBuilder {
         this._phone = value;
         return this;
     }
@@ -78,10 +93,32 @@ export default class ClientBuilder{
         return this;
     }
 
-    public setDateOfBirth(value?: BDate): ClientBuilder {
+    public setDateOfBirth(value?: string): ClientBuilder {
         this._dateOfBirth = value;
         return this;
     }
+
+    public setRace(value?: string): ClientBuilder {
+        if (value !== undefined) {
+            const idx = +value;
+            this._race = Race[Race[idx] as keyof typeof Race];
+        }
+        return this;
+    }
+
+    public setGender(value?: string): ClientBuilder {
+        if (value !== undefined) {
+            const idx = +value;
+            this._gender = Gender[Gender[idx] as keyof typeof Gender];
+        }
+        return this;
+    }
+
+    public setIntakeDate(value?: string): ClientBuilder {
+        this._intakeDate = value;
+        return this;
+    }
+
 
     private _id?: string;
     private _firstName?: string;
@@ -89,26 +126,77 @@ export default class ClientBuilder{
     private _lastName?: string;
     private _clientPhoto?: string;
     private _photoId?: string;
-    private _phone?: number;
+    private _phone?: string;
     private _nicknames?: string[];
-    private _dateOfBirth?: BDate;
+    private _dateOfBirth?: string;
+    private _race?: Race;
+    private _gender?: Gender;
+    private _intakeDate?: string;
 
+    public setField(id: string, value: string) {
+        switch (id) {
+            case 'id':
+                return this.setId(value);
+            case 'firstName':
+                return this.setFirstName(value);
+            case 'middleName':
+                return this.setMiddleName(value);
+            case 'lastName':
+                return this.setLastName(value);
+            case 'clientPhoto':
+                return this.setClientPhoto(value);
+            case 'photoId':
+                return this.setPhotoId(value);
+            case 'phone':
+                return this.setPhone(value);
+            case 'nicknames':
+                return this.setNicknames(value.split(','));
+            case 'dateOfBirth':
+                return this.setDateOfBirth(value);
+            case 'race':
+                return this.setRace(value);
+            case 'gender':
+                return this.setGender(value);
+            case 'intakeDate':
+                return this.setIntakeDate(value);
+        }
+    }
+
+
+    public isValid(): boolean {
+        if (this._firstName === undefined
+            || this._lastName === undefined
+            || this.phone === undefined
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     build(): Client {
-        if(this._firstName !== undefined && this._lastName !== undefined) {
+        if (!(this._firstName === undefined
+            || this._lastName === undefined
+            || this.phone === undefined
+            || this._race === undefined
+            || this._gender === undefined
+            || this._intakeDate === undefined
+        )) {
             return new Client(
                 this._firstName,
                 this._lastName,
+                BDate.fromjsDate(this._dateOfBirth),
+                this._race,
+                this._gender,
+                BDate.fromjsDate(this._intakeDate),
                 this._nicknames,
                 this._id,
                 this._middleName,
                 this._clientPhoto,
                 this._photoId,
-                this._phone,
-                this._dateOfBirth
+                this._phone === undefined ? 0 : +this._phone
             )
-        }
-        else {
+        } else {
             throw new Error('Could not create client due to missing required fields.')
         }
     }
@@ -123,10 +211,27 @@ export default class ClientBuilder{
             .setMiddleName(client.middleName)
             .setClientPhoto(client.clientPhoto)
             .setPhotoId(client.photoId)
-            .setPhone(client.phone)
-            .setDateOfBirth(client.dateOfBirth)
+            .setPhone(client.phone + '')
+            .setDateOfBirth(client.dateOfBirth?.jsDate)
+            .setRace(client.race.toString())
+            .setGender(client.gender.toString())
 
 
     }
 
+    public static emptyBuilder(): ClientBuilder {
+        return new ClientBuilder()
+            .setFirstName('')
+            .setLastName('')
+            .setNicknames([])
+            .setId('')
+            .setMiddleName('')
+            .setClientPhoto('')
+            .setPhotoId('')
+            .setPhone('')
+            .setDateOfBirth('')
+            .setRace(Race.NONWHITE.toString())
+            .setGender(Gender.MALE.toString())
+            .setIntakeDate(BDate.fromDate(new Date()).jsDate);
+    }
 }

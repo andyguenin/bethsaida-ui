@@ -4,24 +4,25 @@ import Client from "../data/Client";
 import BDate from "../data/BDate";
 import {setClientData} from "../actions/Client";
 import {apiRequest, RequestType} from "../util/HttpRequest";
-import Environment from "../environment/Environment";
 import Env from "../environment/Env";
 
 function parseClient(input: any): Client {
     return new Client(
-        input['id'],
         input['firstName'],
-        input['middleName'],
         input['lastName'],
-        input['clientPhoto'],
-        input['photoId'],
-        input['phone'],
-        input['nicknames'],
         new BDate(
             input['dateOfBirth']['year'],
             input['dateOfBirth']['month'],
             input['dateOfBirth']['day']
-        )
+        ),
+        input['race'],
+        input['gender'],
+        input['nicknames'],
+        input['id'],
+        input['middleName'],
+        input['clientPhoto'],
+        input['photoId'],
+        input['phone']
     )
 }
 
@@ -30,9 +31,9 @@ export const GetAllClients = (): AsyncAction =>
     (dispatch, state, x) => {
         dispatch(toggleLoadingStatus(true));
         apiRequest(Env.get().fullUrl() + '/client', RequestType.GET, (xhr: XMLHttpRequest) => {
-            if(xhr.readyState == XMLHttpRequest.DONE) {
+            if(xhr.readyState === XMLHttpRequest.DONE) {
                 const result = JSON.parse(xhr.responseText);
-                if((result as []).length != 0) {
+                if((result as []).length !== 0) {
                     const data = result.data.map(parseClient);
                     dispatch(setClientData(data));
                 }
@@ -55,3 +56,5 @@ export const GetSingleClient = (id: string): AsyncAction =>
         // )
     };
 
+
+// export const UploadImage = ()
