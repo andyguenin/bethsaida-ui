@@ -2,8 +2,8 @@ import React, {ChangeEvent, FormEvent, Fragment} from 'react';
 import ClientBuilder from "../../data/ClientBuilder";
 import {Race} from "../../data/Race";
 import {Gender} from "../../data/Gender";
-import {apiRequest, RequestType} from "../../util/HttpRequest";
 import Env from "../../environment/Env";
+import {UploadImage} from "../../services/Client";
 
 
 interface IProps {
@@ -60,25 +60,15 @@ export class ModifyClient extends React.Component<IProps, IState> {
     }
 
 
+
+
     private handleImageUpdate(id: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
             if (e.target && e.target.files) {
-                const formData = new FormData();
-                formData.append('fileUpload', e.target.files[0]);
-
-                const uploadImage = fetch(Env.get().fullUrl() + "/client/imageupload", {
-                    method: 'POST',
-                    body: formData
+                UploadImage(e.target.files[0], (img) => {
+                    console.log('image uploaded: ' + img);
+                    this.handleImageStateUpdate(id, img)();
                 })
-
-                uploadImage.then(resp =>
-                    resp.json().then(
-                        resp2 => {
-                            const image = resp2['image'];
-                            this.handleImageStateUpdate(id, image)();
-                        }
-                    )
-                )
             }
         }
     }
@@ -90,7 +80,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
         const displayImage = (file: string, name: string, id: string) => {
             return (
                 <div className='col-sm-6 uploaded-image'>
-                    <img id={'photo-preview-' + id} src={Env.get().imageUrl + '/' + file}
+                    <img width='100%' id={'photo-preview-' + id} src={Env.get().imageUrl + '/' + file}
                          alt={'photo of ' + name}/>
                     {/*<button type='button' className='btn btn-info reupload' onClick={() => {*/}
                     {/*    this.setState(this.newState(id, {id: id, file: undefined, deleteImage: true}))}}>Delete Image</button>*/}

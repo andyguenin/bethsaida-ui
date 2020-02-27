@@ -1,23 +1,24 @@
 import React, {ChangeEvent, FormEvent} from 'react';
 import './login.scss'
 import Credentials from "../../data/Credentials";
-import {apiRequest, RequestType} from "../../util/HttpRequest";
 import {Redirect, RouteComponentProps, withRouter} from 'react-router-dom';
 import ddb from '../../assets/ddb.svg'
-import Env from "../../environment/Env";
+import {AuthenticateRequest} from "../../services/Authenticate";
 
 
 interface IState {
     email: string
     password: string
     errorMessage?: string
+    submitDisabled: boolean
 }
 
 class Login extends React.Component<RouteComponentProps<any>, IState> {
     private static dProps: IState = {
         email: '',
         password: '',
-        errorMessage: undefined
+        errorMessage: undefined,
+        submitDisabled: false
     }
 
     constructor(props: RouteComponentProps<any>) {
@@ -34,41 +35,27 @@ class Login extends React.Component<RouteComponentProps<any>, IState> {
     }
 
     public submitLogin = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const credentials = this.state as IState;
-        apiRequest('/authenticate', RequestType.POST, (xhr: XMLHttpRequest) => {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    this.clearErrorMessage();
-                    const response: any = JSON.parse(xhr.responseText);
-                    if(response['auth_token'] !== undefined) {
-                        Credentials.setCredentials(response['auth_token']);
-                        this.props.history.push('/')
-                    }
-                    if (response['error'] === 'PasswordDoesNotMatch') {
-                        this.setErrorMessage('Password is not correct. Please try again.')
-                    }
-                    if (response['error'] === 'UserNotFound') {
-                        this.setErrorMessage('User not found. Please enter in a valid user.');
-                    }
-                    if (response['error'] === 'UserAccountNotConfirmed') {
-                        this.setErrorMessage('Please confirm your account via the link provided to you in an email.');
-                    }
-                }
+        e.preventDefault()
+        this.setState({'submitDisabled': true});
+        AuthenticateRequest(
+            this.state.email,
+            this.state.password,
+            () => {
+                this.props.history.push('/')
             },
-            credentials
+            (message) => {
+                this.setErrorMessage(message);
+            }
         );
     };
 
     private setErrorMessage = (message: string) => {
-        this.setState(Object.assign({}, {'errorMessage': message}))
-    }
-    private clearErrorMessage = () => {
-        this.setState(Object.assign({}, {'errorMessage': undefined}))
+        this.setState(Object.assign({}, {'errorMessage': message, 'submitDisabled': false}))
     }
 
     private getErrorMessage = () => {
         const state = (this.state as IState);
-        if(state.errorMessage !== undefined) {
+        if (state.errorMessage !== undefined) {
             return (
                 <div className='alert alert-danger' role='alert'>{state.errorMessage}</div>
             )
@@ -76,8 +63,8 @@ class Login extends React.Component<RouteComponentProps<any>, IState> {
     }
 
     render() {
-        if(new Credentials().isLoggedIn()) {
-            return <Redirect to='/' />
+        if (new Credentials().isLoggedIn()) {
+            return <Redirect to='/'/>
         }
         return (
             <div className='container'>
@@ -86,7 +73,7 @@ class Login extends React.Component<RouteComponentProps<any>, IState> {
                         <div className='card card-signin my-5'>
                             <div className='card-body'>
                                 <img src={ddb} alt='Downtown Daily Bread'/>
-                                <div className='vspace' />
+                                <div className='vspace'/>
                                 {this.getErrorMessage()}
                                 <form className='form-signin' onSubmit={this.submitLogin}>
                                     <div className='form-label-group'>
@@ -106,7 +93,7 @@ class Login extends React.Component<RouteComponentProps<any>, IState> {
                                         <label className="custom-control-label" htmlFor="customCheck1">Remember
                                             password</label>
                                     </div>
-                                    <button className="btn btn-lg btn-primary btn-block text-uppercase"
+                                    <button className={"btn btn-lg btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
                                             type="submit">Sign in
                                     </button>
                                 </form>

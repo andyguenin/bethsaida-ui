@@ -59,11 +59,22 @@ class ShowClient extends React.Component<Props, IState> {
     }
 
     private displayAttributeRow(key: string, value?: string): any {
-        if(value !== undefined) {
+        if (value !== undefined) {
             return (<tr>
                 <td className='w-25'>{key}</td>
                 <td className='text-right'>{value}</td>
             </tr>)
+        }
+    }
+
+    private displayImage(imageType: string, name: string, imageTag?: string) {
+        if (imageTag !== undefined && imageTag !== '') {
+            return (<img width='100%' className=''
+                         src={Env.get().imageUrl + '/' + imageTag}
+                         alt={imageType.charAt(0).toUpperCase() + imageType.slice(1) + ' of ' + name}/>)
+        } else {
+            return (<b>No {imageType} found for {name}</b>)
+
         }
     }
 
@@ -75,8 +86,8 @@ class ShowClient extends React.Component<Props, IState> {
                     <h1>{client.fullName}</h1>
                     <div className='row profile-body'>
                         <div className='col-md-3 profile-side'>
-                            <img width='100%' className='' src={Env.get().imageUrl + '/' + client.clientPhoto}
-                                 alt={'picture of ' + client.fullName}/>
+                            {this.displayImage('photograph', client.fullName, client.clientPhoto)}
+
 
                             {/*{this.props.client.workingClient.nicknames.length === 0 ?*/}
                             {/*    null :*/}
@@ -94,9 +105,13 @@ class ShowClient extends React.Component<Props, IState> {
                             <table className='table table-bordered'>
                                 <caption>Client Attributes</caption>
                                 <thead className='thead-dark'>
-                                        <th>Attribute</th>
-                                        <th className='text-right'>Value</th>
+                                <tr>
+                                    <th>Attribute</th>
+                                    <th className='text-right'>Value</th>
+
+                                </tr>
                                 </thead>
+                                <tbody>
                                 {this.displayAttributeRow('Date of Birth', this.state.client?.dateOfBirth.jsDate)}
                                 {this.displayAttributeRow('Age', DateUtil.getAge(this.state.client?.dateOfBirth))}
                                 {this.displayAttributeRow('Race', Race[this.state.client?.race].toString())}
@@ -104,8 +119,10 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.jsDate)}
                                 <tr>
                                     <td>Photo ID</td>
-                                    <td><img src={Env.get().imageUrl + '/' + this.state.client?.photoId} width='100%'/></td>
+                                    <td>{this.displayImage('photo id scan', client.fullName, client.photoId)}
+                                    </td>
                                 </tr>
+                                </tbody>
                             </table>
                         </div>
                         <div className='col-md-4'>
