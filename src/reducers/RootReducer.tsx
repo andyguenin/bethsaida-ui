@@ -4,5 +4,5 @@ import {clientReducer} from "./ClientReducer";
 
 export const rootReducer = combineReducers({
     base: baseReducer,
-    client: clientReducer
+    clientState: clientReducer
 });

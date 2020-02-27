@@ -6,16 +6,20 @@ import {GetSingleClient} from "../../services/Client";
 import {withRouter, RouteChildrenProps} from 'react-router-dom'
 import FileContainer from "../../components/app/FileContainer";
 import Client from "../../data/Client";
+import Env from "../../environment/Env";
+import DateUtil from "../../util/DateUtil";
+import {Race} from "../../data/Race";
+import {Gender} from "../../data/Gender";
 
 const mapStateToProps = (state: AppState) => ({
-    client: state.client,
+    clientState: state.clientState,
     base: state.base
 })
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadClient: (id: string) => dispatch(GetSingleClient(id))
-    }
+        getSingleClient: (id: string, action: (c: Client) => void) => dispatch(GetSingleClient(id, action))
+    };
 }
 
 const connector = connect(
@@ -29,31 +33,50 @@ interface RouteProps {
     id: string
 }
 
-interface IProps {
-    client2?: Client
+interface IState {
+    client?: Client
 }
 
-type Props = PropsFromRedux & RouteChildrenProps<RouteProps> & IProps
+type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
 
-class ShowClient extends React.Component<Props> {
+class ShowClient extends React.Component<Props, IState> {
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            client: undefined
+        }
+
+    }
 
     componentDidMount(): void {
         if (this.props.match?.params) {
-            this.props.loadClient(this.props.match?.params.id)
+            this.props.getSingleClient(this.props.match?.params.id, (c: Client) => {
+                this.setState({client: c})
+            })
+        }
+    }
+
+    private displayAttributeRow(key: string, value?: string): any {
+        if(value !== undefined) {
+            return (<tr>
+                <td className='w-25'>{key}</td>
+                <td className='text-right'>{value}</td>
+            </tr>)
         }
     }
 
     render() {
-        if (this.props.client2 !== undefined) {
-            const client: Client = this.props.client2
+        if (this.state.client !== undefined) {
+            const client: Client = this.state.client;
             return (
                 <FileContainer>
                     <h1>{client.fullName}</h1>
                     <div className='row profile-body'>
                         <div className='col-md-3 profile-side'>
-                            <img width='100%' className='' src={client.photoId}
+                            <img width='100%' className='' src={Env.get().imageUrl + '/' + client.clientPhoto}
                                  alt={'picture of ' + client.fullName}/>
-                            {/*{ client.dateOfBirth ? (<h4 className='prof-attrib'>Date of birth: </h4>{client.dateOfBirth.jsDate}) : (<Fragment />) }*/}
 
                             {/*{this.props.client.workingClient.nicknames.length === 0 ?*/}
                             {/*    null :*/}
@@ -67,7 +90,25 @@ class ShowClient extends React.Component<Props> {
                             {/*    </Fragment>*/}
                             {/*}*/}
                         </div>
-                        <div className='col-md-9'>
+                        <div className='col-md-5'>
+                            <table className='table table-bordered'>
+                                <caption>Client Attributes</caption>
+                                <thead className='thead-dark'>
+                                        <th>Attribute</th>
+                                        <th className='text-right'>Value</th>
+                                </thead>
+                                {this.displayAttributeRow('Date of Birth', this.state.client?.dateOfBirth.jsDate)}
+                                {this.displayAttributeRow('Age', DateUtil.getAge(this.state.client?.dateOfBirth))}
+                                {this.displayAttributeRow('Race', Race[this.state.client?.race].toString())}
+                                {this.displayAttributeRow('Gender', Gender[this.state.client?.gender].toString())}
+                                {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.jsDate)}
+                                <tr>
+                                    <td>Photo ID</td>
+                                    <td><img src={Env.get().imageUrl + '/' + this.state.client?.photoId} width='100%'/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div className='col-md-4'>
                             <div className='text-right actions'>
                                 {/*<button onClick={() => window.location.href='/client/edit/' +*/}
                                 {/*    (this.props.client.workingClient ?*/}

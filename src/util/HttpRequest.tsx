@@ -1,4 +1,5 @@
 import Credentials from "../data/Credentials";
+import Env from "../environment/Env";
 
 export enum RequestType {
     POST,
@@ -16,19 +17,24 @@ const reqTypeMapping = (r: RequestType) => {
 }
 
 export const apiRequest = (
-    url: string,
+    path: string,
     requestType: RequestType,
     handler: (xml: XMLHttpRequest) => void,
     data?: object
 ): void => {
     const cred = new Credentials();
     const xhr = new XMLHttpRequest();
-    xhr.open(reqTypeMapping(requestType), url, true);
+    xhr.open(reqTypeMapping(requestType), Env.get().fullUrl() + path, true);
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     if(cred.isLoggedIn()) {
         xhr.setRequestHeader("Authorization", "Bearer " + cred.jwt);
     }
-    xhr.onreadystatechange = () => handler(xhr);
+    xhr.onreadystatechange = () => {
+        if(xhr.status === 401) {
+            window.location.href = '/';
+        }
+        handler(xhr);
+    }
     if(data !== undefined) {
         xhr.send(JSON.stringify(data));
     } else {

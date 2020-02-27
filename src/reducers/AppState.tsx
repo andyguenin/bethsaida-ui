@@ -3,5 +3,5 @@ import {ClientState, initialClientState} from "./ClientReducer";
 
 export interface AppState {
     base: BaseState
-    client: ClientState
+    clientState: ClientState
 }

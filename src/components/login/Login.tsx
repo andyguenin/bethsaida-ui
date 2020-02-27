@@ -36,8 +36,7 @@ class Login extends React.Component<RouteComponentProps<any>, IState> {
     public submitLogin = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const credentials = this.state as IState;
-        const url = Env.get().getAuthenticationUrl();
-        apiRequest(url, RequestType.POST, (xhr: XMLHttpRequest) => {
+        apiRequest('/authenticate', RequestType.POST, (xhr: XMLHttpRequest) => {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     this.clearErrorMessage();
                     const response: any = JSON.parse(xhr.responseText);

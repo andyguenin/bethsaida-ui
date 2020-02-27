@@ -8,10 +8,11 @@ import {GetAllClients} from "../../services/Client";
 import {Title} from "../../components/app/Title";
 import Client from "../../data/Client";
 import FileContainer from "../../components/app/FileContainer";
+import Env from "../../environment/Env";
 
 
 const mapStateToProps = (state: AppState) => ({
-    client: state.client,
+    clientState: state.clientState,
     base: state.base
 })
 
@@ -52,7 +53,7 @@ class AllClients extends React.Component<Props> {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.props.client.clients.map(c => this.singleRow(c))}
+                                {this.props.clientState.clients.map(c => this.singleRow(c))}
                                 </tbody>
                             </table>
                         </div>
@@ -65,7 +66,7 @@ class AllClients extends React.Component<Props> {
     private singleRow(client: Client) {
         return (
                 <tr className='clickable-row' key={client.fullName} onClick={() =>{window.location.href='/client/' + client.id}}>
-                    <td className='bethsaida-thumbnail'><img src={client.clientPhoto} alt={'photo of ' + client.fullName}/></td>
+                    <td className='bethsaida-thumbnail'><img src={Env.get().imageUrl + '/' + client.clientPhoto} alt={'photo of ' + client.fullName}/></td>
                     <td>
                         <b>{client.fullName}</b>
                     </td>

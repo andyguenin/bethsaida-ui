@@ -2,6 +2,8 @@ import React, {ChangeEvent, FormEvent, Fragment} from 'react';
 import ClientBuilder from "../../data/ClientBuilder";
 import {Race} from "../../data/Race";
 import {Gender} from "../../data/Gender";
+import {apiRequest, RequestType} from "../../util/HttpRequest";
+import Env from "../../environment/Env";
 
 
 interface IProps {
@@ -11,17 +13,7 @@ interface IProps {
     submitAction: (c: ClientBuilder) => boolean
 }
 
-interface IPhotoState {
-    deleteImage?: boolean
-    file?: string
-}
-
 interface IState {
-    clientPhoto: IPhotoState
-    photoId: IPhotoState
-
-    getPhotoById(id: string): IPhotoState
-
     client: ClientBuilder
 
     disableInputs: boolean
@@ -31,23 +23,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
 
     private generateDefaultState(builder: ClientBuilder): IState {
         return ({
-            clientPhoto: {
-                file: builder?.clientPhoto,
-                deleteImage: undefined
-            },
-            photoId: {
-                file: builder?.photoId,
-                deleteImage: undefined
-            },
-            getPhotoById(id: string): IPhotoState {
-                if (id === "clientPhoto") {
-                    return this.clientPhoto;
-                } else if (id === "photoId") {
-                    return this.photoId
-                } else {
-                    throw new RangeError("id " + id + " not found")
-                }
-            },
             client: builder,
             disableInputs: false
         })
@@ -70,15 +45,15 @@ export class ModifyClient extends React.Component<IProps, IState> {
         }
     }
 
-    private handleImageStateUpdate(id: string, imageState: IPhotoState): () => void {
+    private handleImageStateUpdate(id: string, imageTag?: string): () => void {
         return () => {
-            let a: any = {};
-            a[id] = imageState;
             this.setState(
                 Object.assign(
                     {},
                     this.state,
-                    a
+                    {
+                        client: this.state.client.setField(id, imageTag || '')
+                    }
                 )
             )
         }
@@ -88,18 +63,23 @@ export class ModifyClient extends React.Component<IProps, IState> {
     private handleImageUpdate(id: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
             if (e.target && e.target.files) {
-                this.handleImageStateUpdate(id, {
-                    file: URL.createObjectURL(e.target.files[0]),
-                    deleteImage: false
+                const formData = new FormData();
+                formData.append('fileUpload', e.target.files[0]);
+
+                const uploadImage = fetch(Env.get().fullUrl() + "/client/imageupload", {
+                    method: 'POST',
+                    body: formData
                 })
+
+                uploadImage.then(resp =>
+                    resp.json().then(
+                        resp2 => {
+                            const image = resp2['image'];
+                            this.handleImageStateUpdate(id, image)();
+                        }
+                    )
+                )
             }
-            // if (e.target && e.target.files) {
-            //     this.setState(this.newState(id, {
-            //         id: id,
-            //         deleteImage: false,
-            //         file: URL.createObjectURL(e.target.files[0])
-            //     }));
-            // }
         }
     }
 
@@ -107,26 +87,21 @@ export class ModifyClient extends React.Component<IProps, IState> {
         const upload = <input type='file' className='form-control col-sm-4' id={id}
                               onChange={this.handleImageUpdate(id)}/>
 
-
-        const state = this.state.getPhotoById(id);
         const displayImage = (file: string, name: string, id: string) => {
             return (
                 <div className='col-sm-6 uploaded-image'>
-                    <img id={'photo-preview-' + id} src={file}
+                    <img id={'photo-preview-' + id} src={Env.get().imageUrl + '/' + file}
                          alt={'photo of ' + name}/>
                     {/*<button type='button' className='btn btn-info reupload' onClick={() => {*/}
                     {/*    this.setState(this.newState(id, {id: id, file: undefined, deleteImage: true}))}}>Delete Image</button>*/}
                 </div>);
         };
 
-        if (state.file) {
-            return displayImage(state.file, this.state.client?.firstName || '', id);
+        const fileName = this.state.client.getImageById(id);
+        if ( fileName !== undefined) {
+            return displayImage(fileName, this.state.client.firstName || '', id)
         } else {
-            if (this.state.client?.clientPhoto && !state.deleteImage) {
-                return displayImage(this.state.client.clientPhoto, this.state.client.firstName || '', id);
-            } else {
-                return upload;
-            }
+            return upload;
         }
     }
 

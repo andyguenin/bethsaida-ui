@@ -6,15 +6,18 @@ import {Title} from "../../components/app/Title";
 import FileContainer from "../../components/app/FileContainer";
 import {ModifyClient} from "../../components/client/ModifyClient";
 import ClientBuilder from "../../data/ClientBuilder";
+import {NewClientRequest} from "../../services/Client";
+import Client from "../../data/Client";
 
 const mapStateToProps = (state: AppState) => ({
-    client: state.client,
+    client: state.clientState,
     base: state.base
 })
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         // loadClient: () => dispatch(GetSingleClient("926d4bc3-2aaa-40de-8c4b-9936c1f002ce"))
+        newClient: (c: ClientBuilder) => dispatch(NewClientRequest(c))
     }
 }
 
@@ -38,7 +41,7 @@ class NewClient extends React.Component<Props> {
                 <ModifyClient
                     clientBuilder={ClientBuilder.emptyBuilder()}
                     cancelAction={() => window.location.href='/client'}
-                    submitAction={(c: ClientBuilder) => {alert(c); console.log(c); return true}}
+                    submitAction={(c: ClientBuilder) => {this.props.newClient(c); return true}}
                     submitText='Create Client'
                 />
             </FileContainer>

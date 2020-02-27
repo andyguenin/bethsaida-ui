@@ -4,19 +4,20 @@ import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
 import {Title} from "../../components/app/Title";
 import {withRouter, RouteChildrenProps} from 'react-router-dom'
-import {GetSingleClient} from "../../services/Client";
+// import {GetSingleClient} from "../../services/Client";
 import {Loader} from "../../components/app/loader/Loader";
 import FileContainer from "../../components/app/FileContainer";
 
 
 const mapStateToProps = (state: AppState) => ({
-    client: state.client,
+    client: state.clientState,
     base: state.base
 })
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadClient: (id: string) => dispatch(GetSingleClient(id))
+        // loadClient: (id: string) => dispatch(GetSingleClient(id))
+        loadClient: (id: string) => undefined
     }
 }
 

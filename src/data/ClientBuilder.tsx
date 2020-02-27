@@ -163,14 +163,13 @@ export default class ClientBuilder {
     }
 
 
-    public isValid(): boolean {
-        if (this._firstName === undefined
-            || this._lastName === undefined
-            || this.phone === undefined
-        ) {
-            return false;
+    public getImageById(id: string): string | undefined {
+        if(id === 'clientPhoto') {
+            return this._clientPhoto === '' ? undefined : this._clientPhoto;
+        } else if (id === 'photoId') {
+            return this._photoId === '' ? undefined : this._photoId;
         } else {
-            return true;
+            return undefined;
         }
     }
 

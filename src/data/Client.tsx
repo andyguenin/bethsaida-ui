@@ -8,7 +8,7 @@ export default class Client{
     public readonly dateOfBirth: BDate;
     public readonly race: Race;
     public readonly gender: Gender;
-    public readonly intakeDate: BDate;
+    public readonly intakeDate?: BDate;
 
     public readonly nicknames?: string[];
     public readonly id?: string;
