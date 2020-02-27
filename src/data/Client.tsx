@@ -17,6 +17,8 @@ export default class Client{
     public readonly photoId?: string;
     public readonly phone?: number;
 
+    public readonly intakeUser?: string
+
 
     public readonly fullName: string;
 
@@ -32,7 +34,8 @@ export default class Client{
         middleName?: string,
         clientPhoto?: string,
         photoId?: string,
-        phone?: number
+        phone?: number,
+        intakeUser?: string
 
     ) {
         this.id = id;
@@ -47,6 +50,7 @@ export default class Client{
         this.race = race;
         this.gender = gender;
         this.intakeDate = intakeDate;
+        this.intakeUser = intakeUser;
 
         this.fullName = firstName + " " + middleName + " " + lastName;
     }

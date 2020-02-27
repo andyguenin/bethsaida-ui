@@ -29,3 +29,6 @@
 .devinfo {
   background-color: #ffc3b3;
   border: #ff4141 2px solid; }
+
+img {
+  image-orientation: from-image; }

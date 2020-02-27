@@ -69,7 +69,7 @@ class ShowClient extends React.Component<Props, IState> {
 
     private displayImage(imageType: string, name: string, imageTag?: string) {
         if (imageTag !== undefined && imageTag !== '') {
-            return (<img width='100%' className=''
+            return (<img width='100%'
                          src={Env.get().imageUrl + '/' + imageTag}
                          alt={imageType.charAt(0).toUpperCase() + imageType.slice(1) + ' of ' + name}/>)
         } else {
@@ -117,6 +117,7 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Race', Race[this.state.client?.race].toString())}
                                 {this.displayAttributeRow('Gender', Gender[this.state.client?.gender].toString())}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.jsDate)}
+                                {this.displayAttributeRow('Intake User', this.state.client?.intakeUser)}
                                 <tr>
                                     <td>Photo ID</td>
                                     <td>{this.displayImage('photo id scan', client.fullName, client.photoId)}

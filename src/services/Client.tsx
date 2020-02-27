@@ -28,7 +28,8 @@ function parseClient(input: any): Client {
         input['middleName'],
         input['clientPhoto'],
         input['photoId'],
-        input['phone']
+        input['phone'],
+        (input['intakeUser'] !== undefined ? input['intakeUser']['name'] : undefined)
     )
 }
 
