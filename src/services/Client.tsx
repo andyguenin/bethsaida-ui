@@ -34,7 +34,7 @@ function parseClient(input: any): Client {
 }
 
 
-export const GetAllClients = (): AsyncAction =>
+export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAction =>
     (dispatch, state, x) => {
         dispatch(toggleLoadingStatus(true));
         fetch(Env.get().fullUrl() + '/client', {
@@ -47,6 +47,7 @@ export const GetAllClients = (): AsyncAction =>
                         if ((json as []).length !== 0) {
                             const data = json.map(parseClient);
                             dispatch(setClientData(data));
+                            updateFunc(data);
                         }
                         dispatch(toggleLoadingStatus(false))
                     }
@@ -71,17 +72,59 @@ export const GetSingleClient = (id: string, action: (c: Client) => void): AsyncA
     }
 }
 
-export const NewClientRequest = (clientBuilder: ClientBuilder): AsyncAction =>
+export const UpdateClient = (
+    clientBuilder: ClientBuilder,
+    successAction: (id: string) => void,
+    failureAction: (message: string) => void
+    ): AsyncAction => {
+    return (dispatch) => {
+        if(clientBuilder.id === undefined) {
+            failureAction('Client id is not set')
+        } else {
+            fetch(Env.get().fullUrl() + '/client/' + clientBuilder.id + '/update', {
+                method: 'POST',
+                headers: ServiceBase.jsonHeader,
+                body: JSON.stringify(clientBuilder.build())
+            }).then(
+                resp => resp.json().then(
+                    json => {
+                        if(resp.ok) {
+                            const id = json['id'];
+                            successAction(id);
+                        } else {
+                            const error = json['message'];
+                            failureAction(error);
+                        }
+                    }
+                )
+            )
+        }
+
+    }
+}
+
+export const NewClientRequest = (clientBuilder: ClientBuilder, successAction: (id: string) => void): AsyncAction =>
     (dispatch) => {
         fetch(Env.get().fullUrl() + '/client/new', {
             method: 'POST',
             headers: ServiceBase.jsonHeader,
             body: JSON.stringify(clientBuilder.build())
-        })
+        }).then(
+            resp => resp.json().then(
+                json => {
+                    if(resp.ok) {
+                        const id = json['id'];
+                        successAction(id);
+                    } else {
+                        window.location.href='/';
+                    }
+                }
+            )
+        )
     }
 
 
-export const UploadImage = (file: File, action: (imageName: string) => void): void => {
+export const UploadImage = (file: File, success: (imageName: string) => void, errorHandler: (message: string) => void): void => {
     const formData = new FormData();
     formData.append('fileUpload', file);
     fetch(Env.get().fullUrl() + '/client/imageupload', {
@@ -91,8 +134,13 @@ export const UploadImage = (file: File, action: (imageName: string) => void): vo
     }).then(
         r => r.json().then(
             json => {
-                const image = json['image'];
-                action(image);
+                if(r.ok) {
+                    const image = json['image'];
+                    success(image);
+                } else {
+                    const error = json['message'];
+                    errorHandler(error);
+                }
             }
         )
     )

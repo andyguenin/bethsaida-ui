@@ -10,6 +10,7 @@ import Env from "../../environment/Env";
 import DateUtil from "../../util/DateUtil";
 import {Race} from "../../data/Race";
 import {Gender} from "../../data/Gender";
+import {Title} from "../../components/app/Title";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -70,7 +71,7 @@ class ShowClient extends React.Component<Props, IState> {
     private displayImage(imageType: string, name: string, imageTag?: string) {
         if (imageTag !== undefined && imageTag !== '') {
             return (<img width='100%'
-                         src={Env.get().imageUrl + '/' + imageTag}
+                         src={Env.get().imageUrl + '/' + imageTag + '_250.png'}
                          alt={imageType.charAt(0).toUpperCase() + imageType.slice(1) + ' of ' + name}/>)
         } else {
             return (<b>No {imageType} found for {name}</b>)
@@ -83,23 +84,18 @@ class ShowClient extends React.Component<Props, IState> {
             const client: Client = this.state.client;
             return (
                 <FileContainer>
-                    <h1>{client.fullName}</h1>
+                    <Title name={client.fullName}>
+                        <button
+                            className='btn btn-success'
+                            type='button'
+                            onClick={() => window.location.href='/client/' + (this.state.client?.id || '') + '/edit'}>
+                        Edit</button>
+                        <button className='btn btn-danger' type='button'>Ban From DDB Services</button>
+
+                    </Title>
                     <div className='row profile-body'>
                         <div className='col-md-3 profile-side'>
                             {this.displayImage('photograph', client.fullName, client.clientPhoto)}
-
-
-                            {/*{this.props.client.workingClient.nicknames.length === 0 ?*/}
-                            {/*    null :*/}
-                            {/*    <Fragment>*/}
-                            {/*        <h4 className='prof-attrib'>Nicknames:</h4>*/}
-                            {/*        <ul>*/}
-                            {/*        {this.props.client.workingClient.nicknames.map((r) => {*/}
-                            {/*            return <li>{r}</li>*/}
-                            {/*        })}*/}
-                            {/*        </ul>*/}
-                            {/*    </Fragment>*/}
-                            {/*}*/}
                         </div>
                         <div className='col-md-5'>
                             <table className='table table-bordered'>
@@ -108,7 +104,6 @@ class ShowClient extends React.Component<Props, IState> {
                                 <tr>
                                     <th>Attribute</th>
                                     <th className='text-right'>Value</th>
-
                                 </tr>
                                 </thead>
                                 <tbody>

@@ -17,7 +17,9 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         // loadClient: () => dispatch(GetSingleClient("926d4bc3-2aaa-40de-8c4b-9936c1f002ce"))
-        newClient: (c: ClientBuilder) => dispatch(NewClientRequest(c))
+        newClient: (c: ClientBuilder) => dispatch(NewClientRequest(c, (id) => {
+            window.location.href='/client/'+id;
+        }))
     }
 }
 
@@ -28,9 +30,7 @@ const connector = connect(
 
 type PropsFromRedux = ConnectedProps<typeof connector>
 
-type Props = PropsFromRedux & {
-    abc: string
-}
+type Props = PropsFromRedux
 
 class NewClient extends React.Component<Props> {
 

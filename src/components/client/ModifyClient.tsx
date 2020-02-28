@@ -15,8 +15,8 @@ interface IProps {
 
 interface IState {
     client: ClientBuilder
-
     disableInputs: boolean
+    errorState?: object
 }
 
 export class ModifyClient extends React.Component<IProps, IState> {
@@ -60,27 +60,33 @@ export class ModifyClient extends React.Component<IProps, IState> {
     }
 
 
-
-
     private handleImageUpdate(id: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
             if (e.target && e.target.files) {
                 UploadImage(e.target.files[0], (img) => {
-                    console.log('image uploaded: ' + img);
-                    this.handleImageStateUpdate(id, img)();
-                })
+                        console.log('image uploaded: ' + img);
+                        this.handleImageStateUpdate(id, img)();
+                    },
+                    (message: string) => {
+                        this.handleImageStateUpdate(id, undefined)();
+                    })
             }
         }
     }
 
-    private displayImage(id: string) {
-        const upload = <input type='file' className='form-control col-sm-4' id={id}
-                              onChange={this.handleImageUpdate(id)}/>
+    private displayImage = (id: string) => {
+        const upload = (
+        <Fragment>
+            <input type='file' className='form-control col-sm-4' id={id}
+                   onChange={this.handleImageUpdate(id)}/>
+            {this.state.errorState !== undefined ? <div className='error'>error</div> : undefined}
+        </Fragment>
+        )
 
         const displayImage = (file: string, name: string, id: string) => {
             return (
                 <div className='col-sm-6 uploaded-image'>
-                    <img width='100%' id={'photo-preview-' + id} src={Env.get().imageUrl + '/' + file}
+                    <img width='100%' id={'photo-preview-' + id} src={Env.get().imageUrl + '/' + file + '_400.png'}
                          alt={'photo of ' + name}/>
                     {/*<button type='button' className='btn btn-info reupload' onClick={() => {*/}
                     {/*    this.setState(this.newState(id, {id: id, file: undefined, deleteImage: true}))}}>Delete Image</button>*/}
@@ -88,7 +94,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
         };
 
         const fileName = this.state.client.getImageById(id);
-        if ( fileName !== undefined) {
+        if (fileName !== undefined) {
             return displayImage(fileName, this.state.client.firstName || '', id)
         } else {
             return upload;
@@ -233,7 +239,8 @@ export class ModifyClient extends React.Component<IProps, IState> {
                             </div>
                             <div className='form-group row'>
                                 <label htmlFor='phone' className='col-sm-2'>Phone</label>
-                                <input type='number' className='form-control col-sm-10' id='phone'
+                                <input type='text' inputMode='numeric' pattern="[0-9]*"
+                                       className='form-control col-sm-10' id='phone'
                                        onChange={this.handleTextUpdate('phone')}/>
                             </div>
                             <div className='form-group row'>

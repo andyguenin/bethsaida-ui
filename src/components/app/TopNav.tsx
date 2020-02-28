@@ -1,6 +1,7 @@
 import React from 'react';
 import ddb from '../../assets/ddb.svg';
 import {withRouter, RouteComponentProps} from 'react-router-dom'
+import Credentials from "../../data/Credentials";
 
 
 class TopNav extends React.Component<RouteComponentProps<any>> {
@@ -27,24 +28,16 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
                             <a className="nav-link" href="/">Home</a>
                         </li>
                         <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="/client" id='clientDropdown' role='button'
-                               data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>Client</a>
-                            <div className='dropdown-menu' aria-labelledby='clientDropdown'>
-                                <a className='dropdown-item' href='/client/new'>New Client</a>
-                                <a className='dropdown-item' href='/client/'>All Clients</a>
-                            </div>
+                            <a className="nav-link" href="/client" id='client'>Clients</a>
                         </li>
                         <li className="nav-item dropdown">
-                            <a className="nav-link dropdown-toggle" href="/services" id="servicesDropdown" role="button"
-                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <a className="nav-link" href="/services" id="services">
                                 Services
                             </a>
-                            <div className="dropdown-menu" aria-labelledby="servicesDropdown">
-                                {/*<a className="dropdown-item" href="#">New Service</a>*/}
-                                {/*<a className="dropdown-item" href="#">Active Services</a>*/}
-                                {/*<a className="dropdown-item" href="#">Service History</a>*/}
-                            </div>
                         </li>
+                        {
+                            (<a href='/admin' className='nav-link'>Admin</a> )
+                        }
                     </ul>
                     {/*<form className="form-inline my-2 my-md-0 mr-sm-2">*/}
                     {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}

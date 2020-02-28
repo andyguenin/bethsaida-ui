@@ -46,3 +46,19 @@
 img {
   image-orientation: from-image;
 }
+
+.button-row {
+  align-items: center;
+  margin-bottom: 10px;
+  .btn {
+    margin-left: 10px;
+  }
+  .button-group {
+    flex-direction: row-reverse;
+  }
+}
+
+#buttonid {
+  margin-left: auto;
+  flex-direction: row-reverse;
+}

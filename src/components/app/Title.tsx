@@ -1,4 +1,5 @@
 import React from 'react';
+import FileContainer from "./FileContainer";
 
 
 interface IProps {
@@ -9,7 +10,14 @@ export class Title extends React.Component<IProps> {
 
     public render() {
         return (
-            <h1 className='bsd-page-title'>{this.props.name}</h1>
+            <div className='row button-row'>
+                <div className='col-6'><h1>{this.props.name}</h1></div>
+                <div className='col-6'>
+                    <form className='form-inline' id='buttonid'>
+                        {this.props.children}
+                    </form>
+                </div>
+            </div>
         )
     }
 }

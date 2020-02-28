@@ -200,8 +200,11 @@ export default class ClientBuilder {
         }
     }
 
-    public static load(client: Client): ClientBuilder {
+    public static load(client?: Client): ClientBuilder {
         const cb = new ClientBuilder();
+        if(client === undefined) {
+            throw new Error('cannot build undefined client');
+        }
         return cb
             .setFirstName(client.firstName)
             .setLastName(client.lastName)
@@ -214,6 +217,7 @@ export default class ClientBuilder {
             .setDateOfBirth(client.dateOfBirth?.jsDate)
             .setRace(client.race.toString())
             .setGender(client.gender.toString())
+            .setIntakeDate(client.intakeDate?.jsDate)
 
 
     }

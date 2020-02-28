@@ -25,7 +25,7 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/logout' component={Logout}/>
                             <Route exact path="/upload" component={FormUpload}/>
                             <Route exact path="/client/new" component={NewClient}/>
-                            <Route exact path="/client/edit/:id" component={EditClient}/>
+                            <Route exact path="/client/:id/edit" component={EditClient}/>
                             <Route exact path="/client/:id" component={ShowClient}/>
                             <Route exact path="/client" component={ClientList}/>
                             <Route exact path="/" component={Home}/>
