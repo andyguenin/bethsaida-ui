@@ -50,15 +50,18 @@ img {
 .button-row {
   align-items: center;
   margin-bottom: 10px;
-  .btn {
+  .form-control {
     margin-left: 10px;
-  }
-  .button-group {
-    flex-direction: row-reverse;
   }
 }
 
 #buttonid {
   margin-left: auto;
   flex-direction: row-reverse;
+}
+
+.navbar {
+  .btn {
+    margin-left: 10px;
+  }
 }

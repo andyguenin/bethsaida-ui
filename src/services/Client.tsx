@@ -1,4 +1,3 @@
-import {toggleLoadingStatus} from "../actions/Base";
 import {AsyncAction} from "../actions/Async";
 import Client from "../data/Client";
 import BDate from "../data/BDate";
@@ -36,7 +35,6 @@ function parseClient(input: any): Client {
 
 export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAction =>
     (dispatch, state, x) => {
-        dispatch(toggleLoadingStatus(true));
         fetch(Env.get().fullUrl() + '/client', {
             method: 'GET',
             headers: ServiceBase.authenticationHeader
@@ -49,7 +47,6 @@ export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAct
                             dispatch(setClientData(data));
                             updateFunc(data);
                         }
-                        dispatch(toggleLoadingStatus(false))
                     }
                 )
             )
@@ -113,6 +110,8 @@ export const NewClientRequest = (clientBuilder: ClientBuilder, successAction: (i
             resp => resp.json().then(
                 json => {
                     if(resp.ok) {
+                        console.log('hello')
+                        console.log(json);
                         const id = json['id'];
                         successAction(id);
                     } else {

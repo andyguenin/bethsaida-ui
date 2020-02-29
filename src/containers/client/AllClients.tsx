@@ -33,6 +33,7 @@ type Props = PropsFromRedux & {}
 
 interface State {
     gridClients: Client[]
+    loading: boolean
 }
 
 class AllClients extends React.Component<Props, State> {
@@ -41,13 +42,15 @@ class AllClients extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            gridClients: []
+            gridClients: [],
+            loading: false
         }
 
         this.filterClients = this.filterClients.bind(this);
     }
 
     componentDidMount(): void {
+        this.setState(Object.assign({}, this.state, {loading: true}));
         this.props.loadAllClients(this.updateGridClients);
     }
 
@@ -57,6 +60,7 @@ class AllClients extends React.Component<Props, State> {
                 {},
                 this.state,
                 {
+                    loading: false,
                     gridClients: clients.sort((c1, c2) => {
                         const lastName = c1.lastName.localeCompare(c2.lastName)
                         if (lastName !== 0) {
@@ -90,9 +94,10 @@ class AllClients extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name='Client Management'>
-                    <button type='button' className='btn btn-success'
+                    <button type='button' className='btn btn-success form-control'
                             onClick={() => window.location.href = '/client/new'}>New Client
                     </button>
+                    <button type='button' className='btn btn-danger form-control'>Manage Banned Clients</button>
                     <input
                         type='text'
                         className='form-control'
@@ -100,21 +105,19 @@ class AllClients extends React.Component<Props, State> {
                         onChange={this.filterClients}
                     />
                 </Title>
-                <Loader loading={this.props.base.loadingStatusEnabled}>
-                    <div className={'row ' + (this.props.base.loadingStatusEnabled ? 'nowshow' : '')}>
-                        <div className='col-md-12'>
-                            <table className="table table-striped client-table">
-                                <thead className='thead-light'>
-                                <tr>
-                                    <th></th>
-                                    <th>Name</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {this.state.gridClients.map(c => this.singleRow(c))}
-                                </tbody>
-                            </table>
-                        </div>
+                <Loader loading={this.state.loading}>
+                    <div className='col-md-12'>
+                        <table className="table table-striped client-table">
+                            <thead className='thead-dark'>
+                            <tr>
+                                <th></th>
+                                <th>Name</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {this.state.gridClients.map(c => this.singleRow(c))}
+                            </tbody>
+                        </table>
                     </div>
                 </Loader>
             </FileContainer>

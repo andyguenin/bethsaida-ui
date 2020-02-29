@@ -1,0 +1,2 @@
+
+export type EventAction = undefined

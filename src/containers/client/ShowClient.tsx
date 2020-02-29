@@ -86,11 +86,11 @@ class ShowClient extends React.Component<Props, IState> {
                 <FileContainer>
                     <Title name={client.fullName}>
                         <button
-                            className='btn btn-success'
+                            className='btn btn-success form-control'
                             type='button'
                             onClick={() => window.location.href='/client/' + (this.state.client?.id || '') + '/edit'}>
                         Edit</button>
-                        <button className='btn btn-danger' type='button'>Ban From DDB Services</button>
+                        <button className='btn btn-danger form-control' type='button'>Ban From DDB Services</button>
 
                     </Title>
                     <div className='row profile-body'>
@@ -99,11 +99,10 @@ class ShowClient extends React.Component<Props, IState> {
                         </div>
                         <div className='col-md-5'>
                             <table className='table table-bordered'>
-                                <caption>Client Attributes</caption>
                                 <thead className='thead-dark'>
                                 <tr>
-                                    <th>Attribute</th>
-                                    <th className='text-right'>Value</th>
+                                    <th> </th>
+                                    <th className='text-right'>Client Information</th>
                                 </tr>
                                 </thead>
                                 <tbody>

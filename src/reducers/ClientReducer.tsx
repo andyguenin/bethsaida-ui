@@ -6,12 +6,10 @@ import {
 
 
 export interface ClientState {
-    loading: boolean,
     clients: Client[]
 }
 
 export const initialClientState: ClientState = {
-    loading: false,
     clients: []
 }
 

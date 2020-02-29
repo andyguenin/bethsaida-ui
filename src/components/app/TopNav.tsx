@@ -22,30 +22,35 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
                     <span className="navbar-toggler-icon"> </span>
                 </button>
 
-                <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul className="navbar-nav mr-auto">
-                        <li className="nav-item">
-                            <a className="nav-link" href="/">Home</a>
-                        </li>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link" href="/client" id='client'>Clients</a>
-                        </li>
-                        <li className="nav-item dropdown">
-                            <a className="nav-link" href="/services" id="services">
-                                Services
-                            </a>
-                        </li>
-                        {
-                            (<a href='/admin' className='nav-link'>Admin</a> )
-                        }
-                    </ul>
-                    {/*<form className="form-inline my-2 my-md-0 mr-sm-2">*/}
-                    {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}
-                    {/*    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>*/}
-                    {/*</form>*/}
-                    <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
-                    </button>
-                </div>
+
+                <ul className="navbar-nav mr-auto">
+                    <li className="nav-item">
+                        <a className="nav-link" href="/">Home</a>
+                    </li>
+                    <li className="nav-item dropdown">
+                        <a className="nav-link" href="/client" id='client'>Clients</a>
+                    </li>
+                    <li className="nav-item dropdown">
+                        <a className="nav-link" href="/event" id="Events">
+                            Events
+                        </a>
+                    </li>
+                    <li className="nav-item dropdown">
+                        <a className="nav-link" href="/service" id="Services">
+                            Services
+                        </a>
+                    </li>
+                    {
+                        (<a href='/admin' className='nav-link'>Admin</a>)
+                    }
+                </ul>
+                {/*<form className="form-inline my-2 my-md-0 mr-sm-2">*/}
+                {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}
+                {/*    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>*/}
+                {/*</form>*/}
+                <button type='button' className='btn btn-outline-dark '>Edit Account</button>
+                <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
+                </button>
             </nav>
 
         )

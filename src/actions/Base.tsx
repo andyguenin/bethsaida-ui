@@ -1,20 +1,5 @@
 
 
-export const BASE_LOADING_STATUS = "base/loadingstatus"
-export type BASE_LOADING_STATUS = typeof BASE_LOADING_STATUS
-
-export interface BaseLoadingStatus {
-    type: BASE_LOADING_STATUS
-    loadingStatusEnabled: boolean
-}
-
-export function toggleLoadingStatus(statusEnabled: boolean): BaseLoadingStatus {
-    return {
-    type: BASE_LOADING_STATUS,
-    loadingStatusEnabled: statusEnabled
-}}
-
-
 export const BASE_ERROR_MESSAGE = "base/errorstatus"
 export type BASE_ERROR_MESSAGE = typeof BASE_ERROR_MESSAGE
 
@@ -42,4 +27,4 @@ export function clearErrorMessage(): BaseErrorMessage {
 }
 
 
-export type BaseAction = BaseLoadingStatus | BaseErrorMessage
+export type BaseAction = BaseErrorMessage
