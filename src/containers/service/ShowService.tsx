@@ -101,7 +101,10 @@ class ShowService extends React.Component<Props, IState> {
                                                         {/*</tr>*/}
                                                         <tr>
                                                             <td>Default Capacity</td>
-                                                            <td className='text-right'>{this.state.service?.defaultCapacity === undefined ? 'Unlimited' : this.state.service.defaultCapacity}</td>
+                                                            <td className='text-right'>{
+                                                                this.state.service?.defaultCapacity === undefined || this.state.service?.defaultCapacity == 0 ?
+                                                                    'Unlimited'
+                                                                    : this.state.service.defaultCapacity}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

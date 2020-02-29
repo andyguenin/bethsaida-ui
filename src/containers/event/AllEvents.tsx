@@ -7,6 +7,8 @@ import {Title} from "../../components/app/Title";
 import {Loader} from "../../components/app/loader/Loader";
 import {LoadAllEvents} from "../../services/Event";
 import BethsaidaEvent from "../../data/BethsaidaEvent";
+import Service from "../../data/Service";
+import {LoadAllServices} from "../../services/Service";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -16,7 +18,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadAllEvents: (updateFunc: (events: BethsaidaEvent[]) => void) => dispatch(LoadAllEvents(updateFunc))
+        loadAllEvents: (updateFunc: (events: BethsaidaEvent[]) => void) => dispatch(LoadAllEvents(updateFunc)),
+        loadAllServices: (updateFunc: (services: Service[]) => void) => dispatch(LoadAllServices(updateFunc))
     }
 }
 
@@ -67,7 +70,7 @@ class AllEvents extends React.Component<Props, State> {
             <FileContainer>
                 <Title name='Event Management'>
                     <button type='button' className='btn btn-success form-control'
-                            onClick={() => window.location.href = '/event/new'}>New BethsaidaEvent
+                            onClick={() => window.location.href = '/event/new'}>New Event
                     </button>
                 </Title>
                 <Loader loading={this.state.loading}>

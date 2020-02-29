@@ -6,12 +6,18 @@ export default class BDate {
 
 
     readonly jsDate: string
+    readonly mmddyyyy: string
 
     constructor(year: number, month: number, day: number) {
         this.year = year;
         this.month = month;
         this.day = day;
-        this.jsDate = (year) + '-' + ('0' + month).slice(-2) + '-' + ('0' + day).slice(-2)
+
+
+        const monthStr = ('0' + month).slice(-2);
+        const dayStr = ('0' + day).slice(-2);
+        this.jsDate = (year) + '-' + monthStr + '-' + dayStr;
+        this.mmddyyyy = monthStr + '/' + dayStr + '/' + (year);
     }
 
     static fromDate(date: Date): BDate {

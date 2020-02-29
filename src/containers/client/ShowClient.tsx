@@ -106,11 +106,11 @@ class ShowClient extends React.Component<Props, IState> {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.displayAttributeRow('Date of Birth', this.state.client?.dateOfBirth.jsDate)}
+                                {this.displayAttributeRow('Date of Birth', this.state.client?.dateOfBirth.mmddyyyy)}
                                 {this.displayAttributeRow('Age', DateUtil.getAge(this.state.client?.dateOfBirth))}
                                 {this.displayAttributeRow('Race', Race[this.state.client?.race].toString())}
                                 {this.displayAttributeRow('Gender', Gender[this.state.client?.gender].toString())}
-                                {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.jsDate)}
+                                {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}
                                 {this.displayAttributeRow('Intake User', this.state.client?.intakeUser)}
                                 <tr>
                                     <td>Photo ID</td>
