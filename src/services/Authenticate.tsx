@@ -25,7 +25,7 @@ export const AuthenticateRequest = (
                 json => {
                     if (r.ok) {
                         const token = json['auth_token'];
-                        Credentials.setCredentials(token);
+                        Credentials.setCredentials(token, (json['admin'] as boolean));
                         complete();
                     } else {
                         try {

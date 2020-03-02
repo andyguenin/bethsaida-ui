@@ -3,7 +3,8 @@ import ClientBuilder from "../../data/ClientBuilder";
 import {Race} from "../../data/Race";
 import {Gender} from "../../data/Gender";
 import Env from "../../environment/Env";
-import {UploadImage} from "../../services/Client";
+import {DeleteImage, UploadImage} from "../../services/Client";
+import {Loader} from "../app/loader/Loader";
 
 
 interface IProps {
@@ -17,6 +18,7 @@ interface IState {
     client: ClientBuilder
     disableInputs: boolean
     errorState?: object
+    imageLoading?: object
 }
 
 export class ModifyClient extends React.Component<IProps, IState> {
@@ -39,65 +41,115 @@ export class ModifyClient extends React.Component<IProps, IState> {
 
     }
 
+    private isIdLoading = (id: string): boolean => {
+        return this.state.imageLoading !== undefined
+            && (this.state.imageLoading as any)[id] !== undefined
+            && ((this.state.imageLoading as any)[id] as boolean);
+    }
+
+    private setIdLoading = (id: string, isLoading: boolean): void => {
+        let idLoading: any = {};
+        idLoading[id] = isLoading;
+        const imageLoading = Object.assign({}, this.state.imageLoading, idLoading);
+
+        this.setState(Object.assign(
+            {},
+            this.state,
+            {
+                imageLoading: imageLoading
+            }
+        ))
+    };
+
+
+
     private setButtonDisable(): (disable: boolean) => void {
         return (d) => {
             this.setState(Object.assign({}, {disableInputs: d}));
         }
     }
 
-    private handleImageStateUpdate(id: string, imageTag?: string): () => void {
-        return () => {
-            this.setState(
-                Object.assign(
-                    {},
-                    this.state,
-                    {
-                        client: this.state.client.setField(id, imageTag || '')
-                    }
-                )
+    private handleImageStateUpdate = (id: string, imageTag?: string): void => {
+        this.setState(
+            Object.assign(
+                {},
+                this.state,
+                {
+                    client: this.state.client.setField(id, imageTag || '')
+                }
             )
-        }
+        )
+
     }
 
 
     private handleImageUpdate(id: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
             if (e.target && e.target.files) {
+                this.setIdLoading(id, true)
                 UploadImage(e.target.files[0], (img) => {
-                        this.handleImageStateUpdate(id, img)();
+                        this.handleImageStateUpdate(id, img);
+                        this.setIdLoading(id, false)
                     },
                     (message: string) => {
-                        this.handleImageStateUpdate(id, undefined)();
+                        this.handleImageStateUpdate(id, undefined);
+                        this.setIdLoading(id, false)
                     })
             }
         }
     }
 
-    private displayImage = (id: string) => {
+    private displayImage = (label: string, id: string) => {
         const upload = (
-            <Fragment>
-                <input type='file' className='form-control col-sm-4' id={id}
-                       onChange={this.handleImageUpdate(id)}/>
-                {this.state.errorState !== undefined ? <div className='error'>error</div> : undefined}
-            </Fragment>
+            <Loader
+                loading={this.isIdLoading(id)}
+                emptyText='No clients'
+                isEmpty={this.state.client !== undefined}
+            >
+                <input type='file' className='form-inline form-control' id={id}
+                   onChange={this.handleImageUpdate(id)}/>
+            </Loader>
         )
 
         const displayImage = (file: string, name: string, id: string) => {
             return (
-                <div className='col-sm-6 uploaded-image'>
-                    <img width='100%' id={'photo-preview-' + id} src={Env.get().imageUrl + '/' + file + '_400.png'}
-                         alt={'photo of ' + name}/>
-                    {/*<button type='button' className='btn btn-info reupload' onClick={() => {*/}
-                    {/*    this.setState(this.newState(id, {id: id, file: undefined, deleteImage: true}))}}>Delete Image</button>*/}
-                </div>);
+                <Fragment>
+                    <div className='row'>
+                        <img id={'photo-preview-' + id} src={Env.get().imageUrl + '/' + file + '_400.png'}
+                             alt={'photo of ' + name}/>
+                    </div>
+                    <div className='row remove-button'>
+                        <button className='btn btn-success form-control'
+                                onClick={() => DeleteImage(file, () => {
+                                    this.handleImageStateUpdate(id, undefined);
+                                })} type='button'>Remove Image
+                        </button>
+                    </div>
+                </Fragment>
+            );
         };
 
-        const fileName = this.state.client.getImageById(id);
-        if (fileName !== undefined) {
-            return displayImage(fileName, this.state.client.firstName || '', id)
-        } else {
-            return upload;
-        }
+        return (
+            <div className='col-sm-6'>
+                <div className='row image-group'>
+                    <label htmlFor={id} className='col-sm-4'>{label}</label>
+                    <div className='col-sm-8'>
+                        {
+                            (() => {
+                                    const fileName = this.state.client.getImageById(id);
+                                    if (fileName !== undefined) {
+                                        return displayImage(fileName, this.state.client.firstName || '', id)
+                                    } else {
+                                        return upload;
+                                    }
+                                }
+                            )()
+                        }
+                    </div>
+                </div>
+            </div>
+        )
+
     }
 
     private handleSubmit(): (e: FormEvent<HTMLFormElement>) => void {
@@ -122,7 +174,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
     render() {
         return (
             <div className='row'>
-                {/*<div>client: {JSON.stringify(this.state.client)}</div>*/}
                 <div className='offset-1 col-10'>
                     <form onSubmit={this.handleSubmit()}>
                         <div className='form-group row'>
@@ -237,17 +288,16 @@ export class ModifyClient extends React.Component<IProps, IState> {
                         </div>
                         <div className='form-group row'>
                             <label htmlFor='phone' className='col-sm-2'>Phone</label>
-                            <input type='text' inputMode='numeric' pattern="[0-9]*"
+                            <input type='text' inputMode='numeric' pattern="[0-9 \-\(\)]*"
                                    className='form-control col-sm-10' id='phone'
+                                   value={this.state.client.phone}
                                    onChange={this.handleTextUpdate('phone')}/>
                         </div>
                         <div className='form-group row'>
-                            <label htmlFor='clientPhoto' className='col-sm-2'>Client Photo</label>
-                            {this.displayImage("clientPhoto")}
-                        </div>
-                        <div className='form-group row'>
-                            <label htmlFor='clientId' className='col-sm-2'>Photo ID</label>
-                            {this.displayImage("photoId")}
+                            {this.displayImage("Client Photo", "clientPhoto")}
+                            {/*</div>*/}
+                            {/*<div className='form-group row'>*/}
+                            {this.displayImage("Photo ID", "photoId")}
                         </div>
                         <div className='form-group row'>
                             <label htmlFor='intake_date' className='col-sm-2'>Intake date</label>

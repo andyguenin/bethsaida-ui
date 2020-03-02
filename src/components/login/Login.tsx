@@ -5,6 +5,9 @@ import {Redirect, RouteComponentProps, withRouter} from 'react-router-dom';
 import ddb from '../../assets/ddb.svg'
 import {AuthenticateRequest} from "../../services/Authenticate";
 
+interface Props {
+    loggedIn: boolean
+}
 
 interface IState {
     email: string
@@ -13,17 +16,17 @@ interface IState {
     submitDisabled: boolean
 }
 
-class Login extends React.Component<RouteComponentProps<any>, IState> {
-    private static dProps: IState = {
+class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
+    private static defaultState: IState = {
         email: '',
         password: '',
         errorMessage: undefined,
         submitDisabled: false
     }
 
-    constructor(props: RouteComponentProps<any>) {
+    constructor(props: RouteComponentProps<any> & Props) {
         super(props);
-        this.state = Login.dProps
+        this.state = Login.defaultState
         this.updateField = this.updateField.bind(this)
     }
 
@@ -63,7 +66,7 @@ class Login extends React.Component<RouteComponentProps<any>, IState> {
     }
 
     render() {
-        if (new Credentials().isLoggedIn()) {
+        if (this.props.loggedIn) {
             return <Redirect to='/'/>
         }
         return (

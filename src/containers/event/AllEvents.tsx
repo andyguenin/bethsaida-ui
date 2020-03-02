@@ -73,43 +73,32 @@ class AllEvents extends React.Component<Props, State> {
                             onClick={() => window.location.href = '/event/new'}>New Event
                     </button>
                 </Title>
-                <Loader loading={this.state.loading}>
-                    {
-                        (
-                            () => {
-                                if (this.state.gridEvent) {
-                                    if (this.state.gridEvent.length === 0) {
-                                        return <i>No events have been created yet.</i>
-                                    } else {
-                                        return (
-                                            <table className='table table-bordered'>
-                                                <thead className='thead-dark'>
-                                                <tr>
-                                                    <th>Event ID</th>
-                                                    {/*<th>Type</th>*/}
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                {this.state.gridEvent.map((s) => {
-                                                    return (
-                                                        <tr key={s.id} className='clickable-row' onClick={() => {
-                                                            window.location.href = '/event/' + s.id;
-                                                        }}>
-                                                            <td className='align-content-center'>{s.id}</td>
-                                                            {/*<td>{s.eventType.toString()}</td>*/}
-                                                        </tr>)
-                                                })}
-                                                </tbody>
-                                            </table>
-                                        )
+                <Loader
+                    loading={this.state.loading}
+                    isEmpty={this.state.gridEvent.length === 0}
+                    emptyText='No events have been created yet.'
+                >
 
-                                    }
-                                } else {
-                                    return <div/>
-                                }
-                            }
-                        )()
-                    }
+                    <table className='table table-bordered table-hover'>
+                        <thead className='thead-dark'>
+                        <tr>
+                            <th>Event ID</th>
+                            {/*<th>Type</th>*/}
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {this.state.gridEvent.map((s) => {
+                            return (
+                                <tr key={s.id} className='clickable-row' onClick={() => {
+                                    window.location.href = '/event/' + s.id;
+                                }}>
+                                    <td className='align-content-center'>{s.id}</td>
+                                    {/*<td>{s.eventType.toString()}</td>*/}
+                                </tr>)
+                        })}
+                        </tbody>
+                    </table>
+
                 </Loader>
             </FileContainer>
         );

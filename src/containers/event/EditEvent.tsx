@@ -13,7 +13,6 @@ import BethsaidaEvent from "../../data/BethsaidaEvent";
 import ModifyEvent from "../../components/event/ModifyEvent";
 
 
-
 const mapStateToProps = (state: AppState) => ({
     event: state.eventState,
     base: state.base
@@ -57,7 +56,7 @@ class EditEvent extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            loadedEvent:undefined,
+            loadedEvent: undefined,
             loading: true
         }
 
@@ -95,19 +94,20 @@ class EditEvent extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name="Edit Client"/>
-                <Loader loading={this.state.loading}>
+                <Loader
+                    loading={this.state.loading}
+                    isEmpty={this.state.loadedEvent === undefined}
+                    emptyText='No event found.'
+                >
                     <ErrorMessage errorMessage={this.state.errorMessage}/>
-                    {
-                        this.state.loadedEvent === undefined ? undefined : (
-                            <ModifyEvent
-                                event={BethsaidaEventBuilder.load(this.state.loadedEvent)}
-                                submitText='Edit Client'
-                                submitAction={(cb) => this.props.updateEvent(cb, (id) => {
-                                    window.location.href = '/event/' + id;
-                                }, this.setErrorMessage)}
-                                cancelAction={() => window.location.href = '/event/' + this.props.match?.params.id}
-                            />
-                        )}
+                    <ModifyEvent
+                        event={BethsaidaEventBuilder.load(this.state.loadedEvent)}
+                        submitText='Edit Event'
+                        submitAction={(cb) => this.props.updateEvent(cb, (id) => {
+                            window.location.href = '/event/' + id;
+                        }, this.setErrorMessage)}
+                        cancelAction={() => window.location.href = '/event/' + this.props.match?.params.id}
+                    />
                 </Loader>
             </FileContainer>
         )

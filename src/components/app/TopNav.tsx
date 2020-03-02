@@ -1,10 +1,30 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import ddb from '../../assets/ddb.svg';
 import {withRouter, RouteComponentProps} from 'react-router-dom'
 import Credentials from "../../data/Credentials";
 
 
-class TopNav extends React.Component<RouteComponentProps<any>> {
+interface State {
+    displayAdmin: boolean
+}
+
+class TopNav extends React.Component<RouteComponentProps<any>, State> {
+
+    constructor(props: RouteComponentProps<any>) {
+        super(props);
+
+        this.state = {
+            displayAdmin: new Credentials().getDisplayAdmin()
+        }
+    }
+
+    private toggleDisplayAdmin = (): void => {
+        const newCred = new Credentials().toggleDisplayAdmin();
+        this.setState(Object.assign({},
+            this.state,
+            {displayAdmin: newCred.getDisplayAdmin()
+            }));
+    };
 
     logout() {
         this.props.history.push('/logout');
@@ -24,30 +44,43 @@ class TopNav extends React.Component<RouteComponentProps<any>> {
 
 
                 <ul className="navbar-nav mr-auto">
-                    <li className="nav-item">
-                        <a className="nav-link" href="/">Home</a>
-                    </li>
-                    <li className="nav-item dropdown">
-                        <a className="nav-link" href="/client" id='client'>Clients</a>
-                    </li>
-                    <li className="nav-item dropdown">
-                        <a className="nav-link" href="/event" id="Events">
-                            Events
-                        </a>
-                    </li>
-                    <li className="nav-item dropdown">
-                        <a className="nav-link" href="/service" id="Services">
-                            Services
-                        </a>
-                    </li>
+
+                    <a className="nav-link" href="/">Home</a>
+
+                    <a className="nav-link" href="/client" id='client'>Clients</a>
+
+
+                    <a className="nav-link" href="/event" id="Events">
+                        Events
+                    </a>
+
+
+
                     {
-                        (<a href='/admin' className='nav-link'>Admin</a>)
+                        (
+                            () => {
+                                if (new Credentials().getDisplayAdmin()) {
+                                    return (
+                                        <Fragment>
+                                            <a className="nav-link" href="/service" id="Services">Services</a>
+                                            <a className='nav-link' href='/admin' id='Admin'>Admin</a>
+                                        </Fragment>
+                                    )
+                                } else {
+                                    return <Fragment/>
+                                }
+
+                            }
+                        )()
                     }
                 </ul>
                 {/*<form className="form-inline my-2 my-md-0 mr-sm-2">*/}
                 {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}
                 {/*    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>*/}
                 {/*</form>*/}
+                <button type='button' className='btn btn-outline-dark' onClick={this.toggleDisplayAdmin}>
+                    Toggle admin {this.state.displayAdmin ? 'off' : 'on'}
+                </button>
                 <button type='button' className='btn btn-outline-dark '>Edit Account</button>
                 <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
                 </button>

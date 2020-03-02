@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
-import {GetSingleClient} from "../../services/Client";
+import {DeleteClient, GetSingleClient} from "../../services/Client";
 import {withRouter, RouteChildrenProps} from 'react-router-dom'
 import FileContainer from "../../components/app/FileContainer";
 import Client from "../../data/Client";
@@ -11,6 +11,7 @@ import DateUtil from "../../util/DateUtil";
 import {Race} from "../../data/Race";
 import {Gender} from "../../data/Gender";
 import {Title} from "../../components/app/Title";
+import Credentials from "../../data/Credentials";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -19,7 +20,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        getSingleClient: (id: string, action: (c: Client) => void) => dispatch(GetSingleClient(id, action))
+        getSingleClient: (id: string, action: (c: Client) => void) => dispatch(GetSingleClient(id, action)),
+        deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action))
     };
 }
 
@@ -88,10 +90,34 @@ class ShowClient extends React.Component<Props, IState> {
                         <button
                             className='btn btn-success form-control'
                             type='button'
-                            onClick={() => window.location.href='/client/' + (this.state.client?.id || '') + '/edit'}>
-                        Edit</button>
-                        <button className='btn btn-danger form-control' type='button'>Ban From DDB Services</button>
-
+                            onClick={() => window.location.href = '/client/' + (this.state.client?.id || '') + '/edit'}>
+                            Edit
+                        </button>
+                        <button className='btn btn-warning form-control' type='button'>Ban From DDB Services</button>
+                        {
+                            (
+                                () => {
+                                    if (new Credentials().getDisplayAdmin()) {
+                                        return <button
+                                            className='btn btn-danger form-control'
+                                            type={'button'}
+                                            onClick={() => {
+                                                if (this.state.client !== undefined && this.state.client.id !== undefined) {
+                                                    const confirm = window.confirm("Are you sure you want to delete the client " + (this.state.client?.fullName || ''))
+                                                    if (confirm) {
+                                                        this.props.deleteClient(this.state.client.id, () => {
+                                                            window.location.href = '/client/'
+                                                        })
+                                                    }
+                                                }
+                                            }}
+                                        >Delete Client</button>
+                                    } else {
+                                        return <Fragment/>
+                                    }
+                                }
+                            )()
+                        }
                     </Title>
                     <div className='row profile-body'>
                         <div className='col-md-3 profile-side'>
@@ -101,7 +127,7 @@ class ShowClient extends React.Component<Props, IState> {
                             <table className='table table-bordered'>
                                 <thead className='thead-dark'>
                                 <tr>
-                                    <th> </th>
+                                    <th></th>
                                     <th className='text-right'>Client Information</th>
                                 </tr>
                                 </thead>
@@ -110,6 +136,7 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Age', DateUtil.getAge(this.state.client?.dateOfBirth))}
                                 {this.displayAttributeRow('Race', Race[this.state.client?.race].toString())}
                                 {this.displayAttributeRow('Gender', Gender[this.state.client?.gender].toString())}
+                                {this.displayAttributeRow('Phone Number', this.state.client?.getPrettyPhone())}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}
                                 {this.displayAttributeRow('Intake User', this.state.client?.intakeUser)}
                                 <tr>

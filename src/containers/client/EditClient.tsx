@@ -8,7 +8,7 @@ import {Loader} from "../../components/app/loader/Loader";
 import FileContainer from "../../components/app/FileContainer";
 import {ModifyClient} from "../../components/client/ModifyClient";
 import ClientBuilder from "../../data/ClientBuilder";
-import {GetSingleClient, UpdateClient} from "../../services/Client";
+import {DeleteClient, GetSingleClient, UpdateClient} from "../../services/Client";
 import Client from "../../data/Client";
 import ErrorMessage from "../../components/app/ErrorMessage";
 
@@ -28,7 +28,8 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
                 failure
             ))
             return true
-        }
+        },
+        deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action))
     }
 }
 
@@ -94,19 +95,20 @@ class EditClient extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name="Edit Client"/>
-                <Loader loading={this.state.loading}>
+                <Loader loading={this.state.loading} isEmpty={this.state.loadedClient === undefined}
+                        emptyText='No client found'>
                     <ErrorMessage errorMessage={this.state.errorMessage}/>
-                    {
-                        this.state.loadedClient === undefined ? undefined : (
-                            <ModifyClient
-                                clientBuilder={ClientBuilder.load(this.state.loadedClient)}
-                                submitText='Edit Client'
-                                submitAction={(cb) => this.props.updateClient(cb, (id) => {
-                                    window.location.href = '/client/' + id;
-                                }, this.setErrorMessage)}
-                                cancelAction={() => window.location.href = '/client/' + this.props.match?.params.id}
-                            />
-                        )}
+
+                    <ModifyClient
+                        clientBuilder={ClientBuilder.load(this.state.loadedClient)}
+                        submitText='Edit Client'
+                        submitAction={(cb) => {
+                            return this.props.updateClient(cb, (id) => {
+                                window.location.href = '/client/' + id;
+                            }, this.setErrorMessage)
+                        }}
+                        cancelAction={() => window.location.href = '/client/' + this.props.match?.params.id}
+                    />
                 </Loader>
             </FileContainer>
         )

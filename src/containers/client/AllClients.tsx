@@ -1,14 +1,16 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, Fragment, MouseEventHandler} from 'react';
 import {connect, ConnectedProps} from 'react-redux';
 import {AppState} from "../../reducers/AppState";
 import {Loader} from "../../components/app/loader/Loader"
 import './Client.scss';
 import {AsyncDispatch} from "../../actions/Async";
-import {GetAllClients} from "../../services/Client";
+import {DeleteClient, GetAllClients} from "../../services/Client";
 import {Title} from "../../components/app/Title";
 import Client from "../../data/Client";
 import FileContainer from "../../components/app/FileContainer";
 import Env from "../../environment/Env";
+import Credentials from "../../data/Credentials";
+import ClientBuilder from "../../data/ClientBuilder";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -18,7 +20,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadAllClients: (updateFunc: (clients: Client[]) => void) => dispatch(GetAllClients(updateFunc))
+        loadAllClients: (updateFunc: (clients: Client[]) => void) => dispatch(GetAllClients(updateFunc)),
+        deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action))
     }
 }
 
@@ -34,6 +37,7 @@ type Props = PropsFromRedux & {}
 interface State {
     gridClients: Client[]
     loading: boolean
+    filterText: string
 }
 
 class AllClients extends React.Component<Props, State> {
@@ -43,15 +47,28 @@ class AllClients extends React.Component<Props, State> {
 
         this.state = {
             gridClients: [],
-            loading: false
+            loading: false,
+            filterText: ''
         }
 
-        this.filterClients = this.filterClients.bind(this);
+        this.filterClientsAction = this.filterClientsAction.bind(this);
     }
 
     componentDidMount(): void {
         this.setState(Object.assign({}, this.state, {loading: true}));
         this.props.loadAllClients(this.updateGridClients);
+    }
+
+    private deleteClick = (client: Client): void => {
+        if (client.id !== undefined) {
+            const confirmation = window.confirm('Are you sure you want to delete ' + client.fullName + '\'s client profile?');
+            if (confirmation) {
+                this.props.deleteClient(
+                    client.id,
+                    () => this.filterClients(this.state.filterText)
+                )
+            }
+        }
     }
 
     private updateGridClients = (clients: Client[]): void => {
@@ -79,15 +96,22 @@ class AllClients extends React.Component<Props, State> {
         )
     }
 
-    private filterClients = (e: ChangeEvent<HTMLInputElement>): void => {
+    private filterClients = (textInput: string) => {
         const newFilter =
-            '.*' + e.target.value.toLowerCase().split(' ').reduce((l, c) => {
+            '.*' + textInput.toLowerCase().split(' ').reduce((l, c) => {
                 return (l + '.*' + c)
             }) + '.*';
         const regex = RegExp(newFilter);
         this.updateGridClients(
             this.props.clientState.clients.filter((client) => client.fullName.toLowerCase().match(regex))
         );
+    }
+
+
+    private filterClientsAction = (e: ChangeEvent<HTMLInputElement>): void => {
+        const text = e.target.value;
+        this.setState(Object.assign({}, this.state, {filterText: text}));
+        this.filterClients(text);
     }
 
     public render() {
@@ -102,12 +126,16 @@ class AllClients extends React.Component<Props, State> {
                         type='text'
                         className='form-control'
                         placeholder='Search Client'
-                        onChange={this.filterClients}
+                        onChange={this.filterClientsAction}
                     />
                 </Title>
-                <Loader loading={this.state.loading}>
+                <Loader
+                    loading={this.state.loading}
+                    isEmpty={this.state.gridClients.length === 0}
+                    emptyText='Cannot find any matching clients.'
+                >
                     <div className='col-md-12'>
-                        <table className="table table-striped client-table">
+                        <table className="table table-striped client-table table-hover">
                             <thead className='thead-dark'>
                             <tr>
                                 <th></th>

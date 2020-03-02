@@ -1,8 +1,11 @@
 import React, {Fragment} from 'react';
 import './Loader.css'
+import {isElement} from "react-dom/test-utils";
 
 interface IProps {
-    loading: boolean
+    loading: boolean,
+    emptyText: string,
+    isEmpty: boolean
 }
 
 export class Loader extends React.Component<IProps> {
@@ -19,7 +22,11 @@ export class Loader extends React.Component<IProps> {
             )
         } else {
             if (this.props.children) {
-                return this.props.children
+                if(this.props.isEmpty) {
+                    return <div>{this.props.emptyText}</div>
+                } else {
+                    return this.props.children
+                }
             } else {
                 return <Fragment/>
             }

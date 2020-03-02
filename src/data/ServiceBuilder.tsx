@@ -74,25 +74,30 @@ export default class ServiceBuilder {
     }
 
     public build(): Service {
-        if (this._id === undefined || this._name === undefined || this._serviceType === undefined) {
+        if (this._id === undefined || this._name === undefined) {
+            console.log(this);
             throw new Error('All required service fields must be set')
         } else {
             return new Service(
                 this._id,
                 this._name,
-                this._serviceType,
+                ServiceType.RECURRING,
                 (this._defaultCapacity === -1 ? undefined : this._defaultCapacity)
             )
         }
     }
 
-    public static load(service: Service): ServiceBuilder {
-        return new ServiceBuilder()
-            .setId(service.id)
-            .setName(service.name)
-            .setServiceType(service.serviceType.toString())
-            .setDefaultCapacity(service.defaultCapacity === undefined ? '' : service.defaultCapacity.toString())
-            ;
+    public static load(service?: Service): ServiceBuilder {
+        if(service !== undefined) {
+            return new ServiceBuilder()
+                .setId(service.id)
+                .setName(service.name)
+                .setServiceType(service.serviceType.toString())
+                .setDefaultCapacity(service.defaultCapacity === undefined ? '' : service.defaultCapacity.toString())
+                ;
+        } else {
+            return ServiceBuilder.emptyBuilder();
+        }
     }
 
     public static emptyBuilder(): ServiceBuilder {

@@ -3,11 +3,13 @@ import Env from "../environment/Env";
 import ServiceBase from "./ServiceBase";
 import BethsaidaEvent from "../data/BethsaidaEvent";
 import EventBuilder from "../data/BethsaidaEventBuilder";
-import ClientBuilder from "../data/ClientBuilder";
 
 function parseEvent(input: any): BethsaidaEvent {
     const event = new BethsaidaEvent(
-        input['id']
+        input['id'],
+        input['serviceId'],
+        input['capacity'],
+        input['date']
     );
     return event;
 }
@@ -63,7 +65,7 @@ export const NewEventRequest = (builder: EventBuilder, successAction: (id: strin
                         const id = json['id'];
                         successAction(id);
                     } else {
-                        window.location.href='/';
+                        // window.location.href='/';
                     }
                 }
             )

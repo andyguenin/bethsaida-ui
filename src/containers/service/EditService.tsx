@@ -60,7 +60,7 @@ class EditService extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            loadedService:undefined,
+            loadedService: undefined,
             loading: true
         }
 
@@ -98,19 +98,21 @@ class EditService extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name="Edit Client"/>
-                <Loader loading={this.state.loading}>
+                <Loader
+                    loading={this.state.loading}
+                    isEmpty={this.state.loadedService === undefined}
+                    emptyText='No matching client found'
+                >
                     <ErrorMessage errorMessage={this.state.errorMessage}/>
-                    {
-                        this.state.loadedService === undefined ? undefined : (
-                            <ModifyService
-                                service={ServiceBuilder.load(this.state.loadedService)}
-                                submitText='Edit Client'
-                                submitAction={(cb) => this.props.updateService(cb, (id) => {
-                                    window.location.href = '/service/' + id;
-                                }, this.setErrorMessage)}
-                                cancelAction={() => window.location.href = '/service/' + this.props.match?.params.id}
-                            />
-                        )}
+                    <ModifyService
+                        service={ServiceBuilder.load(this.state.loadedService)}
+                        submitText='Edit Service'
+                        submitAction={(cb) => this.props.updateService(cb, (id) => {
+                            console.log('abc')
+                            window.location.href = '/service/' + id;
+                        }, this.setErrorMessage)}
+                        cancelAction={() => window.location.href = '/service/' + this.props.match?.params.id}
+                    />
                 </Loader>
             </FileContainer>
         )

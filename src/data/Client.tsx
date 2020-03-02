@@ -15,7 +15,7 @@ export default class Client{
     public readonly middleName?: string;
     public readonly clientPhoto?: string;
     public readonly photoId?: string;
-    public readonly phone?: number;
+    public readonly phone?: string;
 
     public readonly intakeUser?: string
 
@@ -34,7 +34,7 @@ export default class Client{
         middleName?: string,
         clientPhoto?: string,
         photoId?: string,
-        phone?: number,
+        phone?: string,
         intakeUser?: string
 
     ) {
@@ -54,4 +54,17 @@ export default class Client{
 
         this.fullName = firstName + " " + middleName + " " + lastName;
     }
+
+    public getPrettyPhone(): string | undefined {
+        if(this.phone !== undefined) {
+            if(this.phone.length === 10) {
+                return "(" + this.phone.slice(0, 3) + ") " + this.phone.slice(3, 6) + "-" + this.phone.slice(6);
+            } else {
+                return this.phone;
+            }
+        } else {
+            return undefined
+        }
+    }
+
 }

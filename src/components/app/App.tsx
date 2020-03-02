@@ -11,12 +11,12 @@ import ShowClient from "../../containers/client/ShowClient";
 import Logout from "../login/Logout";
 import Login from "../login/Login";
 import DevInfo from "./DevInfo";
-import AllEvents from "../../containers/event/AllEvents";
 import AllServices from "../../containers/service/AllServices";
 import NewService from "../../containers/service/NewService";
 import ShowService from "../../containers/service/ShowService";
 import EditService from "../../containers/service/EditService";
 import NewEvent from "../../containers/event/NewEvent";
+import AllEvents from "../../containers/event/AllEvents";
 
 export default class App extends React.Component<{}> {
 

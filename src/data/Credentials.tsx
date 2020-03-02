@@ -1,34 +1,77 @@
 import Cookies from 'universal-cookie';
 
 export default class Credentials {
-    public static setCredentials(auth: string) {
-        const cookie = new Cookies();
-        cookie.set('jwt', auth, {'path': '/'});
+    set displayAdmin(value: boolean) {
+        this._displayAdmin = value;
+    }
+
+    public static setCredentials(auth: string, admin: boolean): Credentials {
         const currentDate = new Date();
         currentDate.setDate(currentDate.getDate() + 3);
-        cookie.set('expires', currentDate, {'path': '/'});
+        return new Credentials()
+            .setJwt(auth)
+            .setExpires(currentDate)
+            .setAdmin(admin)
+            .setDisplayAdmin(admin)
+            .saveState();
     }
 
     public static clearCredentials() {
-        const cookie = new Cookies();
-        cookie.set('jwt', undefined, {'path': '/'});
-        cookie.set('expires', undefined, {'path': '/'});
+        new Credentials()
+            .setAdmin(undefined)
+            .setDisplayAdmin(undefined)
+            .setExpires(undefined)
+            .setJwt(undefined)
+            .saveState()
+    }
+
+    public setJwt(jwt?: string): Credentials {
+        this._jwt = jwt;
+        return this;
+    }
+
+    public setExpires(date?: Date): Credentials {
+        this._expires = date;
+        return this;
+    }
+
+    public setAdmin(flag?: boolean): Credentials {
+        this._admin = flag;
+        return this;
+    }
+
+    public setDisplayAdmin(flag?: boolean): Credentials {
+        this._displayAdmin = flag;
+        return this;
     }
 
     get jwt(): string | undefined {
         return this._jwt;
     }
-
-    set jwt(value: string | undefined) {
-        this._jwt = value;
-    }
-
     get expires(): Date | undefined {
         return this._expires;
     }
 
-    set expires(value: Date | undefined ) {
-        this._expires = value;
+    public getDisplayAdmin(): boolean {
+        return this._displayAdmin || false;
+    }
+
+    public toggleDisplayAdmin(): Credentials {
+        this._displayAdmin = !this._displayAdmin;
+        return this.saveState()
+    }
+
+    public isAdmin(): boolean {
+        return this._admin || false;
+    }
+
+    public saveState(): Credentials {
+        const cookie = new Cookies();
+        cookie.set('jwt', this._jwt, {'path': '/'});
+        cookie.set('expires', this._expires, {'path': '/'});
+        cookie.set('admin', this._admin ? "true" : "false", {'path': '/'});
+        cookie.set('displayAdmin', this._displayAdmin ? "true" : "false", {'path': '/'});
+        return this;
     }
 
     public isLoggedIn() {
@@ -47,10 +90,14 @@ export default class Credentials {
         this.cookies = new Cookies();
         this._jwt = this.cookies.get('jwt');
         this._expires = new Date(this.cookies.get('expires'));
+        this._displayAdmin = this.cookies.get("displayAdmin") === "true"
+        this._admin = this.cookies.get("admin") === "true"
     }
 
     private cookies: Cookies;
     private _jwt?: string;
     private _expires?: Date;
+    private _admin?: boolean
+    private _displayAdmin?: boolean
 
 }

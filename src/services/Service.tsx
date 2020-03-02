@@ -18,22 +18,26 @@ function parseService(input: any): Service {
 
 export const LoadAllServices = (update: (c: Service[]) => void): AsyncAction => {
     return (dispatch) => {
-        fetch(Env.get().fullUrl() + '/service/', {
-            method: 'GET',
-            headers: ServiceBase.authenticationHeader
-        }).then(
-            r => r.json().then(
-                json => {
-                    const ar = (json as [])
-                    if(ar.length != 0) {
-                        update(ar.map(parseService));
-                    } else {
-                        update([]);
-                    }
-                }
-            )
-        )
+        LoadAllServices2(update);
     }
+}
+
+export const LoadAllServices2 = (update: (s: Service[]) => void): void => {
+    fetch(Env.get().fullUrl() + '/service', {
+        method: 'GET',
+        headers: ServiceBase.authenticationHeader
+    }).then(
+        r => r.json().then(
+            json => {
+                const ar = (json as [])
+                if(ar.length != 0) {
+                    update(ar.map(parseService));
+                } else {
+                    update([]);
+                }
+            }
+        )
+    )
 }
 
 
@@ -82,7 +86,7 @@ export const UpdateService = (
         if(serviceBuilder.id === undefined) {
             failureAction('Service id is not set')
         } else {
-            fetch(Env.get().fullUrl() + '/service/' + serviceBuilder.id + '/update', {
+            fetch(Env.get().fullUrl() + '/service/' + serviceBuilder.id() + '/update', {
                 method: 'POST',
                 headers: ServiceBase.jsonHeader,
                 body: JSON.stringify(serviceBuilder.build())
@@ -92,6 +96,7 @@ export const UpdateService = (
                         if(resp.ok) {
                             const id = json['id'];
                             successAction(id);
+
                         } else {
                             const error = json['message'];
                             failureAction(error);
@@ -102,3 +107,15 @@ export const UpdateService = (
         }
     }
 };
+export const DeleteService = (id: string, action: (id: string) => void) => {
+    fetch(Env.get().fullUrl() + '/service/' + id + '/delete', {
+        method: 'POST',
+        headers: ServiceBase.jsonHeader
+    }).then(
+        resp => {
+            if (resp.ok) {
+                window.location.href = '/service'
+            }
+        }
+    )
+}

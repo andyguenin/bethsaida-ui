@@ -1,3 +1,4 @@
+import Credentials from "../data/Credentials";
 
 
 export const BASE_ERROR_MESSAGE = "base/errorstatus"
@@ -27,4 +28,24 @@ export function clearErrorMessage(): BaseErrorMessage {
 }
 
 
-export type BaseAction = BaseErrorMessage
+
+
+
+export const BASE_CREDENTIALS = "base/creds"
+export type BASE_CREDENTIALS = typeof BASE_CREDENTIALS
+
+export interface BaseCredentials {
+    type: BASE_CREDENTIALS,
+    credentials: Credentials
+
+}
+
+export function setBaseCredentials(m: Credentials): BaseCredentials {
+    return {
+        type: BASE_CREDENTIALS,
+        credentials: m
+    }
+}
+
+
+export type BaseAction = BaseErrorMessage | BaseCredentials

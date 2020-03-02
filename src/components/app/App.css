@@ -45,3 +45,15 @@ img {
 
 .navbar .btn {
   margin-left: 10px; }
+
+.form-group {
+  align-items: center; }
+  .form-group label {
+    text-align: right;
+    margin-bottom: 0; }
+
+.image-group {
+  align-items: center; }
+
+.remove-button {
+  margin-top: 10px; }

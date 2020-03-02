@@ -41,7 +41,7 @@ class NewEvent extends React.Component<Props> {
                     event={BethsaidaEventBuilder.emptyBuilder()}
                     cancelAction={() => window.location.href='/event'}
                     submitAction={(c: BethsaidaEventBuilder) => {this.props.newEvent(c); return true;}}
-                    submitText='Create BethsaidaEvent'
+                    submitText='Create Event'
                 />
             </FileContainer>
         )

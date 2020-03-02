@@ -65,31 +65,25 @@ class ShowEvent extends React.Component<Props, IState> {
     render() {
         return (
             <FileContainer>
-                <Loader loading={this.state.loading}>
-                    {
-                        (() => {
-                            if (this.state.event !== undefined) {
-                                return (
-                                    <Fragment>
-                                    <Title name={this.state.event?.id}>
-                                        <button
-                                            className='btn btn-success form-control'
-                                            type='button'
-                                            onClick={() => window.location.href='/event/' + (this.state.event?.id || '') + '/edit'}>
-                                            Edit</button>
-                                    </Title>
-                                        <div className='row'>
-                                            <div className='col-md-3'>
-                                            </div>
-                                        </div>
-                                    </Fragment>
-
-                                )
-                            } else {
-                                return (<div></div>);
-                            }
-                        })()
-                    }
+                <Loader
+                    loading={this.state.loading}
+                    emptyText='No event found.'
+                    isEmpty={this.state.event === undefined}
+                >
+                    <Fragment>
+                        <Title name={this.state.event?.id}>
+                            <button
+                                className='btn btn-success form-control'
+                                type='button'
+                                onClick={() => window.location.href = '/event/' + (this.state.event?.id || '') + '/edit'}>
+                                Edit
+                            </button>
+                        </Title>
+                        <div className='row'>
+                            <div className='col-md-3'>
+                            </div>
+                        </div>
+                    </Fragment>
                 </Loader>
             </FileContainer>
         )

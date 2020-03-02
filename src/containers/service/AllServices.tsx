@@ -70,46 +70,34 @@ class AllEvents extends React.Component<Props, State> {
                             onClick={() => window.location.href = '/service/new'}>New Service
                     </button>
                 </Title>
-                <Loader loading={this.state.loading}>
-                    {
-                        (
-                            () => {
-                                if (this.state.gridService) {
-                                    if (this.state.gridService.length === 0) {
-                                        return <i>No services have been created yet.</i>
-                                    } else {
-                                        return (
-                                            <table className='table table-bordered'>
-                                                <thead className='thead-dark'>
-                                                <tr>
-                                                    <th>Service Name</th>
-                                                    {/*<th>Type</th>*/}
-                                                    <th>Maximum Capacity</th>
-                                                </tr>
-                                                </thead>
-                                                <tbody>
-                                                {this.state.gridService.map((s) => {
-                                                    return (
-                                                        <tr key={s.id} className='clickable-row' onClick={() => {
-                                                            window.location.href = '/service/' + s.id;
-                                                        }}>
-                                                            <td className='align-content-center'>{s.name}</td>
-                                                            {/*<td>{s.serviceType.toString()}</td>*/}
-                                                            <td>{s.defaultCapacity === undefined || s.defaultCapacity === 0 ? '-' : s.defaultCapacity}</td>
+                <Loader
+                    loading={this.state.loading}
+                    isEmpty={this.state.gridService.length === 0}
+                    emptyText='No services have been created yet.'
+                >
 
-                                                        </tr>)
-                                                })}
-                                                </tbody>
-                                            </table>
-                                        )
+                    <table className='table table-bordered table-hover'>
+                        <thead className='thead-dark'>
+                        <tr>
+                            <th>Service Name</th>
+                            {/*<th>Type</th>*/}
+                            <th>Maximum Capacity</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {this.state.gridService.map((s) => {
+                            return (
+                                <tr key={s.id} className='clickable-row' onClick={() => {
+                                    window.location.href = '/service/' + s.id;
+                                }}>
+                                    <td className='align-content-center'>{s.name}</td>
+                                    {/*<td>{s.serviceType.toString()}</td>*/}
+                                    <td>{s.defaultCapacity === undefined || s.defaultCapacity === 0 ? '-' : s.defaultCapacity}</td>
 
-                                    }
-                                } else {
-                                    return <div/>
-                                }
-                            }
-                        )()
-                    }
+                                </tr>)
+                        })}
+                        </tbody>
+                    </table>
                 </Loader>
             </FileContainer>
         );

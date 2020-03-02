@@ -3,7 +3,7 @@ import FileContainer from "./FileContainer";
 
 
 interface IProps {
-    name: string
+    name?: string
 }
 
 export class Title extends React.Component<IProps> {

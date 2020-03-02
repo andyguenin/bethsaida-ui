@@ -1,12 +1,14 @@
 import {AsyncAction} from "../actions/Async";
 import Client from "../data/Client";
 import BDate from "../data/BDate";
-import {setClientData} from "../actions/Client";
+import {removeClient, setClientData} from "../actions/Client";
 import ClientBuilder from "../data/ClientBuilder";
 import Env from "../environment/Env";
 import ServiceBase from "./ServiceBase";
+import Service from "../data/Service";
 
 function parseClient(input: any): Client {
+    console.log(input)
     return new Client(
         input['firstName'],
         input['lastName'],
@@ -46,11 +48,21 @@ export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAct
                             const data = json.map(parseClient);
                             dispatch(setClientData(data));
                             updateFunc(data);
+                        } else {
+                            updateFunc([]);
                         }
                     }
                 )
             )
     };
+
+export const DeleteImage = (imageTag: string, updateFunc: () => void): void => {
+    fetch(Env.get().fullUrl() + '/client/deleteImage/' + imageTag, {
+        method: 'GET',
+        headers: ServiceBase.authenticationHeader
+    })
+        .then(r => updateFunc())
+}
 
 
 export const GetSingleClient = (id: string, action: (c: Client) => void): AsyncAction => {
@@ -65,6 +77,20 @@ export const GetSingleClient = (id: string, action: (c: Client) => void): AsyncA
                     action(client);
                 }
             )
+        )
+    }
+}
+
+export const DeleteClient = (id: string, action: () => void): AsyncAction => {
+    return (dispatch) => {
+        fetch(Env.get().fullUrl() + '/client/' + id + '/delete', {
+            method: 'POST',
+            headers: ServiceBase.authenticationHeader
+        }).then(
+            () => {
+                dispatch(removeClient(id));
+                action()
+            }
         )
     }
 }
@@ -110,8 +136,6 @@ export const NewClientRequest = (clientBuilder: ClientBuilder, successAction: (i
             resp => resp.json().then(
                 json => {
                     if(resp.ok) {
-                        console.log('hello')
-                        console.log(json);
                         const id = json['id'];
                         successAction(id);
                     } else {

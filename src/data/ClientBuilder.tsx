@@ -193,7 +193,7 @@ export default class ClientBuilder {
                 this._middleName,
                 this._clientPhoto,
                 this._photoId,
-                this._phone === undefined ? 0 : +this._phone
+                this.phone.replace(' ', '').replace('-', '').replace(')', '').replace('(', '')
             )
         } else {
             throw new Error('Could not create client due to missing required fields.')
@@ -213,7 +213,7 @@ export default class ClientBuilder {
             .setMiddleName(client.middleName)
             .setClientPhoto(client.clientPhoto)
             .setPhotoId(client.photoId)
-            .setPhone(client.phone + '')
+            .setPhone(client.getPrettyPhone())
             .setDateOfBirth(client.dateOfBirth?.jsDate)
             .setRace(client.race.toString())
             .setGender(client.gender.toString())
@@ -229,7 +229,7 @@ export default class ClientBuilder {
             .setNicknames([])
             .setId('')
             .setMiddleName('')
-            .setClientPhoto('')
+            .setClientPhoto()
             .setPhotoId('')
             .setPhone('')
             .setDateOfBirth('')

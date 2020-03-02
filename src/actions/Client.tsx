@@ -14,6 +14,19 @@ export function setClientData(d: Client[]): SetClientsData { return {
     data: d
 }}
 
+export const CLIENT_REMOVE = "client/remove"
+export type CLIENT_REMOVE = typeof CLIENT_REMOVE
 
+export interface RemoveClient {
+    type: CLIENT_REMOVE,
+    id: string
+}
 
-export type ClientAction = SetClientsData
+export function removeClient(id: string): RemoveClient {
+    return {
+        type: CLIENT_REMOVE,
+        id: id
+    }
+}
+
+export type ClientAction = SetClientsData | RemoveClient
