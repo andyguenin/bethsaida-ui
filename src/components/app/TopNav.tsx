@@ -1,16 +1,41 @@
 import React, {Fragment} from 'react';
 import ddb from '../../assets/ddb.svg';
-import {withRouter, RouteComponentProps} from 'react-router-dom'
+import {withRouter, RouteComponentProps, RouteChildrenProps} from 'react-router-dom'
 import Credentials from "../../data/Credentials";
+import {AppState} from "../../reducers/AppState";
+import {AsyncDispatch} from "../../actions/Async";
+import {connect, ConnectedProps} from "react-redux";
 
+
+const mapStateToProps = (state: AppState) => ({
+    base: state.base
+})
+
+const mapDispatchToProps = (dispatch: AsyncDispatch) => {
+    return {};
+}
+
+const connector = connect(
+    mapStateToProps,
+    mapDispatchToProps
+);
+
+type PropsFromRedux = ConnectedProps<typeof connector>
+
+interface RouteProps {
+    id: string
+}
 
 interface State {
     displayAdmin: boolean
 }
 
-class TopNav extends React.Component<RouteComponentProps<any>, State> {
+type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
 
-    constructor(props: RouteComponentProps<any>) {
+
+class TopNav extends React.Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
 
         this.state = {
@@ -22,7 +47,8 @@ class TopNav extends React.Component<RouteComponentProps<any>, State> {
         const newCred = new Credentials().toggleDisplayAdmin();
         this.setState(Object.assign({},
             this.state,
-            {displayAdmin: newCred.getDisplayAdmin()
+            {
+                displayAdmin: newCred.getDisplayAdmin()
             }));
     };
 
@@ -32,63 +58,75 @@ class TopNav extends React.Component<RouteComponentProps<any>, State> {
 
     render() {
         return (
-
-            <nav className="navbar navbar-expand-md navbar-light bg-light shadow">
-                <a className="navbar-brand" href="/"><img src={ddb} height='50px' alt='Downtown Daily Bread'/> </a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse"
-                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                        aria-expanded="false"
-                        aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"> </span>
-                </button>
-
-
-                <ul className="navbar-nav mr-auto">
-
-                    <a className="nav-link" href="/">Home</a>
-
-                    <a className="nav-link" href="/client" id='client'>Clients</a>
+            <Fragment>
+                <nav className="navbar navbar-expand-md navbar-light bg-light shadow">
+                    <a className="navbar-brand" href="/"><img src={ddb} height='50px' alt='Downtown Daily Bread'/> </a>
+                    <button className="navbar-toggler" type="button" data-toggle="collapse"
+                            data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false"
+                            aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"> </span>
+                    </button>
 
 
-                    <a className="nav-link" href="/event" id="Events">
-                        Events
-                    </a>
+                    <ul className="navbar-nav mr-auto">
+
+                        <a className="nav-link" href="/">Home</a>
+
+                        <a className="nav-link" href="/client" id='client'>Clients</a>
 
 
+                        <a className="nav-link" href="/event" id="Events">
+                            Events
+                        </a>
 
-                    {
-                        (
-                            () => {
-                                if (new Credentials().getDisplayAdmin()) {
-                                    return (
-                                        <Fragment>
-                                            <a className="nav-link" href="/service" id="Services">Services</a>
-                                            <a className='nav-link' href='/admin' id='Admin'>Admin</a>
-                                        </Fragment>
-                                    )
-                                } else {
-                                    return <Fragment/>
+
+                        {
+                            (
+                                () => {
+                                    if (new Credentials().getDisplayAdmin()) {
+                                        return (
+                                            <Fragment>
+                                                <a className="nav-link" href="/service" id="Services">Services</a>
+                                                <a className='nav-link' href='/admin' id='Admin'>Admin</a>
+                                            </Fragment>
+                                        )
+                                    } else {
+                                        return <Fragment/>
+                                    }
+
                                 }
+                            )()
+                        }
+                    </ul>
+                    {/*<form className="form-inline my-2 my-md-0 mr-sm-2">*/}
+                    {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}
+                    {/*    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>*/}
+                    {/*</form>*/}
+                    <button type='button' className='btn btn-outline-dark' onClick={this.toggleDisplayAdmin}>
+                        Toggle admin {this.state.displayAdmin ? 'off' : 'on'}
+                    </button>
+                    <button type='button' className='btn btn-outline-dark '>Edit Account</button>
+                    <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
+                    </button>
+                </nav>
+                {
 
-                            }
-                        )()
-                    }
-                </ul>
-                {/*<form className="form-inline my-2 my-md-0 mr-sm-2">*/}
-                {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}
-                {/*    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>*/}
-                {/*</form>*/}
-                <button type='button' className='btn btn-outline-dark' onClick={this.toggleDisplayAdmin}>
-                    Toggle admin {this.state.displayAdmin ? 'off' : 'on'}
-                </button>
-                <button type='button' className='btn btn-outline-dark '>Edit Account</button>
-                <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
-                </button>
-            </nav>
+                    (() => {
+                        if (this.props.base.error.enabled) {
+                            return <div className='alert alert-danger site-error'>{this.props.base.error.message}</div>
+                        } else {
+                            return <Fragment/>
+                        }
+                    })()
+
+                }
+
+            </Fragment>
 
         )
     }
 
 }
 
-export default withRouter(TopNav);
+export default withRouter(connector(TopNav));

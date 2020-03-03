@@ -6,6 +6,7 @@ export default class BethsaidaEventBuilder {
     private _serviceId?: string;
     private _capacity?: number;
     private _date?: string;
+    private _userCreator?: string;
 
     public setId(id: string): BethsaidaEventBuilder {
         this._id = id;
@@ -52,6 +53,15 @@ export default class BethsaidaEventBuilder {
         return this._date;
     }
 
+    public setUserCreatorId(id?: string): BethsaidaEventBuilder {
+        this._userCreator = id;
+        return this;
+    }
+
+    public getUserCreatorId(): string | undefined {
+        return this._userCreator;
+    }
+
     public setField(field: string, value: string): BethsaidaEventBuilder {
         switch(field) {
             case 'id':
@@ -62,6 +72,8 @@ export default class BethsaidaEventBuilder {
                 return this.setCapacity(value);
             case 'date':
                 return this.setDate(value);
+            case 'userid':
+                return this.setUserCreatorId(value);
             default:
                 return this;
 
@@ -90,6 +102,7 @@ export default class BethsaidaEventBuilder {
                 .setServiceId(service.serviceId)
                 .setCapacity(service.capacity.toString())
                 .setDate(service.date.jsDate)
+                .setUserCreatorId(service.userCreatorId);
         }
     }
 

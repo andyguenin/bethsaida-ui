@@ -9,6 +9,8 @@ import {LoadAllEvents} from "../../services/Event";
 import BethsaidaEvent from "../../data/BethsaidaEvent";
 import Service from "../../data/Service";
 import {LoadAllServices} from "../../services/Service";
+import {LoadAllUsers} from "../../services/User";
+import User from "../../data/User";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -18,8 +20,9 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadAllEvents: (updateFunc: (events: BethsaidaEvent[]) => void) => dispatch(LoadAllEvents(updateFunc)),
-        loadAllServices: (updateFunc: (services: Service[]) => void) => dispatch(LoadAllServices(updateFunc))
+        loadAllEvents: (updateFunc: (events: BethsaidaEvent[]) => void, archive: boolean) => dispatch(LoadAllEvents(updateFunc, archive)),
+        loadAllServices: (updateFunc: (services: Service[]) => void) => dispatch(LoadAllServices(updateFunc)),
+        loadAllUsers: (updateFunc: (users: User[]) => void) => dispatch(LoadAllUsers(updateFunc))
     }
 }
 
@@ -27,14 +30,24 @@ const connector = connect(
     mapStateToProps,
     mapDispatchToProps
 )
+
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 // if we want to add in other props required for the tag that aren't part of the state
-type Props = PropsFromRedux & {}
+type Props = PropsFromRedux & {
+    archive?: boolean,
+    missingDataMessage: string
+}
+
+interface ServiceMapping {
+    [id: string]: Service
+}
 
 interface State {
-    gridEvent: BethsaidaEvent[]
-    loading: boolean
+    gridEvent: BethsaidaEvent[],
+    services: Map<string, Service>,
+    loading: boolean,
+    users: Map<string, User>
 }
 
 class AllEvents extends React.Component<Props, State> {
@@ -44,7 +57,9 @@ class AllEvents extends React.Component<Props, State> {
 
         this.state = {
             gridEvent: [],
-            loading: true
+            services: new Map<string, Service>(),
+            loading: true,
+            users: new Map<string, User>()
         }
 
 
@@ -61,6 +76,37 @@ class AllEvents extends React.Component<Props, State> {
                     }
                 )
             )
+        }, this.props.archive || false);
+
+        this.props.loadAllServices((s) => {
+            const serviceMap = s.reduce((p: Map<string, Service>, sr: Service) => {
+                return p.set(sr.id, sr);
+            }, new Map<string, Service>());
+            this.setState(
+                Object.assign(
+                    {},
+                    this.state,
+                    {
+                        services: serviceMap
+                    }
+                )
+            )
+        })
+
+        this.props.loadAllUsers((s) => {
+            const userMap = s.reduce((p: Map<string, User>, us: User) => {
+                return p.set(us.id, us);
+            }, new Map<string, User>());
+            console.log(userMap);
+            this.setState(
+                Object.assign(
+                    {},
+                    this.state,
+                    {
+                        users: userMap
+                    }
+                )
+            )
         })
 
     }
@@ -72,18 +118,27 @@ class AllEvents extends React.Component<Props, State> {
                     <button type='button' className='btn btn-success form-control'
                             onClick={() => window.location.href = '/event/new'}>New Event
                     </button>
+                    <button
+                        className='btn btn-info form-control'
+                        type='button'
+                        onClick={() => window.location.href = '/event/archive'}
+                    >
+                        Event Archive
+                    </button>
                 </Title>
                 <Loader
                     loading={this.state.loading}
                     isEmpty={this.state.gridEvent.length === 0}
-                    emptyText='No events have been created yet.'
+                    emptyText={this.props.missingDataMessage}
                 >
 
                     <table className='table table-bordered table-hover'>
                         <thead className='thead-dark'>
                         <tr>
-                            <th>Event ID</th>
-                            {/*<th>Type</th>*/}
+                            <th>Service Type</th>
+                            <th>Date</th>
+                            <th>Capacity</th>
+                            <th>Event Creator</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -92,8 +147,30 @@ class AllEvents extends React.Component<Props, State> {
                                 <tr key={s.id} className='clickable-row' onClick={() => {
                                     window.location.href = '/event/' + s.id;
                                 }}>
-                                    <td className='align-content-center'>{s.id}</td>
-                                    {/*<td>{s.eventType.toString()}</td>*/}
+                                    <td className='align-content-center'>{
+                                        (() => {
+                                                const service = this.state.services.get(s.serviceId);
+                                                if (service !== undefined) {
+                                                    return service.name
+                                                } else {
+                                                    return <i>UNKNOWN</i>
+                                                }
+                                            }
+                                        )()
+                                    }</td>
+                                    <td className='align-content-center'>{s.date ? s.date.mmddyyyy : ''}</td>
+                                    <td className='align-content-center'>{s.capacity === 0 ? '-' : s.capacity}</td>
+                                    <td className='align-content-center'>{
+                                        (() => {
+                                            if (s.userCreatorId) {
+                                                const user = this.state.users.get(s.userCreatorId);
+                                                if (user !== undefined) {
+                                                    return user.name
+                                                }
+                                            }
+                                            return <i>UNKNOWN</i>
+                                        })()
+                                    }</td>
                                 </tr>)
                         })}
                         </tbody>

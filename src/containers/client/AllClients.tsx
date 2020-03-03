@@ -11,6 +11,9 @@ import FileContainer from "../../components/app/FileContainer";
 import Env from "../../environment/Env";
 import Credentials from "../../data/Credentials";
 import ClientBuilder from "../../data/ClientBuilder";
+import {Gender} from "../../data/Gender";
+import {Race} from "../../data/Race";
+import DateUtil from "../../util/DateUtil";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -138,8 +141,11 @@ class AllClients extends React.Component<Props, State> {
                         <table className="table table-striped client-table table-hover">
                             <thead className='thead-dark'>
                             <tr>
-                                <th></th>
-                                <th>Name</th>
+                                <th>First</th>
+                                <th>Last</th>
+                                <th>Gender</th>
+                                <th>Race</th>
+                                <th>Age</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -157,11 +163,20 @@ class AllClients extends React.Component<Props, State> {
             <tr className='clickable-row' key={client.id} onClick={() => {
                 window.location.href = '/client/' + client.id
             }}>
-                <td className='bethsaida-thumbnail'><img
-                    src={Env.get().imageUrl + '/' + client.clientPhoto + '_400.png'}
-                    alt={'photo of ' + client.fullName}/></td>
                 <td>
-                    <b>{client.fullName}</b>
+                    {client.firstName}
+                </td>
+                <td>
+                    {client.lastName}
+                </td>
+                <td>
+                    {Gender[client.gender]}
+                </td>
+                <td>
+                    {Race[client.race]}
+                </td>
+                <td>
+                    {DateUtil.getAge(client.dateOfBirth)}
                 </td>
             </tr>
         )

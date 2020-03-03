@@ -1,6 +1,5 @@
 import React, {Fragment} from 'react';
 import './App.scss';
-import './TopNav';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import ClientList from '../../containers/client/AllClients'
 import Home from "../../containers/home/Home";
@@ -17,6 +16,9 @@ import ShowService from "../../containers/service/ShowService";
 import EditService from "../../containers/service/EditService";
 import NewEvent from "../../containers/event/NewEvent";
 import AllEvents from "../../containers/event/AllEvents";
+import ActiveEvents from "../../containers/event/ActiveEvents";
+import EventsArchive from "../../containers/event/EventsArchive";
+import ShowEvent from "../../containers/event/ShowEvent";
 
 export default class App extends React.Component<{}> {
 
@@ -29,8 +31,10 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/login' component={Login}/>
                             <Route exact path='/logout' component={Logout}/>
 
-                            <Route exact path='/event' component={AllEvents} />
+                            <Route exact path='/event' component={ActiveEvents}/>
                             <Route exact path='/event/new' component={NewEvent} />
+                            <Route exact path='/event/archive/' component={EventsArchive}/>
+                            <Route exact path='/event/:id' component={ShowEvent} />
 
                             <Route exact path='/service' component={AllServices} />
                             <Route exact path='/service/new' component={NewService} />

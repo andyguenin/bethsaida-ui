@@ -29,8 +29,8 @@ export const LoadAllServices2 = (update: (s: Service[]) => void): void => {
     }).then(
         r => r.json().then(
             json => {
-                const ar = (json as [])
-                if(ar.length != 0) {
+                const ar = (json as []);
+                if(ar.length !== 0) {
                     update(ar.map(parseService));
                 } else {
                     update([]);

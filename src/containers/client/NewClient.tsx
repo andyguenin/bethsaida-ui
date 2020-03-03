@@ -7,7 +7,6 @@ import FileContainer from "../../components/app/FileContainer";
 import {ModifyClient} from "../../components/client/ModifyClient";
 import ClientBuilder from "../../data/ClientBuilder";
 import {NewClientRequest} from "../../services/Client";
-import Client from "../../data/Client";
 
 const mapStateToProps = (state: AppState) => ({
     client: state.clientState,

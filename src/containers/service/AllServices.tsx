@@ -34,7 +34,7 @@ interface State {
     loading: boolean
 }
 
-class AllEvents extends React.Component<Props, State> {
+class AllServices extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -105,4 +105,4 @@ class AllEvents extends React.Component<Props, State> {
 }
 
 
-export default connector(AllEvents)
+export default connector(AllServices)
