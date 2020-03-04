@@ -75,7 +75,6 @@ export default class ServiceBuilder {
 
     public build(): Service {
         if (this._id === undefined || this._name === undefined) {
-            console.log(this);
             throw new Error('All required service fields must be set')
         } else {
             return new Service(

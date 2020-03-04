@@ -15,10 +15,12 @@ import NewService from "../../containers/service/NewService";
 import ShowService from "../../containers/service/ShowService";
 import EditService from "../../containers/service/EditService";
 import NewEvent from "../../containers/event/NewEvent";
-import AllEvents from "../../containers/event/AllEvents";
 import ActiveEvents from "../../containers/event/ActiveEvents";
 import EventsArchive from "../../containers/event/EventsArchive";
 import ShowEvent from "../../containers/event/ShowEvent";
+import EditEvent from "../../containers/event/EditEvent";
+import Maintenance from "./Maintenance";
+
 
 export default class App extends React.Component<{}> {
 
@@ -28,6 +30,7 @@ export default class App extends React.Component<{}> {
                 <DevInfo>
                     <Router>
                         <Switch>
+                            <Route exact path='/m' component={Maintenance} />
                             <Route exact path='/login' component={Login}/>
                             <Route exact path='/logout' component={Logout}/>
 
@@ -35,6 +38,7 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/event/new' component={NewEvent} />
                             <Route exact path='/event/archive/' component={EventsArchive}/>
                             <Route exact path='/event/:id' component={ShowEvent} />
+                            <Route exact path='/event/:id/edit' component={EditEvent} />
 
                             <Route exact path='/service' component={AllServices} />
                             <Route exact path='/service/new' component={NewService} />

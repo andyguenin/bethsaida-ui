@@ -12,6 +12,7 @@ import {Race} from "../../data/Race";
 import {Gender} from "../../data/Gender";
 import {Title} from "../../components/app/Title";
 import Credentials from "../../data/Credentials";
+import Notes from "../../components/Notes";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -123,7 +124,7 @@ class ShowClient extends React.Component<Props, IState> {
                         <div className='col-md-3 profile-side'>
                             {this.displayImage('photograph', client.fullName, client.clientPhoto)}
                         </div>
-                        <div className='col-md-5'>
+                        <div className='col-md-4'>
                             <table className='table table-bordered'>
                                 <thead className='thead-dark'>
                                 <tr>
@@ -132,11 +133,11 @@ class ShowClient extends React.Component<Props, IState> {
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {this.displayAttributeRow('Date of Birth', this.state.client?.dateOfBirth.mmddyyyy)}
+                                {this.displayAttributeRow('DOB', this.state.client?.dateOfBirth.mmddyyyy)}
                                 {this.displayAttributeRow('Age', DateUtil.getAge(this.state.client?.dateOfBirth))}
                                 {this.displayAttributeRow('Race', Race[this.state.client?.race].toString())}
                                 {this.displayAttributeRow('Gender', Gender[this.state.client?.gender].toString())}
-                                {this.displayAttributeRow('Phone Number', this.state.client?.getPrettyPhone())}
+                                {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}
                                 {this.displayAttributeRow('Intake User', this.state.client?.intakeUser)}
                                 <tr>
@@ -147,17 +148,7 @@ class ShowClient extends React.Component<Props, IState> {
                                 </tbody>
                             </table>
                         </div>
-                        <div className='col-md-4'>
-                            <div className='text-right actions'>
-                                {/*<button onClick={() => window.location.href='/client/edit/' +*/}
-                                {/*    (this.props.client.workingClient ?*/}
-                                {/*            this.props.client.workingClient.id : ''*/}
-                                {/*    )*/}
-                                {/*} className='btn btn-warning'>Edit User</button>*/}
-                            </div>
-                            <h3 className='text-right'>Recent Activity</h3>
-                            <i>No recent user activity</i>
-                        </div>
+                        <Notes />
                     </div>
                     {/*<ModifyClient client={this.props.client.workingClient} />*/}
                 </FileContainer>

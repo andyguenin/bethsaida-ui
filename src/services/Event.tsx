@@ -90,22 +90,23 @@ export const UpdateEvent = (
         if (eventBuilder.id === undefined) {
             failureAction('BethsaidaEvent id is not set')
         } else {
-            fetch(Env.get().fullUrl() + '/event/' + eventBuilder.id + '/update', {
+            fetch(Env.get().fullUrl() + '/event/' + eventBuilder.id() + '/update', {
                 method: 'POST',
                 headers: ServiceBase.jsonHeader,
                 body: JSON.stringify(eventBuilder.build())
             }).then(
-                resp => resp.json().then(
-                    json => {
-                        if (resp.ok) {
-                            const id = json['id'];
-                            successAction(id);
-                        } else {
-                            const error = json['message'];
-                            failureAction(error);
+                resp =>
+                    resp.json().then(
+                        json => {
+                            if (resp.ok) {
+                                const id = json['id'];
+                                successAction(id);
+                            } else {
+                                const error = json['message'];
+                                failureAction(error);
+                            }
                         }
-                    }
-                )
+                    )
             )
         }
     }

@@ -4,6 +4,7 @@ import {ServiceType} from "../../data/ServiceType";
 import BethsaidaEventBuilder from "../../data/BethsaidaEventBuilder";
 import Service from "../../data/Service";
 import {LoadAllServices, LoadAllServices2} from "../../services/Service";
+import {Loader} from "../app/loader/Loader";
 
 
 interface Props {
@@ -18,16 +19,19 @@ interface State {
     services: Service[]
     disableInputs: boolean
     capacityChanged: boolean
+    loading: boolean
 }
 
 export default class ModifyEvent extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
+        console.log(props.event)
         this.state = {
             event: props.event,
             services: [],
             disableInputs: false,
-            capacityChanged: false
+            capacityChanged: false,
+            loading: true
         }
     }
 
@@ -38,7 +42,8 @@ export default class ModifyEvent extends React.Component<Props, State> {
                     {},
                     this.state,
                     {
-                        services: c
+                        services: c,
+                        loading: false
                     }
                 )
             )
@@ -64,7 +69,7 @@ export default class ModifyEvent extends React.Component<Props, State> {
     }
 
     private getCapacityForEventById = (id?: string): number => {
-        if(id === undefined) {
+        if (id === undefined) {
             return 0;
         } else {
             const found = this.state.services.find((s) => s.id === this.state.event.serviceId())
@@ -90,8 +95,6 @@ export default class ModifyEvent extends React.Component<Props, State> {
             this.state.capacityChanged ?
                 (e: BethsaidaEventBuilder) => e :
                 (e: BethsaidaEventBuilder) => e.setCapacity(this.getCapacityForEventById(this.state.event.serviceId()).toString());
-
-        console.log(this.getCapacityForEventById(this.state.event.serviceId()))
         const state = Object.assign({}, this.state, {event: eventTransform(newEvent)});
         this.setState(state);
     }
@@ -114,66 +117,71 @@ export default class ModifyEvent extends React.Component<Props, State> {
         return (
             <div className='row'>
                 <div className='offset-1 col-10'>
-                    <form onSubmit={this.handleSubmit()}>
-                        <div className='form-group row'>
-                            <label htmlFor='service_name' className='col-sm-2'>Service Name</label>
-                            {/*<input type='text'*/}
-                            {/*       className='form-control col-sm-10'*/}
-                            {/*       id='service_name'*/}
-                            {/*       placeholder='Service Name'*/}
-                            {/*       value={this.state.events.id()}*/}
-                            {/*       onChange={this.handleTextUpdate('name')}*/}
-                            {/*       autoComplete="off"*/}
-                            {/*       required={true}*/}
-                            {/*/>*/}
+                    <Loader loading={this.state.loading} emptyText='' isEmpty={false}>
+                        <form onSubmit={this.handleSubmit()}>
+                            <div className='form-group row'>
+                                <label htmlFor='service_name' className='col-sm-2'>Service Name</label>
+                                {/*<input type='text'*/}
+                                {/*       className='form-control col-sm-10'*/}
+                                {/*       id='service_name'*/}
+                                {/*       placeholder='Service Name'*/}
+                                {/*       value={this.state.events.id()}*/}
+                                {/*       onChange={this.handleTextUpdate('name')}*/}
+                                {/*       autoComplete="off"*/}
+                                {/*       required={true}*/}
+                                {/*/>*/}
 
-                            <div className='col-sm-10'>
-                                <select className='form-control' defaultValue={this.state.event.serviceId() || 'x1'} onChange={this.handleServiceNameUpdate}>
-                                    <option value={'x1'}>Please choose an option</option>
-                                    <option value={'x2'}>-----------------------</option>
-                                    {this.state.services.map(this.serviceSelect)}
-                                </select>
+                                <div className='col-sm-10'>
+                                    <select className='form-control'
+                                            value={this.state.event.serviceId() || 'x1'}
+                                            onChange={this.handleServiceNameUpdate}
+                                    >
+                                        <option value={'x1'}>Please choose an option</option>
+                                        <option value={'x2'}>-----------------------</option>
+                                        {this.state.services.map(this.serviceSelect)}
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div className='form-group row'>
-                            <label htmlFor='capacity' className='col-sm-2'>Capacity</label>
-                            <input type='text' inputMode='numeric' pattern="[0-9]*"
-                                   className='form-control col-sm-10'
-                                   id='service_name'
-                                   placeholder='Capacity (leave blank for unspecified capacity)'
-                                   value={this.state.event.capacity() === 0 ? '' : this.state.event.capacity()}
-                                   onChange={this.handleTextUpdate('capacity')}
-                                   autoComplete="off"
-                            />
-                        </div>
-                        <div className='form-group row'>
-                            <label htmlFor='intake_date' className='col-sm-2'>Event Date</label>
-                            <input type='date' className='form-control col-sm-10' id='date'
-                                   value={this.state.event?.getDate()}
-                                   onChange={this.handleTextUpdate('date')}
-                                   required={true}
-                            />
-                        </div>
-                        <div className="form-group row">
-                            <div className='offset-sm-3 col-sm-3'>
-                                <button
-                                    type='button'
-                                    className="btn btn-danger"
-                                    onClick={this.props.cancelAction}
-                                    disabled={this.state.disableInputs}
-                                >
-                                    Cancel Changes
-                                </button>
+                            <div className='form-group row'>
+                                <label htmlFor='capacity' className='col-sm-2'>Capacity</label>
+                                <input type='text' inputMode='numeric' pattern="[0-9]*"
+                                       className='form-control col-sm-10'
+                                       id='service_name'
+                                       placeholder='Capacity (leave blank for unspecified capacity)'
+                                       value={this.state.event.capacity() === 0 ? '' : this.state.event.capacity()}
+                                       onChange={this.handleTextUpdate('capacity')}
+                                       autoComplete="off"
+                                />
                             </div>
-                            <div className="col-sm-3">
-                                <button
-                                    className="btn btn-primary"
-                                    disabled={this.state.disableInputs}
-                                    type='submit'
-                                >{this.props.submitText}</button>
+                            <div className='form-group row'>
+                                <label htmlFor='intake_date' className='col-sm-2'>Event Date</label>
+                                <input type='date' className='form-control col-sm-10' id='date'
+                                       value={this.state.event?.getDate()}
+                                       onChange={this.handleTextUpdate('date')}
+                                       required={true}
+                                />
                             </div>
-                        </div>
-                    </form>
+                            <div className="form-group row">
+                                <div className='offset-sm-3 col-sm-3'>
+                                    <button
+                                        type='button'
+                                        className="btn btn-danger"
+                                        onClick={this.props.cancelAction}
+                                        disabled={this.state.disableInputs}
+                                    >
+                                        Cancel Changes
+                                    </button>
+                                </div>
+                                <div className="col-sm-3">
+                                    <button
+                                        className="btn btn-primary"
+                                        disabled={this.state.disableInputs}
+                                        type='submit'
+                                    >{this.props.submitText}</button>
+                                </div>
+                            </div>
+                        </form>
+                    </Loader>
                 </div>
             </div>
         );

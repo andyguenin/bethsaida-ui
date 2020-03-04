@@ -93,7 +93,7 @@ class EditEvent extends React.Component<Props, State> {
     public render() {
         return (
             <FileContainer>
-                <Title name="Edit Client"/>
+                <Title name={'Edit Event'}/>
                 <Loader
                     loading={this.state.loading}
                     isEmpty={this.state.loadedEvent === undefined}

@@ -60,6 +60,12 @@ img {
   flex-direction: row-reverse;
 }
 
+.buttonid {
+  margin-left: auto;
+  flex-direction: row-reverse;
+  margin-bottom: 10px;
+}
+
 .navbar {
   .btn {
     margin-left: 10px;
@@ -84,4 +90,8 @@ img {
 
 .site-error {
   margin-top: 25px;
+}
+
+.image-row {
+  margin: 40px;
 }

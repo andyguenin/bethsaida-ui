@@ -8,7 +8,6 @@ import ServiceBase from "./ServiceBase";
 import Service from "../data/Service";
 
 function parseClient(input: any): Client {
-    console.log(input)
     return new Client(
         input['firstName'],
         input['lastName'],

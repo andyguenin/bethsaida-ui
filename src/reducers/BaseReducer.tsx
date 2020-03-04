@@ -19,7 +19,6 @@ export const initialBaseState: BaseState = {
 }
 
 export function baseReducer(state: BaseState = initialBaseState, action: BaseAction): BaseState {
-    console.log(action);
     switch(action.type) {
         case BASE_ERROR_MESSAGE:
             return Object.assign({}, state, {error: {enabled: action.enabled, message: action.message}});

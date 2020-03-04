@@ -10,6 +10,26 @@ const parse = (data: any): User => {
     )
 }
 
+export const GetSingleUser = (id: string, success: (user: User) => void): AsyncAction => {
+    return (dispatch) => {
+        fetch(Env.get().fullUrl() + '/user/' + id, {
+            method: 'GET',
+            headers: ServiceBase.authenticationHeader
+        }).then(
+            resp => {
+                if (resp.ok) {
+                    resp.json().then(
+                        data => {
+                            const result = parse(data);
+                            success(result);
+                        }
+                    )
+                }
+            }
+        )
+    }
+}
+
 export const LoadAllUsers = (success: (users: User[]) => void): AsyncAction => {
     return (dispatch) => {
         fetch(Env.get().fullUrl() + '/user/', {
