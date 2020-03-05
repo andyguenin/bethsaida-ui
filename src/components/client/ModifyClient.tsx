@@ -32,11 +32,12 @@ export class ModifyClient extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
         super(props);
-
         this.handleImageUpdate = this.handleImageUpdate.bind(this);
         this.handleTextUpdate = this.handleTextUpdate.bind(this);
 
         this.state = this.generateDefaultState(props.clientBuilder);
+
+        console.log(props.clientBuilder);
 
 
     }
@@ -85,6 +86,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
 
     private handleImageUpdate(id: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
+            console.log(this.state.client);
             if (e.target && e.target.files) {
                 this.setIdLoading(id, true)
                 UploadImage(e.target.files[0], (img) => {
@@ -103,8 +105,8 @@ export class ModifyClient extends React.Component<IProps, IState> {
         const upload = (
             <Loader
                 loading={this.isIdLoading(id)}
-                emptyText='No clients'
-                isEmpty={this.state.client !== undefined}
+                emptyText='No client photo'
+                isEmpty={this.state.client === undefined}
             >
                 <input type='file' className='form-inline form-control' id={id}
                    onChange={this.handleImageUpdate(id)}/>
@@ -166,6 +168,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
 
     private handleTextUpdate(field: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
+            console.log(this.state.client)
             const newState: IState = Object.assign({}, this.state, {client: this.state.client.setField(field, e.target.value)});
             this.setState(newState);
         }

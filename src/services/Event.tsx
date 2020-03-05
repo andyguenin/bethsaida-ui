@@ -7,6 +7,7 @@ import BDate from "../data/BDate";
 import {setErrorMessage} from "../actions/Base";
 
 function parseEvent(input: any): BethsaidaEvent {
+    console.log(input);
     const event = new BethsaidaEvent(
         input['id'],
         input['serviceId'],
@@ -30,11 +31,15 @@ export const LoadAllEvents = (update: (c: BethsaidaEvent[]) => void, archive: bo
         }).then(
             r => r.json().then(
                 json => {
-                    const ar = (json as [])
-                    if (ar.length != 0) {
-                        update(ar.map(parseEvent));
+                    if(r.ok) {
+                        const ar = (json as [])
+                        if (ar.length != 0) {
+                            update(ar.map(parseEvent));
+                        } else {
+                            update([]);
+                        }
                     } else {
-                        update([]);
+                        dispatch(setErrorMessage(json['message']))
                     }
                 }
             )
@@ -51,8 +56,12 @@ export const GetSingleEvent = (id: string, action: (c: BethsaidaEvent) => void):
         }).then(
             r => r.json().then(
                 json => {
-                    const client = parseEvent(json)
-                    action(client);
+                    if(r.ok) {
+                        const client = parseEvent(json);
+                        action(client);
+                    } else {
+                        dispatch(setErrorMessage(json['message']));
+                    }
                 }
             )
         )
@@ -72,7 +81,7 @@ export const NewEventRequest = (builder: EventBuilder, successAction: (id: strin
                         const id = json['id'];
                         successAction(id);
                     } else {
-                        if (resp.status == 400) {
+                        if (resp.status === 400) {
                             dispatch(setErrorMessage(json['message']))
                         }
                     }
@@ -83,12 +92,11 @@ export const NewEventRequest = (builder: EventBuilder, successAction: (id: strin
 
 export const UpdateEvent = (
     eventBuilder: EventBuilder,
-    successAction: (id: string) => void,
-    failureAction: (message: string) => void
+    successAction: (id: string) => void
 ): AsyncAction => {
     return (dispatch) => {
         if (eventBuilder.id === undefined) {
-            failureAction('BethsaidaEvent id is not set')
+            dispatch(setErrorMessage('BethsaidaEvent id is not set'))
         } else {
             fetch(Env.get().fullUrl() + '/event/' + eventBuilder.id() + '/update', {
                 method: 'POST',
@@ -103,7 +111,7 @@ export const UpdateEvent = (
                                 successAction(id);
                             } else {
                                 const error = json['message'];
-                                failureAction(error);
+                                dispatch(setErrorMessage(error));
                             }
                         }
                     )

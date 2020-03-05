@@ -24,8 +24,7 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
         updateEvent: (event: BethsaidaEventBuilder, action: (id: string) => void, failure: (message: string) => void): boolean => {
             dispatch(UpdateEvent(
                 event,
-                action,
-                failure
+                action
             ))
             return true
         }

@@ -28,6 +28,7 @@ interface RouteProps {
 
 interface State {
     displayAdmin: boolean
+    isAdmin: boolean
 }
 
 type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
@@ -39,7 +40,8 @@ class TopNav extends React.Component<Props, State> {
         super(props);
 
         this.state = {
-            displayAdmin: new Credentials().getDisplayAdmin()
+            displayAdmin: new Credentials().getDisplayAdmin(),
+            isAdmin: new Credentials().isAdmin()
         }
     }
 
@@ -88,7 +90,8 @@ class TopNav extends React.Component<Props, State> {
                                         return (
                                             <Fragment>
                                                 <a className="nav-link" href="/service" id="Services">Services</a>
-                                                <a className='nav-link' href='/admin' id='Admin'>Admin</a>
+                                                <a className='nav-link' href='/admin' id='Admin'>Admin
+                                                </a>
                                             </Fragment>
                                         )
                                     } else {
@@ -103,10 +106,19 @@ class TopNav extends React.Component<Props, State> {
                     {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}
                     {/*    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>*/}
                     {/*</form>*/}
-                    <button type='button' className='btn btn-outline-dark' onClick={this.toggleDisplayAdmin}>
-                        Toggle admin {this.state.displayAdmin ? 'off' : 'on'}
-                    </button>
-                    <button type='button' className='btn btn-outline-dark '>Edit Account</button>
+                    {
+                        (() => {
+                            if (this.state.isAdmin) {
+                                return <button type='button' className='btn btn-outline-dark'
+                                        onClick={this.toggleDisplayAdmin}>
+                                    Toggle admin {this.state.displayAdmin ? 'off' : 'on'}
+                                </button>
+                            } else {
+                                return <Fragment />
+                            }
+                        })()
+                    }
+                    <button type='button' className='btn btn-outline-dark ' onClick={() => window.location.href='/profile'}>Edit Account</button>
                     <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
                     </button>
                 </nav>

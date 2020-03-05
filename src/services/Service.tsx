@@ -4,6 +4,7 @@ import ServiceBase from "./ServiceBase";
 import Service from "../data/Service";
 import ServiceBuilder from "../data/ServiceBuilder";
 import ClientBuilder from "../data/ClientBuilder";
+import {setErrorMessage} from "../actions/Base";
 
 function parseService(input: any): Service {
     const service = new Service(
@@ -18,22 +19,26 @@ function parseService(input: any): Service {
 
 export const LoadAllServices = (update: (c: Service[]) => void): AsyncAction => {
     return (dispatch) => {
-        LoadAllServices2(update);
+        LoadAllServices2(update, (s) => dispatch(setErrorMessage(s)));
     }
 }
 
-export const LoadAllServices2 = (update: (s: Service[]) => void): void => {
+export const LoadAllServices2 = (update: (s: Service[]) => void, failure: (s: string) => void): void => {
     fetch(Env.get().fullUrl() + '/service', {
         method: 'GET',
         headers: ServiceBase.authenticationHeader
     }).then(
         r => r.json().then(
             json => {
-                const ar = (json as []);
-                if(ar.length !== 0) {
-                    update(ar.map(parseService));
+                if(r.ok) {
+                    const ar = (json as []);
+                    if (ar.length !== 0) {
+                        update(ar.map(parseService));
+                    } else {
+                        update([]);
+                    }
                 } else {
-                    update([]);
+                    failure(json['message']);
                 }
             }
         )
@@ -49,8 +54,12 @@ export const GetSingleService = (id: string, action: (c: Service) => void): Asyn
         }).then(
             r => r.json().then(
                 json => {
-                    const client = parseService(json)
-                    action(client);
+                    if(r.ok) {
+                        const client = parseService(json)
+                        action(client);
+                    } else {
+                        dispatch(setErrorMessage('Could not find service.'))
+                    }
                 }
             )
         )
@@ -70,7 +79,7 @@ export const NewServiceRequest = (builder: ServiceBuilder, successAction: (id: s
                         const id = json['id'];
                         successAction(id);
                     } else {
-                        window.location.href='/';
+                        dispatch(setErrorMessage(json['message']));
                     }
                 }
             )

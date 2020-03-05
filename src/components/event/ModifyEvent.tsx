@@ -47,7 +47,7 @@ export default class ModifyEvent extends React.Component<Props, State> {
                     }
                 )
             )
-        })
+        }, (m) => undefined)
     }
 
     private setDisabledState = (disabled: boolean): void => {

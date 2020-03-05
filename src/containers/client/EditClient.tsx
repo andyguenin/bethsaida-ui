@@ -100,7 +100,7 @@ class EditClient extends React.Component<Props, State> {
                     <ErrorMessage errorMessage={this.state.errorMessage}/>
 
                     <ModifyClient
-                        clientBuilder={ClientBuilder.load(this.state.loadedClient)}
+                        clientBuilder={this.state.loadedClient === undefined ? ClientBuilder.emptyBuilder() : ClientBuilder.load(this.state.loadedClient)}
                         submitText='Edit Client'
                         submitAction={(cb) => {
                             return this.props.updateClient(cb, (id) => {

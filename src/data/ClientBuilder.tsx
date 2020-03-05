@@ -191,8 +191,8 @@ export default class ClientBuilder {
                 this._nicknames,
                 this._id,
                 this._middleName,
-                this._clientPhoto,
-                this._photoId,
+                this._clientPhoto === '' ? undefined : this._clientPhoto,
+                this._photoId === '' ? undefined : this._photoId,
                 this.phone.replace(' ', '').replace('-', '').replace(')', '').replace('(', '')
             )
         } else {
@@ -229,7 +229,7 @@ export default class ClientBuilder {
             .setNicknames([])
             .setId('')
             .setMiddleName('')
-            .setClientPhoto()
+            .setClientPhoto('')
             .setPhotoId('')
             .setPhone('')
             .setDateOfBirth('')

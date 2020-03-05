@@ -6,6 +6,7 @@ import ClientBuilder from "../data/ClientBuilder";
 import Env from "../environment/Env";
 import ServiceBase from "./ServiceBase";
 import Service from "../data/Service";
+import {setErrorMessage} from "../actions/Base";
 
 function parseClient(input: any): Client {
     return new Client(
@@ -43,12 +44,16 @@ export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAct
             .then(
                 r => r.json().then(
                     json => {
-                        if ((json as []).length !== 0) {
-                            const data = json.map(parseClient);
-                            dispatch(setClientData(data));
-                            updateFunc(data);
+                        if(r.ok) {
+                            if ((json as []).length !== 0) {
+                                const data = json.map(parseClient);
+                                dispatch(setClientData(data));
+                                updateFunc(data);
+                            } else {
+                                updateFunc([]);
+                            }
                         } else {
-                            updateFunc([]);
+                            dispatch(setErrorMessage(json['message']))
                         }
                     }
                 )
@@ -138,7 +143,7 @@ export const NewClientRequest = (clientBuilder: ClientBuilder, successAction: (i
                         const id = json['id'];
                         successAction(id);
                     } else {
-                        window.location.href='/';
+                        dispatch(setErrorMessage(json['message']))
                     }
                 }
             )

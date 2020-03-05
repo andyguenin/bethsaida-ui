@@ -95,7 +95,7 @@ class AllEvents extends React.Component<Props, State> {
 
         this.props.loadAllUsers((s) => {
             const userMap = s.reduce((p: Map<string, User>, us: User) => {
-                return p.set(us.id, us);
+                return p.set(us.id || '', us);
             }, new Map<string, User>());
             console.log(userMap);
             this.setState(

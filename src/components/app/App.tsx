@@ -20,6 +20,12 @@ import EventsArchive from "../../containers/event/EventsArchive";
 import ShowEvent from "../../containers/event/ShowEvent";
 import EditEvent from "../../containers/event/EditEvent";
 import Maintenance from "./Maintenance";
+import StaticUser from "../user/StaticUser";
+import ShowUser from "../../containers/user/ShowUser";
+import Profile from "../../containers/user/Profile";
+import EditUser from "../../containers/user/EditUser";
+import AllUsers from "../../containers/user/AllUsers";
+import NewUser from "../../containers/user/NewUser";
 
 
 export default class App extends React.Component<{}> {
@@ -33,6 +39,12 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/m' component={Maintenance} />
                             <Route exact path='/login' component={Login}/>
                             <Route exact path='/logout' component={Logout}/>
+
+                            <Route exact path='/profile' component={Profile} />
+                            <Route exact path='/admin' component={AllUsers} />
+                            <Route exact path='/user/new' component={NewUser} />
+                            <Route exact path='/user/:id' component={ShowUser} />
+                            <Route exact path='/user/:id/edit' component={EditUser} />
 
                             <Route exact path='/event' component={ActiveEvents}/>
                             <Route exact path='/event/new' component={NewEvent} />

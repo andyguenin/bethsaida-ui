@@ -5,7 +5,7 @@ export default class Credentials {
         this._displayAdmin = value;
     }
 
-    public static setCredentials(auth: string, admin: boolean): Credentials {
+    public static setCredentials(auth: string, admin: boolean, id: string): Credentials {
         const currentDate = new Date();
         currentDate.setDate(currentDate.getDate() + 3);
         return new Credentials()
@@ -13,6 +13,7 @@ export default class Credentials {
             .setExpires(currentDate)
             .setAdmin(admin)
             .setDisplayAdmin(admin)
+            .setId(id)
             .saveState();
     }
 
@@ -22,6 +23,7 @@ export default class Credentials {
             .setDisplayAdmin(undefined)
             .setExpires(undefined)
             .setJwt(undefined)
+            .setId(undefined)
             .saveState()
     }
 
@@ -65,12 +67,22 @@ export default class Credentials {
         return this._admin || false;
     }
 
+    public setId(id?: string): Credentials {
+        this._id = id;
+        return this;
+    }
+
+    public getId(): string | undefined{
+        return this._id;
+    }
+
     public saveState(): Credentials {
         const cookie = new Cookies();
         cookie.set('jwt', this._jwt, {'path': '/'});
         cookie.set('expires', this._expires, {'path': '/'});
         cookie.set('admin', this._admin ? "true" : "false", {'path': '/'});
         cookie.set('displayAdmin', this._displayAdmin ? "true" : "false", {'path': '/'});
+        cookie.set('id', this._id, {'path': '/'});
         return this;
     }
 
@@ -90,14 +102,16 @@ export default class Credentials {
         this.cookies = new Cookies();
         this._jwt = this.cookies.get('jwt');
         this._expires = new Date(this.cookies.get('expires'));
-        this._displayAdmin = this.cookies.get("displayAdmin") === "true"
-        this._admin = this.cookies.get("admin") === "true"
+        this._displayAdmin = this.cookies.get("displayAdmin") === "true";
+        this._admin = this.cookies.get("admin") === "true";
+        this._id = this.cookies.get("id")
     }
 
     private cookies: Cookies;
     private _jwt?: string;
     private _expires?: Date;
-    private _admin?: boolean
-    private _displayAdmin?: boolean
+    private _admin?: boolean;
+    private _displayAdmin?: boolean;
+    private _id?: string
 
 }
