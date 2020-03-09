@@ -81,32 +81,15 @@ class AllClients extends React.Component<Props, State> {
                 this.state,
                 {
                     loading: false,
-                    gridClients: clients.sort((c1, c2) => {
-                        const lastName = c1.lastName.localeCompare(c2.lastName)
-                        if (lastName !== 0) {
-                            return lastName;
-                        }
-                        const firstName = c1.firstName.localeCompare(c2.firstName);
-                        if (firstName !== 0) {
-                            return firstName;
-                        }
-                        const c1m = c1.middleName || '';
-                        const c2m = c2.middleName || '';
-                        return c1m.localeCompare(c2m);
-                    })
+                    gridClients: this.props.clientState.clientSortFunction(clients)
                 }
             )
         )
     }
 
     private filterClients = (textInput: string) => {
-        const newFilter =
-            '.*' + textInput.toLowerCase().split(' ').reduce((l, c) => {
-                return (l + '.*' + c)
-            }) + '.*';
-        const regex = RegExp(newFilter);
         this.updateGridClients(
-            this.props.clientState.clients.filter((client) => client.fullName.toLowerCase().match(regex))
+            this.props.clientState.clientFilterFunction(textInput, this.props.clientState.clients)
         );
     }
 

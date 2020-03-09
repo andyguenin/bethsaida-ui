@@ -25,7 +25,6 @@ interface State {
 export default class ModifyEvent extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        console.log(props.event)
         this.state = {
             event: props.event,
             services: [],

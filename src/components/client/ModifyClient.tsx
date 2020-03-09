@@ -36,10 +36,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
         this.handleTextUpdate = this.handleTextUpdate.bind(this);
 
         this.state = this.generateDefaultState(props.clientBuilder);
-
-        console.log(props.clientBuilder);
-
-
     }
 
     private isIdLoading = (id: string): boolean => {
@@ -86,7 +82,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
 
     private handleImageUpdate(id: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
-            console.log(this.state.client);
             if (e.target && e.target.files) {
                 this.setIdLoading(id, true)
                 UploadImage(e.target.files[0], (img) => {
@@ -168,7 +163,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
 
     private handleTextUpdate(field: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
-            console.log(this.state.client)
             const newState: IState = Object.assign({}, this.state, {client: this.state.client.setField(field, e.target.value)});
             this.setState(newState);
         }

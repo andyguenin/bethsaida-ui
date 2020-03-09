@@ -7,7 +7,6 @@ import BDate from "../data/BDate";
 import {setErrorMessage} from "../actions/Base";
 
 function parseEvent(input: any): BethsaidaEvent {
-    console.log(input);
     const event = new BethsaidaEvent(
         input['id'],
         input['serviceId'],

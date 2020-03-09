@@ -108,7 +108,6 @@ class EditService extends React.Component<Props, State> {
                         service={ServiceBuilder.load(this.state.loadedService)}
                         submitText='Edit Service'
                         submitAction={(cb) => this.props.updateService(cb, (id) => {
-                            console.log('abc')
                             window.location.href = '/service/' + id;
                         }, this.setErrorMessage)}
                         cancelAction={() => window.location.href = '/service/' + this.props.match?.params.id}

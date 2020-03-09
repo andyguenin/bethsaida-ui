@@ -38,7 +38,7 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
     }
 
     public submitLogin = (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        e.preventDefault();
         this.setState({'submitDisabled': true});
         AuthenticateRequest(
             this.state.email,

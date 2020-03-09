@@ -5,6 +5,7 @@ import Credentials from "../../data/Credentials";
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
+import {clearErrorMessage} from "../../actions/Base";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -12,7 +13,9 @@ const mapStateToProps = (state: AppState) => ({
 })
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
-    return {};
+    return {
+        clearError: () => dispatch(clearErrorMessage())
+    };
 }
 
 const connector = connect(
@@ -110,15 +113,17 @@ class TopNav extends React.Component<Props, State> {
                         (() => {
                             if (this.state.isAdmin) {
                                 return <button type='button' className='btn btn-outline-dark'
-                                        onClick={this.toggleDisplayAdmin}>
+                                               onClick={this.toggleDisplayAdmin}>
                                     Toggle admin {this.state.displayAdmin ? 'off' : 'on'}
                                 </button>
                             } else {
-                                return <Fragment />
+                                return <Fragment/>
                             }
                         })()
                     }
-                    <button type='button' className='btn btn-outline-dark ' onClick={() => window.location.href='/profile'}>Edit Account</button>
+                    <button type='button' className='btn btn-outline-dark '
+                            onClick={() => window.location.href = '/profile'}>Edit Account
+                    </button>
                     <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
                     </button>
                 </nav>
@@ -126,7 +131,14 @@ class TopNav extends React.Component<Props, State> {
 
                     (() => {
                         if (this.props.base.error.enabled) {
-                            return <div className='alert alert-danger site-error'>{this.props.base.error.message}</div>
+                            return <div className='alert alert-danger site-error row'>
+                                <div className='col-11'>
+                                    {this.props.base.error.message}
+                                </div>
+                                <div className='pointer col-1 text-right' onClick={this.props.clearError}>
+                                    &times;
+                                </div>
+                            </div>
                         } else {
                             return <Fragment/>
                         }

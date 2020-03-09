@@ -193,7 +193,7 @@ export default class ClientBuilder {
                 this._middleName,
                 this._clientPhoto === '' ? undefined : this._clientPhoto,
                 this._photoId === '' ? undefined : this._photoId,
-                this.phone.replace(' ', '').replace('-', '').replace(')', '').replace('(', '')
+                this.phone.replace(new RegExp('[^0-9]', 'g'), '')
             )
         } else {
             throw new Error('Could not create client due to missing required fields.')

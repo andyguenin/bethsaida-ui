@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {ChangeEvent, Fragment} from 'react';
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
@@ -11,10 +11,16 @@ import BethsaidaEvent from "../../data/BethsaidaEvent";
 import Service from "../../data/Service";
 import {GetSingleService} from "../../services/Service";
 import User from "../../data/User";
-import {GetSingleUser} from "../../services/User";
+import {GetSingleUser, LoadAllUsers} from "../../services/User";
 import Notes from "../../components/Notes";
+import {GetAllClients} from "../../services/Client";
+import Client from "../../data/Client";
+import AttendanceModal from "../../components/event/AttendanceModal";
+import {createAttendanceRecord, getAttendanceRecords, removeAttendance} from "../../services/Attendance";
+import Attendance from "../../data/Attendance";
 
 const mapStateToProps = (state: AppState) => ({
+    clientState: state.clientState,
     eventState: state.eventState,
     base: state.base
 })
@@ -23,7 +29,11 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         getSingleEvent: (id: string, action: (c: BethsaidaEvent) => void) => dispatch(GetSingleEvent(id, action)),
         getSingleService: (id: string, action: (s: Service) => void) => dispatch(GetSingleService(id, action)),
-        getSingleUser: (id: string, action: (u: User) => void) => dispatch(GetSingleUser(id, action))
+        loadAllClients: () => dispatch(GetAllClients(() => undefined)),
+        getSingleUser: (id: string, action: (u: User) => void) => dispatch(GetSingleUser(id, action)),
+        addAttendance: (client: Client, event: BethsaidaEvent, action: (att: Attendance) => void) => dispatch(createAttendanceRecord(client, event, action)),
+        getAllAttendance: (event: BethsaidaEvent, success: (attendances: Attendance[]) => void) => dispatch(getAttendanceRecords(event, success)),
+        removeAttendance: (id: string, action: (id: string) => void) => dispatch(removeAttendance(id, action))
     };
 }
 
@@ -38,44 +48,128 @@ interface RouteProps {
     id: string
 }
 
+interface AttendanceEnhanced {
+    attendance: Attendance,
+    client: Client
+}
+
 interface IState {
     loading: boolean
     event?: BethsaidaEvent
     service?: Service
-    user?: User
+    user?: User,
+    attendanceLoading: boolean,
+    attendanceInfo: AttendanceEnhanced[],
+    showModal: boolean
 }
 
 type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
 
 class ShowEvent extends React.Component<Props, IState> {
 
+    private summaryNumber = 5;
+
     constructor(props: Props) {
         super(props);
         this.state = {
-            loading: true
+            loading: true,
+            attendanceLoading: false,
+            attendanceInfo: [],
+            showModal: false
         }
+    }
 
+    buildAttendanceEnhanced = (attendance: Attendance[]): AttendanceEnhanced[] => {
+        const ae: AttendanceEnhanced[] = attendance.flatMap((a) => {
+            const client = this.props.clientState.clients.find((c) => c.id === a.clientId);
+            if (client !== undefined) {
+                return [{
+                    attendance: a,
+                    client: client
+                }]
+            } else {
+                return []
+            }
+        });
+        return this.state.attendanceInfo.concat(ae);
     }
 
     componentDidMount(): void {
+        this.props.loadAllClients();
         if (this.props.match?.params) {
             this.props.getSingleEvent(this.props.match?.params.id, (event: BethsaidaEvent) => {
                 this.props.getSingleService(event.serviceId, (service: Service) => {
                     this.props.getSingleUser(event.userCreatorId || '', (user: User) => {
-                        this.setState(Object.assign({},
-                            this.state,
-                            {
-                                event: event,
-                                service: service,
-                                user: user,
-                                loading: false
-                            }
-                        ))
+                        this.props.getAllAttendance(event, (attendances: Attendance[]) => {
+                            this.setState(Object.assign({},
+                                this.state,
+                                {
+                                    event: event,
+                                    service: service,
+                                    user: user,
+                                    loading: false,
+                                    attendanceInfo: this.buildAttendanceEnhanced(attendances)
+                                }
+                            ))
+                        })
                     })
                 })
             })
         }
     }
+
+    private clientSelect = (c: Client): void => {
+        this.showModal(false);
+        if (this.state.event !== undefined) {
+            this.props.addAttendance(c, this.state.event, (attendance) => {
+                this.setState(Object.assign({},
+                    this.state,
+                    {
+                        attendanceInfo: this.buildAttendanceEnhanced([attendance])
+                    }))
+            })
+        }
+    };
+
+
+    private showModal = (showModal: boolean): void => {
+        this.setState(
+            Object.assign({}, this.state, {showModal})
+        )
+    }
+
+    private renderSingleAttendance = (ae: AttendanceEnhanced) => {
+        return (
+            <tr className='pointer' key={ae.client.id} onClick={() => {
+                window.location.href = '/client/' + ae.client.id
+            }}>
+                <td>{ae.client.fullName}</td>
+                <td>
+                    {ae.attendance.checkinTime.toLocaleString()}
+                </td>
+                <td>
+                    <div className='pointer' onClick={(e) => {
+                        e.stopPropagation();
+                        const confirm = window.confirm("Are you sure you want to remove the attendance record of " + ae.client.fullName + "?");
+                        if (confirm) {
+                            this.props.removeAttendance(ae.attendance.id, (id: string) => {
+                                return this.setState(Object.assign({}, this.state, {
+                                    attendanceInfo: this.state.attendanceInfo.filter((a) => a.attendance.id !== id)
+                                }))
+                            })
+                        }
+                    }}>&times;</div>
+                </td>
+            </tr>
+        )
+    }
+
+    private renderAttendance = () => {
+        return this.state.attendanceInfo.sort((a, b) => {
+            return b.attendance.checkinTime.valueOf() - a.attendance.checkinTime.valueOf()
+        }).map(this.renderSingleAttendance)
+    }
+
 
     render() {
         return (
@@ -93,6 +187,17 @@ class ShowEvent extends React.Component<Props, IState> {
                             Edit
                         </button>
                     </Title>
+                    <AttendanceModal
+                        clients={this.props.clientState.clients.filter((c) => {
+                            return !this.state.attendanceInfo.map((a) => a.client).includes(c)
+                        })}
+                        summaryCount={5}
+                        sortFunction={this.props.clientState.clientSortFunction}
+                        filterFunction={this.props.clientState.clientFilterFunction}
+                        selectFunction={this.clientSelect}
+                        closeModal={() => this.showModal(false)}
+                        show={this.state.showModal}
+                    />
                     <div className='row'>
                         <div className='col-md-3'>
                             <table className='table table-bordered table-hover'>
@@ -112,29 +217,37 @@ class ShowEvent extends React.Component<Props, IState> {
                                     <td>Capacity</td>
                                     <td>{this.state.event?.capacity}</td>
                                 </tr>
+                                <tr>
+                                    <td>Current Attendance</td>
+                                    <td>{this.state.attendanceInfo.length}</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div className='col-md-4'>
                             <div className='row buttonid'>
-                                <button className='btn btn-success'>+ Sign in client</button>
+                                <button className='btn btn-success' onClick={() => this.showModal(true)}>+ Sign in
+                                    client
+                                </button>
                             </div>
-                            <table className='table table-bordered table-hover'>
-                                <thead className='thead-dark'>
-                                <tr>
-                                    <th>Attendance Sheet</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td>Attendance</td>
-                                    <td></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <Loader loading={this.state.attendanceLoading}
+                                    emptyText={'No clients on attendance sheet yet.'}
+                                    isEmpty={this.state.attendanceInfo.length === 0}>
+                                <table className='table table-bordered table-hover'>
+                                    <thead className='thead-dark'>
+                                    <tr>
+                                        <th>Attendance Sheet</th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {this.renderAttendance()}
+                                    </tbody>
+                                </table>
+                            </Loader>
                         </div>
-                        <Notes />
+                        <Notes/>
                     </div>
                 </Loader>
             </FileContainer>

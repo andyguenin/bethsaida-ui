@@ -13,6 +13,7 @@ import {Gender} from "../../data/Gender";
 import {Title} from "../../components/app/Title";
 import Credentials from "../../data/Credentials";
 import Notes from "../../components/Notes";
+import BanModal from "../../components/client/BanModal";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -38,7 +39,8 @@ interface RouteProps {
 }
 
 interface IState {
-    client?: Client
+    client?: Client,
+    showBanModal: boolean
 }
 
 type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
@@ -49,7 +51,8 @@ class ShowClient extends React.Component<Props, IState> {
         super(props);
 
         this.state = {
-            client: undefined
+            client: undefined,
+            showBanModal: false
         }
 
     }
@@ -82,6 +85,12 @@ class ShowClient extends React.Component<Props, IState> {
         }
     }
 
+    private setModal = (showBanModal: boolean) => {
+        this.setState(
+            Object.assign({}, this.state, {showBanModal})
+        )
+    }
+
     render() {
         if (this.state.client !== undefined) {
             const client: Client = this.state.client;
@@ -94,7 +103,8 @@ class ShowClient extends React.Component<Props, IState> {
                             onClick={() => window.location.href = '/client/' + (this.state.client?.id || '') + '/edit'}>
                             Edit
                         </button>
-                        <button className='btn btn-warning form-control' type='button'>Ban From DDB Services</button>
+                        <BanModal client={this.state.client} closeModal={() => this.setModal(false)} show={this.state.showBanModal}/>
+                        <button className='btn btn-warning form-control' type='button' onClick={() => this.setModal(true)}>Ban From DDB Services</button>
                         {
                             (
                                 () => {

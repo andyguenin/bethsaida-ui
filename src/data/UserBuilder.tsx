@@ -130,7 +130,6 @@ export default class UserBuilder {
     }
 
     public build(): User {
-        console.log(this);
         if(this._name === undefined || this._email === undefined ) {
             throw new Error('Cannot build user with missing attributes')
         } else {

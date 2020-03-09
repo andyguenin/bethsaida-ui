@@ -3,7 +3,6 @@ import Env from "../environment/Env";
 import ServiceBase from "./ServiceBase";
 import User from "../data/User"
 import {setErrorMessage} from "../actions/Base";
-import Service from "../data/Service";
 
 const parse = (data: any): User => {
     return new User(

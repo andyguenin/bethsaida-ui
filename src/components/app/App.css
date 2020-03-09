@@ -68,3 +68,10 @@ img {
 
 .image-row {
   margin: 40px; }
+
+.client-search {
+  margin-right: 5px;
+  margin-left: 5px; }
+
+.pointer {
+  cursor: pointer; }

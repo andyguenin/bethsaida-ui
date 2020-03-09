@@ -26,6 +26,8 @@ import Profile from "../../containers/user/Profile";
 import EditUser from "../../containers/user/EditUser";
 import AllUsers from "../../containers/user/AllUsers";
 import NewUser from "../../containers/user/NewUser";
+import ResetPassword from "../../containers/user/ResetPassword";
+import BannedClients from "../../containers/client/BannedClients";
 
 
 export default class App extends React.Component<{}> {
@@ -42,6 +44,7 @@ export default class App extends React.Component<{}> {
 
                             <Route exact path='/profile' component={Profile} />
                             <Route exact path='/admin' component={AllUsers} />
+                            <Route exact path='/reset-password' component={ResetPassword} />
                             <Route exact path='/user/new' component={NewUser} />
                             <Route exact path='/user/:id' component={ShowUser} />
                             <Route exact path='/user/:id/edit' component={EditUser} />
@@ -58,6 +61,7 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/service/:id/edit' component={EditService} />
 
                             <Route exact path="/client/new" component={NewClient}/>
+                            <Route exact path="/client/banned" component={BannedClients} />
                             <Route exact path="/client/:id/edit" component={EditClient}/>
                             <Route exact path="/client/:id" component={ShowClient}/>
                             <Route exact path="/client" component={ClientList}/>
