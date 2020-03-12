@@ -17,6 +17,9 @@ interface IState {
 }
 
 class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
+
+    private readonly redirect: string;
+
     private static defaultState: IState = {
         email: '',
         password: '',
@@ -26,7 +29,10 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
 
     constructor(props: RouteComponentProps<any> & Props) {
         super(props);
-        this.state = Login.defaultState
+        const search = new URLSearchParams(this.props.location.search);
+
+        this.redirect = search.get("redirect_to") || '/';
+        this.state = Login.defaultState;
         this.updateField = this.updateField.bind(this)
     }
 
@@ -44,7 +50,7 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
             this.state.email,
             this.state.password,
             () => {
-                this.props.history.push('/')
+                window.location.href = this.redirect;
             },
             (message) => {
                 this.setErrorMessage(message);

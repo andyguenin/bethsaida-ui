@@ -1,6 +1,7 @@
 import BDate from "./BDate";
 import {Race} from "./Race";
 import {Gender} from "./Gender";
+import Ban from "./Ban";
 
 export default class Client{
     public readonly firstName: string;
@@ -8,7 +9,9 @@ export default class Client{
     public readonly dateOfBirth: BDate;
     public readonly race: Race;
     public readonly gender: Gender;
+    public readonly isBanned: boolean;
     public readonly intakeDate?: BDate;
+
 
     public readonly nicknames?: string[];
     public readonly id?: string;
@@ -16,10 +19,7 @@ export default class Client{
     public readonly clientPhoto?: string;
     public readonly photoId?: string;
     public readonly phone?: string;
-
-    public readonly intakeUser?: string
-
-
+    public readonly intakeUser?: string;
     public readonly fullName: string;
 
     constructor(
@@ -28,6 +28,7 @@ export default class Client{
         dateOfBirth: BDate,
         race: Race,
         gender: Gender,
+        isBanned: boolean,
         intakeDate: BDate,
         nicknames?: string[],
         id?: string,
@@ -51,6 +52,7 @@ export default class Client{
         this.gender = gender;
         this.intakeDate = intakeDate;
         this.intakeUser = intakeUser;
+        this.isBanned = isBanned;
 
         this.fullName = firstName + " " + middleName + " " + lastName;
     }

@@ -6,7 +6,9 @@ import ClientBuilder from "../data/ClientBuilder";
 import Env from "../environment/Env";
 import ServiceBase from "./ServiceBase";
 import Service from "../data/Service";
-import {setErrorMessage} from "../actions/Base";
+import {clearErrorMessage, setErrorMessage} from "../actions/Base";
+import Ban from "../data/Ban";
+import BanBuilder from "../data/BanBuilder";
 
 function parseClient(input: any): Client {
     return new Client(
@@ -19,6 +21,7 @@ function parseClient(input: any): Client {
         ),
         input['race'],
         input['gender'],
+        input['isBanned'] as boolean,
         new BDate(
             input['intakeDate']['year'],
             input['intakeDate']['month'],
@@ -34,6 +37,83 @@ function parseClient(input: any): Client {
     )
 }
 
+function parseBan(input: any): Ban {
+    return new BanBuilder()
+        .setUserId(input['userId'])
+        .setClientId(input['clientId'])
+        .setId(input['id'])
+        .setNotes(input['notes'])
+        .setType(input['banType'])
+        .setActive(input['active'])
+        .setStart(input['start'])
+        .setStop(new Date(input['stop']))
+        .build()
+}
+
+
+
+export const DeleteClientBan = (clientId: string, action: () => void): AsyncAction =>
+    (dispatch) => {
+        fetch(Env.get().fullUrl() + '/client/' + clientId + '/ban/delete', {
+            method: 'POST',
+            headers: ServiceBase.authenticationHeader
+        }).then(
+            r => {
+                if (r.ok) {
+                    action()
+                } else {
+                    r.json().then(
+                        data => dispatch(setErrorMessage(data['message']))
+                    )
+                }
+            }
+        )
+    }
+
+export const NewClientBan = (clientId: string, ban: Ban, action: (ban: Ban) => void): AsyncAction =>
+    (dispatch) => {
+        fetch(Env.get().fullUrl() + '/client/' + clientId + '/ban', {
+            method: 'POST',
+            headers: ServiceBase.jsonHeader,
+            body: JSON.stringify(ban)
+        }).then(
+            r => r.json().then(
+                data => {
+                    if (r.ok) {
+                        dispatch(clearErrorMessage());
+                        action(ban);
+                    } else {
+                        dispatch(setErrorMessage(data['message']));
+                    }
+                }
+            )
+        )
+    }
+
+export const GetSingleClientBan = (clientId: string, updateFunc: (ban?: Ban) => void): AsyncAction =>
+    (dispatch) => {
+        fetch(Env.get().fullUrl() + '/client/' + clientId + '/ban', {
+            method: 'GET',
+            headers: ServiceBase.authenticationHeader
+        }).then(
+            r => {
+                r.json().then(
+                    json => {
+                        if (r.ok) {
+                            if (Object.keys(json).length === 0) {
+                                updateFunc(undefined)
+                            } else {
+                                updateFunc(parseBan(json));
+                            }
+                        } else {
+                            dispatch(setErrorMessage(json['message']))
+                        }
+                    }
+                )
+            }
+        )
+    }
+
 
 export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAction =>
     (dispatch, state, x) => {
@@ -44,7 +124,7 @@ export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAct
             .then(
                 r => r.json().then(
                     json => {
-                        if(r.ok) {
+                        if (r.ok) {
                             if ((json as []).length !== 0) {
                                 const data = json.map(parseClient);
                                 dispatch(setClientData(data));
@@ -77,8 +157,10 @@ export const GetSingleClient = (id: string, action: (c: Client) => void): AsyncA
         }).then(
             r => r.json().then(
                 json => {
-                    const client = parseClient(json)
-                    action(client);
+                    if (r.ok) {
+                        const client = parseClient(json)
+                        action(client);
+                    }
                 }
             )
         )
@@ -103,9 +185,9 @@ export const UpdateClient = (
     clientBuilder: ClientBuilder,
     successAction: (id: string) => void,
     failureAction: (message: string) => void
-    ): AsyncAction => {
+): AsyncAction => {
     return (dispatch) => {
-        if(clientBuilder.id === undefined) {
+        if (clientBuilder.id === undefined) {
             failureAction('Client id is not set')
         } else {
             fetch(Env.get().fullUrl() + '/client/' + clientBuilder.id + '/update', {
@@ -115,7 +197,7 @@ export const UpdateClient = (
             }).then(
                 resp => resp.json().then(
                     json => {
-                        if(resp.ok) {
+                        if (resp.ok) {
                             const id = json['id'];
                             successAction(id);
                         } else {
@@ -139,7 +221,7 @@ export const NewClientRequest = (clientBuilder: ClientBuilder, successAction: (i
         }).then(
             resp => resp.json().then(
                 json => {
-                    if(resp.ok) {
+                    if (resp.ok) {
                         const id = json['id'];
                         successAction(id);
                     } else {
@@ -161,7 +243,7 @@ export const UploadImage = (file: File, success: (imageName: string) => void, er
     }).then(
         r => r.json().then(
             json => {
-                if(r.ok) {
+                if (r.ok) {
                     const image = json['image'];
                     success(image);
                 } else {

@@ -75,3 +75,39 @@ img {
 
 .pointer {
   cursor: pointer; }
+
+.ban-radio-row {
+  display: flex;
+  align-items: center;
+  line-height: 36px; }
+  .ban-radio-row .form-check-input {
+    margin-top: 0px; }
+
+.ban-label {
+  margin-top: 6px; }
+
+.banned-error {
+  background-color: red;
+  padding: 10px 20px 10px 20px;
+  font-size: 24px; }
+  .banned-error .details-link {
+    color: #ffde00; }
+  .banned-error .details-link:hover {
+    cursor: pointer;
+    color: #ffde00;
+    text-decoration: underline; }
+
+.table-striped {
+  cursor: pointer; }
+
+.table-striped tbody tr.banned-row:nth-of-type(2n) {
+  background-color: rgba(255, 0, 0, 0.25); }
+
+.table-striped tbody tr.banned-row:nth-of-type(2n+1) {
+  background-color: rgba(255, 0, 0, 0.5); }
+
+.table-striped tbody tr.banned-row:hover {
+  background-color: rgba(255, 0, 0, 0.65); }
+
+div.text-editor {
+  font-family: inherit; }

@@ -22,6 +22,7 @@
 .prof-attrib {
   padding-top: 20px;
 }
+
 .actions {
   padding-bottom: 10px;
 }
@@ -50,6 +51,7 @@ img {
 .button-row {
   align-items: center;
   margin-bottom: 10px;
+
   .form-control {
     margin-left: 10px;
   }
@@ -72,8 +74,10 @@ img {
   }
 }
 
+
 .form-group {
   align-items: center;
+
   label {
     text-align: right;
     margin-bottom: 0;
@@ -103,4 +107,52 @@ img {
 
 .pointer {
   cursor: pointer;
+}
+
+.ban-radio-row {
+  display: flex;
+  align-items: center;
+
+  .form-check-input {
+    margin-top: 0px;
+  }
+
+  line-height: 36px;
+}
+
+.ban-label {
+  margin-top: 6px;
+}
+
+.banned-error {
+  background-color: red;
+  padding: 10px 20px 10px 20px;
+  font-size: 24px;
+  .details-link {
+    color: rgb(255, 222, 0)
+  }
+  .details-link:hover {
+    cursor: pointer;
+    color: rgb(255, 222, 0);
+    text-decoration: underline;
+  }
+}
+
+.table-striped {
+  cursor: pointer;
+}
+.table-striped tbody {
+  tr.banned-row:nth-of-type(2n) {
+    background-color: rgba(255, 0, 0, .25);
+  }
+  tr.banned-row:nth-of-type(2n+1) {
+    background-color: rgba(255, 0, 0, 0.5);
+  }
+  tr.banned-row:hover {
+    background-color: rgba(255, 0, 0, .65);
+  }
+}
+
+div.text-editor {
+  font-family: inherit;
 }

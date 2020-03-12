@@ -107,7 +107,7 @@ export default class ModifyUser extends React.Component<Props, State> {
                             <label htmlFor='admin' className='col-sm-2'>Admin</label>
                             <input type='checkbox' id='admin' checked={this.state.user.getAdmin()} onChange={
                                 this.handleCheckUpdate('admin')
-                            } disabled={new Credentials().getId() == this.state.user.getId()}/>
+                            } disabled={new Credentials().getId() === this.state.user.getId()}/>
                         </div>
                         <div className="form-group row">
                             <div className='offset-sm-3 col-sm-3'>

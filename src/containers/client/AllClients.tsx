@@ -40,7 +40,9 @@ type Props = PropsFromRedux & {}
 interface State {
     gridClients: Client[]
     loading: boolean
-    filterText: string
+    filterText: string,
+    viewBannedButtonText: string,
+    showOnlyBannedClients: boolean
 }
 
 class AllClients extends React.Component<Props, State> {
@@ -51,7 +53,9 @@ class AllClients extends React.Component<Props, State> {
         this.state = {
             gridClients: [],
             loading: false,
-            filterText: ''
+            filterText: '',
+            viewBannedButtonText: 'banned',
+            showOnlyBannedClients: false
         }
 
         this.filterClientsAction = this.filterClientsAction.bind(this);
@@ -62,17 +66,17 @@ class AllClients extends React.Component<Props, State> {
         this.props.loadAllClients(this.updateGridClients);
     }
 
-    private deleteClick = (client: Client): void => {
-        if (client.id !== undefined) {
-            const confirmation = window.confirm('Are you sure you want to delete ' + client.fullName + '\'s client profile?');
-            if (confirmation) {
-                this.props.deleteClient(
-                    client.id,
-                    () => this.filterClients(this.state.filterText)
-                )
-            }
-        }
-    }
+    // private deleteClick = (client: Client): void => {
+    //     if (client.id !== undefined) {
+    //         const confirmation = window.confirm('Are you sure you want to delete ' + client.fullName + '\'s client profile?');
+    //         if (confirmation) {
+    //             this.props.deleteClient(
+    //                 client.id,
+    //                 () => this.filterClients(this.state.filterText)
+    //             )
+    //         }
+    //     }
+    // }
 
     private updateGridClients = (clients: Client[]): void => {
         this.setState(
@@ -89,10 +93,21 @@ class AllClients extends React.Component<Props, State> {
 
     private filterClients = (textInput: string) => {
         this.updateGridClients(
-            this.props.clientState.clientFilterFunction(textInput, this.props.clientState.clients)
+            this.props.clientState.clientFilterFunction(textInput,
+                this.props.clientState.clients.filter((c) => c.isBanned || !this.state.showOnlyBannedClients))
+
         );
     }
 
+
+    private toggleOnlyBannedClients = (): void => {
+        this.setState((prevState, props) => Object.assign({}, prevState, {
+            showOnlyBannedClients: !prevState.showOnlyBannedClients,
+            viewBannedButtonText: prevState.showOnlyBannedClients ? 'banned' : 'all'
+        }), () => {
+            this.filterClients(this.state.filterText);
+        })
+    }
 
     private filterClientsAction = (e: ChangeEvent<HTMLInputElement>): void => {
         const text = e.target.value;
@@ -103,11 +118,13 @@ class AllClients extends React.Component<Props, State> {
     public render() {
         return (
             <FileContainer>
-                <Title name='Client Management'>
+                <Title name={(this.state.showOnlyBannedClients ? 'Banned ' : '') + 'Client Management'}>
                     <button type='button' className='btn btn-success form-control'
                             onClick={() => window.location.href = '/client/new'}>New Client
                     </button>
-                    <button type='button' className='btn btn-danger form-control'>Manage Banned Clients</button>
+                    <button type='button' className='btn btn-danger form-control' onClick={this.toggleOnlyBannedClients}>
+                        View {this.state.viewBannedButtonText} clients
+                    </button>
                     <input
                         type='text'
                         className='form-control'
@@ -124,8 +141,7 @@ class AllClients extends React.Component<Props, State> {
                         <table className="table table-striped client-table table-hover">
                             <thead className='thead-dark'>
                             <tr>
-                                <th>First</th>
-                                <th>Last</th>
+                                <th>Name</th>
                                 <th>Gender</th>
                                 <th>Race</th>
                                 <th>Age</th>
@@ -143,14 +159,11 @@ class AllClients extends React.Component<Props, State> {
 
     private singleRow(client: Client) {
         return (
-            <tr className='clickable-row' key={client.id} onClick={() => {
+            <tr className={'clickable-row ' + (client.isBanned ? 'banned-row' : '')} key={client.id} onClick={() => {
                 window.location.href = '/client/' + client.id
             }}>
                 <td>
-                    {client.firstName}
-                </td>
-                <td>
-                    {client.lastName}
+                    {client.fullName}
                 </td>
                 <td>
                     {Gender[client.gender]}

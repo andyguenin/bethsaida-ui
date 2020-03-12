@@ -24,6 +24,10 @@ export default class BDate {
         return new BDate(date.getFullYear(), date.getMonth() + 1, date.getDate());
     }
 
+    public toDate(): Date {
+        return new Date(this.year, this.month - 1, this.day);
+    }
+
     static fromjsDate(date?: string): BDate {
         if (date === undefined) {
             return new BDate(0, 0, 0);

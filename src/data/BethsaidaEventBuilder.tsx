@@ -28,11 +28,11 @@ export default class BethsaidaEventBuilder {
 
     public setCapacity(capacity: string): BethsaidaEventBuilder {
         if(capacity === '') {
-            this._capacity = -1
+            this._capacity = 0
         } else {
             const num = +capacity;
             if(isNaN(num)) {
-                this._capacity = -1
+                this._capacity = 0
             } else {
                 this._capacity = num;
             }

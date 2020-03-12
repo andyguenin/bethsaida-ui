@@ -69,7 +69,7 @@ export const createAttendanceRecord = (client: Client, event: BethsaidaEvent, su
                 body: JSON.stringify({
                     eventId: event.id,
                     clientId: client.id,
-                    checkInTime: checkInTime.toLocaleString()
+                    checkInTime: checkInTime
                 })
             }).then(
                 resp => {

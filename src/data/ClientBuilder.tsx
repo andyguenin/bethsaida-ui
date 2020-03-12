@@ -2,6 +2,7 @@ import BDate from "./BDate";
 import Client from "./Client";
 import {Race} from "./Race";
 import {Gender} from "./Gender";
+import Ban from "./Ban";
 
 
 export default class ClientBuilder {
@@ -119,6 +120,14 @@ export default class ClientBuilder {
         return this;
     }
 
+    public setIsBanned(banned: boolean): ClientBuilder {
+        this._isBanned = banned;
+        return this;
+    }
+
+    public getIsBanned(): boolean {
+        return this._isBanned || false;
+    }
 
     private _id?: string;
     private _firstName?: string;
@@ -132,6 +141,8 @@ export default class ClientBuilder {
     private _race?: Race;
     private _gender?: Gender;
     private _intakeDate?: string;
+    private _ban?: Ban;
+    private _isBanned?: boolean;
 
     public setField(id: string, value: string) {
         switch (id) {
@@ -180,6 +191,7 @@ export default class ClientBuilder {
             || this._race === undefined
             || this._gender === undefined
             || this._intakeDate === undefined
+            || this._isBanned === undefined
         )) {
             return new Client(
                 this._firstName,
@@ -187,6 +199,7 @@ export default class ClientBuilder {
                 BDate.fromjsDate(this._dateOfBirth),
                 this._race,
                 this._gender,
+                this._isBanned,
                 BDate.fromjsDate(this._intakeDate),
                 this._nicknames,
                 this._id,
@@ -232,6 +245,7 @@ export default class ClientBuilder {
             .setClientPhoto('')
             .setPhotoId('')
             .setPhone('')
+            .setIsBanned(false)
             .setDateOfBirth('')
             .setRace(Race.NONWHITE.toString())
             .setGender(Gender.MALE.toString())

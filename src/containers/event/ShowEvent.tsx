@@ -18,6 +18,7 @@ import Client from "../../data/Client";
 import AttendanceModal from "../../components/event/AttendanceModal";
 import {createAttendanceRecord, getAttendanceRecords, removeAttendance} from "../../services/Attendance";
 import Attendance from "../../data/Attendance";
+import {GetNote, SetNote} from "../../services/Note";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -33,7 +34,9 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
         getSingleUser: (id: string, action: (u: User) => void) => dispatch(GetSingleUser(id, action)),
         addAttendance: (client: Client, event: BethsaidaEvent, action: (att: Attendance) => void) => dispatch(createAttendanceRecord(client, event, action)),
         getAllAttendance: (event: BethsaidaEvent, success: (attendances: Attendance[]) => void) => dispatch(getAttendanceRecords(event, success)),
-        removeAttendance: (id: string, action: (id: string) => void) => dispatch(removeAttendance(id, action))
+        removeAttendance: (id: string, action: (id: string) => void) => dispatch(removeAttendance(id, action)),
+        setNote: (id: string, note: string, action: (text: string) => void) => dispatch(SetNote(id, note, action)),
+        getNote: (id: string, action: (text: string) => void) => dispatch(GetNote(id, action))
     };
 }
 
@@ -60,7 +63,8 @@ interface IState {
     user?: User,
     attendanceLoading: boolean,
     attendanceInfo: AttendanceEnhanced[],
-    showModal: boolean
+    showModal: boolean,
+    note: string
 }
 
 type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
@@ -75,7 +79,8 @@ class ShowEvent extends React.Component<Props, IState> {
             loading: true,
             attendanceLoading: false,
             attendanceInfo: [],
-            showModal: false
+            showModal: false,
+            note: ''
         }
     }
 
@@ -97,20 +102,25 @@ class ShowEvent extends React.Component<Props, IState> {
     componentDidMount(): void {
         this.props.loadAllClients();
         if (this.props.match?.params) {
-            this.props.getSingleEvent(this.props.match?.params.id, (event: BethsaidaEvent) => {
+            const id = this.props.match?.params.id || '';
+            this.props.getSingleEvent(id, (event: BethsaidaEvent) => {
                 this.props.getSingleService(event.serviceId, (service: Service) => {
                     this.props.getSingleUser(event.userCreatorId || '', (user: User) => {
                         this.props.getAllAttendance(event, (attendances: Attendance[]) => {
-                            this.setState(Object.assign({},
-                                this.state,
-                                {
-                                    event: event,
-                                    service: service,
-                                    user: user,
-                                    loading: false,
-                                    attendanceInfo: this.buildAttendanceEnhanced(attendances)
-                                }
-                            ))
+                            this.props.getNote(id || '', (note) => {
+                                console.log(note);
+                                this.setState(Object.assign({},
+                                    this.state,
+                                    {
+                                        event: event,
+                                        service: service,
+                                        user: user,
+                                        loading: false,
+                                        attendanceInfo: this.buildAttendanceEnhanced(attendances),
+                                        note: note
+                                    }
+                                ))
+                            })
                         })
                     })
                 })
@@ -215,7 +225,7 @@ class ShowEvent extends React.Component<Props, IState> {
                                 </tr>
                                 <tr>
                                     <td>Capacity</td>
-                                    <td>{this.state.event?.capacity}</td>
+                                    <td>{this.state.event?.capacity === 0 ? '-' : this.state.event?.capacity}</td>
                                 </tr>
                                 <tr>
                                     <td>Current Attendance</td>
@@ -247,7 +257,11 @@ class ShowEvent extends React.Component<Props, IState> {
                                 </table>
                             </Loader>
                         </div>
-                        <Notes/>
+                        <Notes
+                            onUpdate={(d, e) => this.props.setNote((this.state.event as BethsaidaEvent).id || '', d, (note) => {
+                                e(note)
+                            })}
+                        notes={this.state.note}/>
                     </div>
                 </Loader>
             </FileContainer>

@@ -39,6 +39,8 @@ export const GetSingleUser = (id: string, success: (user: User) => void): AsyncA
     }
 }
 
+
+
 export const LoadAllUsers = (success: (users: User[]) => void): AsyncAction => {
     return (dispatch) => {
         fetch(Env.get().fullUrl() + '/user/', {
