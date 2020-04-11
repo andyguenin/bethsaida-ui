@@ -27,6 +27,14 @@ class Dashboard extends React.Component<Props> {
         return (
             <FileContainer>
                 <Title name='Dashboard' />
+                <div className='row'>
+                    <div className='col-md-4'>
+                        <h2>Summary Statistics</h2>
+                    </div>
+                    <div className='col-md-4'>
+                        <h2>Today's Activity</h2>
+                    </div>
+                </div>
             </FileContainer>
         );
     }

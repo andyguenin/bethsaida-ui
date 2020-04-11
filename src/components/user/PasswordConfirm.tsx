@@ -1,5 +1,4 @@
 import React, {Fragment, ChangeEventHandler, ChangeEvent} from 'react';
-import ErrorMessage from "../app/ErrorMessage";
 
 interface Props {
     onChange: (matchError: boolean, password?: string) => void
@@ -85,7 +84,7 @@ export default class PasswordConfirm extends React.Component<Props, State> {
                     />
                 </div>
                 <div className='form-group row'>
-                    <label htmlFor='service_name' className='col-sm-2'>Password</label>
+                    <label htmlFor='service_name' className='col-sm-2'>Password Confirmation</label>
                     <input type='password'
                            className='form-control col-sm-10'
                            id='service_name'

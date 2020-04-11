@@ -25,6 +25,7 @@ import BanBuilder from "../../data/BanBuilder";
 import TextModal from "../../components/app/TextModal";
 import {rawToDraft, draftToHtml} from 'react-wysiwyg-typescript'
 import {GetNote, SetNote} from "../../services/Note";
+import {formatEnum} from "../../util/StringUtil";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -219,8 +220,8 @@ class ShowClient extends React.Component<Props, IState> {
                                 <tbody>
                                 {this.displayAttributeRow('DOB', this.state.client?.dateOfBirth.mmddyyyy)}
                                 {this.displayAttributeRow('Age', DateUtil.getAge(this.state.client?.dateOfBirth))}
-                                {this.displayAttributeRow('Race', Race[this.state.client?.race].toString())}
-                                {this.displayAttributeRow('Gender', Gender[this.state.client?.gender].toString())}
+                                {this.displayAttributeRow('Race', formatEnum(Race[this.state.client?.race].toString()))}
+                                {this.displayAttributeRow('Gender', formatEnum(Gender[this.state.client?.gender].toString()))}
                                 {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}
                                 {this.displayAttributeRow('Intake User', this.state.client?.intakeUser)}
@@ -240,6 +241,7 @@ class ShowClient extends React.Component<Props, IState> {
                             notes={this.state.note}
                         />
                     </div>
+                    {/*<ModifyClient client={this.props.client.workingClient} />*/}
                 </FileContainer>
             )
         } else {

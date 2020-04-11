@@ -76,38 +76,62 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
             return <Redirect to='/'/>
         }
         return (
-            <div className='container'>
-                <div className='row'>
-                    <div className='col-sm-9 col-md-7 col-log-5 mx-auto'>
-                        <div className='card card-signin my-5'>
-                            <div className='card-body'>
-                                <img src={ddb} alt='Downtown Daily Bread'/>
-                                <div className='vspace'/>
-                                {this.getErrorMessage()}
-                                <form className='form-signin' onSubmit={this.submitLogin}>
-                                    <div className='form-label-group'>
-                                        <input type='email' id='inputEmail' className='form-control'
-                                               placeholder='Email Address' required autoFocus
-                                               value={this.state.email} onChange={this.updateField('email')}/>
-                                        <label htmlFor='inputEmail'>Email Address</label>
-                                    </div>
-                                    <div className="form-label-group">
-                                        <input type="password" id="inputPassword" className="form-control"
-                                               placeholder="Password" required value={this.state.password}
-                                               onChange={this.updateField('password')}/>
-                                        <label htmlFor="inputPassword">Password</label>
-                                    </div>
-                                    <div className="custom-control custom-checkbox mb-3">
-                                        <input type="checkbox" className="custom-control-input" id="customCheck1"/>
-                                        <label className="custom-control-label" htmlFor="customCheck1">Remember
-                                            password</label>
-                                    </div>
-                                    <button className={"btn btn-lg btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
+            <div>
+                <div className='container-lg'>
+                    <div className='row  d-none d-lg-block'>
+                        <div className='col-lg-7 mx-auto'>
+                            <div className='card card-signin my-5'>
+                                <div className='card-body'>
+                                    <img src={ddb} alt='Downtown Daily Bread'/>
+                                    <div className='vspace'/>
+                                    {this.getErrorMessage()}
+                                    <form className='form-signin' onSubmit={this.submitLogin}>
+                                        <div className='form-label-group'>
+                                            <input type='email' id='inputEmail' className='form-control'
+                                                   placeholder='Email Address' required autoFocus
+                                                   value={this.state.email} onChange={this.updateField('email')}/>
+                                            <label htmlFor='inputEmail'>Email Address</label>
+                                        </div>
+                                        <div className="form-label-group">
+                                            <input type="password" id="inputPassword" className="form-control"
+                                                   placeholder="Password" required value={this.state.password}
+                                                   onChange={this.updateField('password')}/>
+                                            <label htmlFor="inputPassword">Password</label>
+                                        </div>
+                                        {/*<div className="custom-control custom-checkbox mb-3">*/}
+                                        {/*    <input type="checkbox" className="custom-control-input" id="customCheck1"/>*/}
+                                        {/*    <label className="custom-control-label" htmlFor="customCheck1">Remember*/}
+                                        {/*        password</label>*/}
+                                        {/*</div>*/}
+                                        <button
+                                            className={"btn btn-lg btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
                                             type="submit">Sign in
-                                    </button>
-                                </form>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div className='row d-block d-lg-none'>
+                        <img src={ddb} className='col-12'/>
+                        <form onSubmit={this.submitLogin}>
+                            <div className='form-group'>
+                                <input type='email' id='inputEmail' className='form-control form-control-lg'
+                                       placeholder='Email Address' required autoFocus
+                                       value={this.state.email} onChange={this.updateField('email')}/>
+                                <label htmlFor='inputEmail'>Email Address</label>
+                            </div>
+                            <div className="form-group">
+                                <input type="password" id="inputPassword" className="form-control"
+                                       placeholder="Password" required value={this.state.password}
+                                       onChange={this.updateField('password')}/>
+                                <label htmlFor="inputPassword">Password</label>
+                            </div>
+                            <button
+                                className={"btn btn-lg btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
+                                type="submit">Sign in
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

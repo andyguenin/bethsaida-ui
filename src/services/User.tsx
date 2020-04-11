@@ -93,8 +93,33 @@ export const NewUserRequest = (user: User, success: (id: string) => void): Async
             resp => {
                 resp.json().then(
                     json => {
-                        if(resp.ok) {
+                        if (resp.ok) {
                             success(json['id'])
+                        } else {
+                            dispatch(setErrorMessage(json['message']))
+                        }
+                    }
+                )
+            }
+        )
+    }
+}
+
+export const InitialPasswordSet = (email: string, token: string, password: string): AsyncAction => {
+    return (dispatch) => {
+        fetch(Env.get().fullUrl() + '/authenticate/confirm', {
+            method: 'POST',
+            headers: ServiceBase.jsonHeader,
+            body: JSON.stringify({
+                email, token, password
+            })
+        }).then(
+            resp => {
+                resp.json().then(
+                    json => {
+                        if (resp.ok) {
+                            console.log('abc def')
+                            window.location.href = '/profile'
                         } else {
                             dispatch(setErrorMessage(json['message']))
                         }

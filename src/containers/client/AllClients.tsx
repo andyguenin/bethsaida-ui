@@ -14,6 +14,7 @@ import ClientBuilder from "../../data/ClientBuilder";
 import {Gender} from "../../data/Gender";
 import {Race} from "../../data/Race";
 import DateUtil from "../../util/DateUtil";
+import {formatEnum} from "../../util/StringUtil";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -166,10 +167,10 @@ class AllClients extends React.Component<Props, State> {
                     {client.fullName}
                 </td>
                 <td>
-                    {Gender[client.gender]}
+                    {formatEnum(Gender[client.gender])}
                 </td>
                 <td>
-                    {Race[client.race]}
+                    {formatEnum(Race[client.race])}
                 </td>
                 <td>
                     {DateUtil.getAge(client.dateOfBirth)}

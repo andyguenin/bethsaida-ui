@@ -1,4 +1,10 @@
 export enum Race {
-    WHITE = 0,
-    NONWHITE
+    BLACK = 0,
+    ASIAN = 1,
+    CAUCASIAN = 2,
+    NATIVE_AMERICAN = 3,
+    PACIFIC_ISLANDER = 4,
+    OTHER_RACE = 5,
+    REFUSED = 6
+
 }

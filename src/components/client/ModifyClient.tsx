@@ -5,6 +5,7 @@ import {Gender} from "../../data/Gender";
 import Env from "../../environment/Env";
 import {DeleteImage, UploadImage} from "../../services/Client";
 import {Loader} from "../app/loader/Loader";
+import {formatEnum} from "../../util/StringUtil";
 
 
 interface IProps {
@@ -168,6 +169,25 @@ export class ModifyClient extends React.Component<IProps, IState> {
         }
     }
 
+    private renderRaceChoice(name: string, choices: (Race)[]) {
+        return choices.map((race) => {
+            return (<div className='form-check form-check-inline'>
+                <input
+                    required={true}
+                    type='radio'
+                    id='nonwhite'
+                    name={name}
+                    className='form-check-input'
+                    value={race}
+                    onChange={this.handleTextUpdate('race')}
+                    checked={this.state.client.race === race}
+                />
+                <label htmlFor='nonwhite' className='form-check-label'>{formatEnum(Race[race].toString())}</label>
+            </div>)
+        })
+    }
+
+
     render() {
         return (
             <div className='row'>
@@ -256,32 +276,33 @@ export class ModifyClient extends React.Component<IProps, IState> {
                         </div>
                         <div className='form-group row'>
                             <label htmlFor='race' className='col-sm-2'>Race</label>
-                            <div className='form-check form-check-inline'>
-                                <input
-                                    required={true}
-                                    type='radio'
-                                    id='nonwhite'
-                                    name='race'
-                                    className='form-check-input'
-                                    value={Race.NONWHITE}
-                                    onChange={this.handleTextUpdate('race')}
-                                    checked={this.state.client.race === Race.NONWHITE}
-                                />
-                                <label htmlFor='nonwhite' className='form-check-label'>Non-White</label>
-                            </div>
-                            <div className='form-check form-check-inline'>
-                                <input
-                                    required={true}
-                                    type='radio'
-                                    id='white'
-                                    name='race'
-                                    className='form-check-input'
-                                    value={Race.WHITE}
-                                    onChange={this.handleTextUpdate('race')}
-                                    checked={this.state.client.race === Race.WHITE}
-                                />
-                                <label htmlFor='white' className='form-check-label'>White</label>
-                            </div>
+                            {this.renderRaceChoice('race', [Race.ASIAN, Race.BLACK, Race.CAUCASIAN, Race.NATIVE_AMERICAN, Race.PACIFIC_ISLANDER, Race.REFUSED, Race.OTHER_RACE])}
+                            {/*<div className='form-check form-check-inline'>*/}
+                            {/*    <input*/}
+                            {/*        required={true}*/}
+                            {/*        type='radio'*/}
+                            {/*        id='nonwhite'*/}
+                            {/*        name='race'*/}
+                            {/*        className='form-check-input'*/}
+                            {/*        value={Race.NONWHITE}*/}
+                            {/*        onChange={this.handleTextUpdate('race')}*/}
+                            {/*        checked={this.state.client.race === Race.NONWHITE}*/}
+                            {/*    />*/}
+                            {/*    <label htmlFor='nonwhite' className='form-check-label'>Non-White</label>*/}
+                            {/*</div>*/}
+                            {/*<div className='form-check form-check-inline'>*/}
+                            {/*    <input*/}
+                            {/*        required={true}*/}
+                            {/*        type='radio'*/}
+                            {/*        id='white'*/}
+                            {/*        name='race'*/}
+                            {/*        className='form-check-input'*/}
+                            {/*        value={Race.WHITE}*/}
+                            {/*        onChange={this.handleTextUpdate('race')}*/}
+                            {/*        checked={this.state.client.race === Race.WHITE}*/}
+                            {/*    />*/}
+                            {/*    <label htmlFor='white' className='form-check-label'>White</label>*/}
+                            {/*</div>*/}
                         </div>
                         <div className='form-group row'>
                             <label htmlFor='phone' className='col-sm-2'>Phone</label>

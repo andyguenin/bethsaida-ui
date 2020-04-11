@@ -247,7 +247,7 @@ export default class ClientBuilder {
             .setPhone('')
             .setIsBanned(false)
             .setDateOfBirth('')
-            .setRace(Race.NONWHITE.toString())
+            .setRace(Race.OTHER_RACE.toString())
             .setGender(Gender.MALE.toString())
             .setIntakeDate(BDate.fromDate(new Date()).jsDate);
     }

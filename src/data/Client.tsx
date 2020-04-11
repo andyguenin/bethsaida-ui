@@ -54,7 +54,7 @@ export default class Client{
         this.intakeUser = intakeUser;
         this.isBanned = isBanned;
 
-        this.fullName = firstName + " " + middleName + " " + lastName;
+        this.fullName = firstName + (middleName === undefined ? ' ' : ' ' + middleName + ' ') + lastName;
     }
 
     public getPrettyPhone(): string | undefined {

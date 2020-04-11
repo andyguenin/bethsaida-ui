@@ -28,6 +28,7 @@ import AllUsers from "../../containers/user/AllUsers";
 import NewUser from "../../containers/user/NewUser";
 import ResetPassword from "../../containers/user/ResetPassword";
 import BannedClients from "../../containers/client/BannedClients";
+import Confirm from "../../containers/user/Confirm";
 
 
 export default class App extends React.Component<{}> {
@@ -41,6 +42,7 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/m' component={Maintenance} />
                             <Route exact path='/login' component={Login}/>
                             <Route exact path='/logout' component={Logout}/>
+                            <Route exact path='/confirm/:email/:token' component={Confirm} />
 
                             <Route exact path='/profile' component={Profile} />
                             <Route exact path='/admin' component={AllUsers} />
