@@ -2,7 +2,6 @@ import BDate from "./BDate";
 import Client from "./Client";
 import {Race} from "./Race";
 import {Gender} from "./Gender";
-import Ban from "./Ban";
 
 
 export default class ClientBuilder {
@@ -44,6 +43,10 @@ export default class ClientBuilder {
 
     get race(): Race | undefined {
         return this._race;
+    }
+
+    get race_secondary(): Race | undefined {
+        return this._raceSecondary;
     }
 
     get gender(): Gender | undefined {
@@ -107,6 +110,14 @@ export default class ClientBuilder {
         return this;
     }
 
+    public setRaceSecondary(value?: string): ClientBuilder {
+        if (value !== undefined) {
+            const idx = +value;
+            this._raceSecondary = Race[Race[idx] as keyof typeof Race];
+        }
+        return this;
+    }
+
     public setGender(value?: string): ClientBuilder {
         if (value !== undefined) {
             const idx = +value;
@@ -129,6 +140,15 @@ export default class ClientBuilder {
         return this._isBanned || false;
     }
 
+    public setHispanic(hispanic: boolean): ClientBuilder {
+        this._hispanic = hispanic;
+        return this;
+    }
+
+    public getHispanic(): boolean {
+        return this._hispanic || false;
+    }
+
     private _id?: string;
     private _firstName?: string;
     private _middleName?: string;
@@ -141,8 +161,9 @@ export default class ClientBuilder {
     private _race?: Race;
     private _gender?: Gender;
     private _intakeDate?: string;
-    private _ban?: Ban;
     private _isBanned?: boolean;
+    private _raceSecondary?: Race;
+    private _hispanic?: boolean
 
     public setField(id: string, value: string) {
         switch (id) {
@@ -166,10 +187,15 @@ export default class ClientBuilder {
                 return this.setDateOfBirth(value);
             case 'race':
                 return this.setRace(value);
+            case 'race_secondary':
+                return this.setRaceSecondary(value);
             case 'gender':
                 return this.setGender(value);
             case 'intakeDate':
                 return this.setIntakeDate(value);
+            case 'hispanic':
+                console.log('set hispanic: ' + value)
+                return this.setHispanic(value.toLowerCase() === 'true')
         }
     }
 
@@ -187,11 +213,9 @@ export default class ClientBuilder {
     build(): Client {
         if (!(this._firstName === undefined
             || this._lastName === undefined
-            || this.phone === undefined
             || this._race === undefined
             || this._gender === undefined
             || this._intakeDate === undefined
-            || this._isBanned === undefined
         )) {
             return new Client(
                 this._firstName,
@@ -199,17 +223,30 @@ export default class ClientBuilder {
                 BDate.fromjsDate(this._dateOfBirth),
                 this._race,
                 this._gender,
-                this._isBanned,
+                this._isBanned || false,
                 BDate.fromjsDate(this._intakeDate),
                 this._nicknames,
                 this._id,
                 this._middleName,
                 this._clientPhoto === '' ? undefined : this._clientPhoto,
                 this._photoId === '' ? undefined : this._photoId,
-                this.phone.replace(new RegExp('[^0-9]', 'g'), '')
+                (this.phone || '').replace(new RegExp('[^0-9]', 'g'), ''),
+                undefined,
+                this._raceSecondary,
+                this._hispanic
             )
         } else {
             throw new Error('Could not create client due to missing required fields.')
+        }
+    }
+
+    public getRaceByField(field: string): Race | undefined {
+        if(field === 'race') {
+            return this.race
+        } else if(field === 'race_secondary') {
+            return this.race_secondary
+        } else {
+            return undefined
         }
     }
 
@@ -229,8 +266,10 @@ export default class ClientBuilder {
             .setPhone(client.getPrettyPhone())
             .setDateOfBirth(client.dateOfBirth?.jsDate)
             .setRace(client.race.toString())
+            .setRaceSecondary((client.raceSecondary || Race.OTHER_RACE).toString())
             .setGender(client.gender.toString())
             .setIntakeDate(client.intakeDate?.jsDate)
+            .setHispanic(client.hispanic || false)
 
 
     }
@@ -248,7 +287,9 @@ export default class ClientBuilder {
             .setIsBanned(false)
             .setDateOfBirth('')
             .setRace(Race.OTHER_RACE.toString())
+            .setRaceSecondary(Race.NOT_APPLICABLE.toString())
             .setGender(Gender.MALE.toString())
-            .setIntakeDate(BDate.fromDate(new Date()).jsDate);
+            .setIntakeDate(BDate.fromDate(new Date()).jsDate)
+            .setHispanic(false);
     }
 }

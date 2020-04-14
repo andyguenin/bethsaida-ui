@@ -81,8 +81,8 @@ class TopNav extends React.Component<Props, State> {
                         <a className="nav-link" href="/client" id='client'>Clients</a>
 
 
-                        <a className="nav-link" href="/event" id="Events">
-                            Events
+                        <a className="nav-link" href="/attendance" id="Attendance">
+                            Attendance
                         </a>
 
 
@@ -105,22 +105,6 @@ class TopNav extends React.Component<Props, State> {
                             )()
                         }
                     </ul>
-                    {/*<form className="form-inline my-2 my-md-0 mr-sm-2">*/}
-                    {/*    <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>*/}
-                    {/*    <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>*/}
-                    {/*</form>*/}
-                    {
-                        (() => {
-                            if (this.state.isAdmin) {
-                                return <button type='button' className='btn btn-outline-dark'
-                                               onClick={this.toggleDisplayAdmin}>
-                                    Toggle admin {this.state.displayAdmin ? 'off' : 'on'}
-                                </button>
-                            } else {
-                                return <Fragment/>
-                            }
-                        })()
-                    }
                     <button type='button' className='btn btn-outline-dark '
                             onClick={() => window.location.href = '/profile'}>Edit Account
                     </button>

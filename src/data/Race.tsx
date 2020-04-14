@@ -5,6 +5,6 @@ export enum Race {
     NATIVE_AMERICAN = 3,
     PACIFIC_ISLANDER = 4,
     OTHER_RACE = 5,
-    REFUSED = 6
-
+    REFUSED = 6,
+    NOT_APPLICABLE = 7
 }

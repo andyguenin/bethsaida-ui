@@ -2,12 +2,12 @@ import React from 'react';
 import {connect, ConnectedProps} from 'react-redux';
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
-import AllEvents from "./AllEvents";
+import AllAttendance from "./AllAttendance";
 
 
 
 const mapStateToProps = (state: AppState) => ({
-    eventState: state.eventState,
+    attendanceState: state.attendanceState,
     base: state.base
 })
 
@@ -28,15 +28,15 @@ type Props = PropsFromRedux & {
     missingDataMessage: string
 }
 
-class ActiveEvents extends React.Component<Props> {
+class ActiveAttendance extends React.Component<Props> {
 
   render() {
-      return <AllEvents
+      return <AllAttendance
           archive={false}
-          missingDataMessage='There are no active events.'
+          missingDataMessage='There are no active attendance sheets.'
       />
   }
 }
 
 
-export default connector(ActiveEvents)
+export default connector(ActiveAttendance)

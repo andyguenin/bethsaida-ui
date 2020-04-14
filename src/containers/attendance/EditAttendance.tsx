@@ -10,11 +10,11 @@ import ErrorMessage from "../../components/app/ErrorMessage";
 import {GetSingleEvent, UpdateEvent} from "../../services/Event";
 import BethsaidaEventBuilder from "../../data/BethsaidaEventBuilder";
 import BethsaidaEvent from "../../data/BethsaidaEvent";
-import ModifyEvent from "../../components/event/ModifyEvent";
+import ModifyAttendance from "../../components/attendance/ModifyAttendance";
 
 
 const mapStateToProps = (state: AppState) => ({
-    event: state.eventState,
+    event: state.attendanceState,
     base: state.base
 })
 
@@ -50,7 +50,7 @@ interface State {
 
 type Props = PropsFromRedux & RouteChildrenProps<IRoute> & {}
 
-class EditEvent extends React.Component<Props, State> {
+class EditAttendance extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -92,20 +92,20 @@ class EditEvent extends React.Component<Props, State> {
     public render() {
         return (
             <FileContainer>
-                <Title name={'Edit Event'}/>
+                <Title name={'Edit Attendance Sheet'}/>
                 <Loader
                     loading={this.state.loading}
                     isEmpty={this.state.loadedEvent === undefined}
-                    emptyText='No event found.'
+                    emptyText='No attendance sheet found.'
                 >
                     <ErrorMessage errorMessage={this.state.errorMessage}/>
-                    <ModifyEvent
-                        event={BethsaidaEventBuilder.load(this.state.loadedEvent)}
-                        submitText='Edit Event'
+                    <ModifyAttendance
+                        attendance={BethsaidaEventBuilder.load(this.state.loadedEvent)}
+                        submitText='Edit Attendance Sheet'
                         submitAction={(cb) => this.props.updateEvent(cb, (id) => {
-                            window.location.href = '/event/' + id;
+                            window.location.href = '/attendance/' + id;
                         }, this.setErrorMessage)}
-                        cancelAction={() => window.location.href = '/event/' + this.props.match?.params.id}
+                        cancelAction={() => window.location.href = '/attendance/' + this.props.match?.params.id}
                     />
                 </Loader>
             </FileContainer>
@@ -113,4 +113,4 @@ class EditEvent extends React.Component<Props, State> {
     }
 }
 
-export default withRouter(connector(EditEvent))
+export default withRouter(connector(EditAttendance))

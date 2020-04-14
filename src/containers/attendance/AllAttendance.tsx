@@ -14,7 +14,7 @@ import User from "../../data/User";
 
 
 const mapStateToProps = (state: AppState) => ({
-    eventState: state.eventState,
+    eventState: state.attendanceState,
     base: state.base
 })
 
@@ -50,7 +50,7 @@ interface State {
     users: Map<string, User>
 }
 
-class AllEvents extends React.Component<Props, State> {
+class AllAttendance extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
@@ -113,16 +113,16 @@ class AllEvents extends React.Component<Props, State> {
     public render() {
         return (
             <FileContainer>
-                <Title name='Event Management'>
+                <Title name='Attendance Management'>
                     <button type='button' className='btn btn-success form-control'
-                            onClick={() => window.location.href = '/event/new'}>New Event
+                            onClick={() => window.location.href = '/attendance/new'}>New Attendance
                     </button>
                     <button
                         className='btn btn-info form-control'
                         type='button'
-                        onClick={() => window.location.href = '/event/archive'}
+                        onClick={() => window.location.href = '/attendance/archive'}
                     >
-                        Event Archive
+                        Attendance Archive
                     </button>
                 </Title>
                 <Loader
@@ -144,7 +144,7 @@ class AllEvents extends React.Component<Props, State> {
                         {this.state.gridEvent.map((s) => {
                             return (
                                 <tr key={s.id} className='clickable-row' onClick={() => {
-                                    window.location.href = '/event/' + s.id;
+                                    window.location.href = '/attendance/' + s.id;
                                 }}>
                                     <td className='align-content-center'>{
                                         (() => {
@@ -182,4 +182,4 @@ class AllEvents extends React.Component<Props, State> {
 }
 
 
-export default connector(AllEvents)
+export default connector(AllAttendance)

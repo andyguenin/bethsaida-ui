@@ -1,32 +1,32 @@
 import React, {ChangeEvent, FormEvent} from 'react';
 import ServiceBuilder from "../../data/ServiceBuilder";
 import {ServiceType} from "../../data/ServiceType";
-import BethsaidaEventBuilder from "../../data/BethsaidaEventBuilder";
+import BethsaidaAttendanceBuilder from "../../data/BethsaidaEventBuilder";
 import Service from "../../data/Service";
 import {LoadAllServices, LoadAllServices2} from "../../services/Service";
 import {Loader} from "../app/loader/Loader";
 
 
 interface Props {
-    event: BethsaidaEventBuilder
+    attendance: BethsaidaAttendanceBuilder
     submitText: string
     cancelAction: () => void
-    submitAction: (c: BethsaidaEventBuilder) => boolean
+    submitAction: (c: BethsaidaAttendanceBuilder) => boolean
 }
 
 interface State {
-    event: BethsaidaEventBuilder
+    attendance: BethsaidaAttendanceBuilder
     services: Service[]
     disableInputs: boolean
     capacityChanged: boolean
     loading: boolean
 }
 
-export default class ModifyEvent extends React.Component<Props, State> {
+export default class ModifyAttendance extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            event: props.event,
+            attendance: props.attendance,
             services: [],
             disableInputs: false,
             capacityChanged: false,
@@ -61,17 +61,17 @@ export default class ModifyEvent extends React.Component<Props, State> {
         return (e) => {
             e.preventDefault();
             this.setDisabledState(true)
-            if (this.props.submitAction(this.state.event)) {
+            if (this.props.submitAction(this.state.attendance)) {
                 this.setDisabledState(false)
             }
         }
     }
 
-    private getCapacityForEventById = (id?: string): number => {
+    private getCapacityForAttendanceById = (id?: string): number => {
         if (id === undefined) {
             return 0;
         } else {
-            const found = this.state.services.find((s) => s.id === this.state.event.serviceId())
+            const found = this.state.services.find((s) => s.id === this.state.attendance.serviceId())
             if (found === undefined) {
                 return 0;
             } else {
@@ -86,22 +86,22 @@ export default class ModifyEvent extends React.Component<Props, State> {
 
 
     private handleServiceNameUpdate = (e: ChangeEvent<HTMLSelectElement>): void => {
-        const newEvent =
-            this.state.event
+        const newAttendance =
+            this.state.attendance
                 .setServiceId(e.target.value)
 
-        const eventTransform =
+        const attendanceTransform =
             this.state.capacityChanged ?
-                (e: BethsaidaEventBuilder) => e :
-                (e: BethsaidaEventBuilder) => e.setCapacity(this.getCapacityForEventById(this.state.event.serviceId()).toString());
-        const state = Object.assign({}, this.state, {event: eventTransform(newEvent)});
+                (e: BethsaidaAttendanceBuilder) => e :
+                (e: BethsaidaAttendanceBuilder) => e.setCapacity(this.getCapacityForAttendanceById(this.state.attendance.serviceId()).toString());
+        const state = Object.assign({}, this.state, {attendance: attendanceTransform(newAttendance)});
         this.setState(state);
     }
 
 
     private handleTextUpdate(field: string): (e: ChangeEvent<HTMLInputElement>) => void {
         return (e) => {
-            const newState: State = Object.assign({}, this.state, {event: this.state.event.setField(field, e.target.value)});
+            const newState: State = Object.assign({}, this.state, {attendance: this.state.attendance.setField(field, e.target.value)});
             this.setState(newState);
         }
     }
@@ -132,7 +132,7 @@ export default class ModifyEvent extends React.Component<Props, State> {
 
                                 <div className='col-sm-10'>
                                     <select className='form-control'
-                                            value={this.state.event.serviceId() || 'x1'}
+                                            value={this.state.attendance.serviceId() || 'x1'}
                                             onChange={this.handleServiceNameUpdate}
                                     >
                                         <option value={'x1'}>Please choose an option</option>
@@ -147,15 +147,15 @@ export default class ModifyEvent extends React.Component<Props, State> {
                                        className='form-control col-sm-10'
                                        id='service_name'
                                        placeholder='Capacity (leave blank for unspecified capacity)'
-                                       value={this.state.event.capacity() === 0 ? '' : this.state.event.capacity()}
+                                       value={this.state.attendance.capacity() === 0 ? '' : this.state.attendance.capacity()}
                                        onChange={this.handleTextUpdate('capacity')}
                                        autoComplete="off"
                                 />
                             </div>
                             <div className='form-group row'>
-                                <label htmlFor='intake_date' className='col-sm-2'>Event Date</label>
+                                <label htmlFor='intake_date' className='col-sm-2'>Attendance Date</label>
                                 <input type='date' className='form-control col-sm-10' id='date'
-                                       value={this.state.event?.getDate()}
+                                       value={this.state.attendance?.getDate()}
                                        onChange={this.handleTextUpdate('date')}
                                        required={true}
                                 />

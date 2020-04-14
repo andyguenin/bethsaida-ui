@@ -60,7 +60,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
     };
 
 
-
     private setButtonDisable(): (disable: boolean) => void {
         return (d) => {
             this.setState(Object.assign({}, {disableInputs: d}));
@@ -105,7 +104,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
                 isEmpty={this.state.client === undefined}
             >
                 <input type='file' className='form-inline form-control' id={id}
-                   onChange={this.handleImageUpdate(id)}/>
+                       onChange={this.handleImageUpdate(id)}/>
             </Loader>
         )
 
@@ -169,20 +168,34 @@ export class ModifyClient extends React.Component<IProps, IState> {
         }
     }
 
+    private handleBooleanUpdate(field: string): (e: ChangeEvent<HTMLInputElement>) => void {
+        return (e) => {
+            const newState: IState =
+                Object.assign(
+                    {},
+                    this.state,
+                    {client: this.state.client.setField(field, e.target.checked ? 'true' : 'false')}
+                    );
+            console.log(newState)
+            this.setState(newState);
+        }
+    }
+
     private renderRaceChoice(name: string, choices: (Race)[]) {
-        return choices.map((race) => {
-            return (<div className='form-check form-check-inline'>
+        return choices.filter((r) => r !== Race.NOT_APPLICABLE || name !== 'race').map((race) => {
+            const id = name + '-' + Race[race].toString()
+            return (<div className='form-check form-check-inline' key={'key-' + id}>
                 <input
                     required={true}
                     type='radio'
-                    id='nonwhite'
+                    id={id}
                     name={name}
                     className='form-check-input'
                     value={race}
-                    onChange={this.handleTextUpdate('race')}
-                    checked={this.state.client.race === race}
+                    onChange={this.handleTextUpdate(name)}
+                    checked={this.state.client.getRaceByField(name) === race}
                 />
-                <label htmlFor='nonwhite' className='form-check-label'>{formatEnum(Race[race].toString())}</label>
+                <label htmlFor={id} className='form-check-label'>{formatEnum(Race[race].toString())}</label>
             </div>)
         })
     }
@@ -232,77 +245,71 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                    required={true}
                             />
                         </div>
+
                         <div className='form-group row'>
                             <label htmlFor='gender' className='col-sm-2'>Gender</label>
-                            <div className='form-check form-check-inline'>
-                                <input
-                                    required={true}
-                                    type='radio'
-                                    id='male'
-                                    name='gender'
-                                    className='form-check-input'
-                                    value={Gender.MALE}
-                                    onChange={this.handleTextUpdate('gender')}
-                                    checked={this.state.client.gender === Gender.MALE}
-                                />
-                                <label htmlFor='male' className='form-check-label'>Male</label>
-                            </div>
-                            <div className='form-check form-check-inline'>
-                                <input
-                                    required={true}
-                                    type='radio'
-                                    id='female'
-                                    name='gender'
-                                    className='form-check-input'
-                                    value={Gender.FEMALE}
-                                    onChange={this.handleTextUpdate('gender')}
-                                    checked={this.state.client.gender === Gender.FEMALE}
-                                />
-                                <label htmlFor='female' className='form-check-label'>Female</label>
-                            </div>
-                            <div className='form-check form-check-inline'>
-                                <input
-                                    required={true}
-                                    type='radio'
-                                    id='other'
-                                    name='gender'
-                                    className='form-check-input'
-                                    value={Gender.OTHER}
-                                    onChange={this.handleTextUpdate('gender')}
-                                    checked={this.state.client.gender === Gender.OTHER}
-                                />
-                                <label htmlFor='other' className='form-check-label'>Other</label>
+                            <div className='col-md-10'>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='male'
+                                        name='gender'
+                                        className='form-check-input'
+                                        value={Gender.MALE}
+                                        onChange={this.handleTextUpdate('gender')}
+                                        checked={this.state.client.gender === Gender.MALE}
+                                    />
+                                    <label htmlFor='male' className='form-check-label'>Male</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='female'
+                                        name='gender'
+                                        className='form-check-input'
+                                        value={Gender.FEMALE}
+                                        onChange={this.handleTextUpdate('gender')}
+                                        checked={this.state.client.gender === Gender.FEMALE}
+                                    />
+                                    <label htmlFor='female' className='form-check-label'>Female</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='other'
+                                        name='gender'
+                                        className='form-check-input'
+                                        value={Gender.OTHER}
+                                        onChange={this.handleTextUpdate('gender')}
+                                        checked={this.state.client.gender === Gender.OTHER}
+                                    />
+                                    <label htmlFor='other' className='form-check-label'>Other</label>
+                                </div>
                             </div>
                         </div>
                         <div className='form-group row'>
-                            <label htmlFor='race' className='col-sm-2'>Race</label>
-                            {this.renderRaceChoice('race', [Race.ASIAN, Race.BLACK, Race.CAUCASIAN, Race.NATIVE_AMERICAN, Race.PACIFIC_ISLANDER, Race.REFUSED, Race.OTHER_RACE])}
-                            {/*<div className='form-check form-check-inline'>*/}
-                            {/*    <input*/}
-                            {/*        required={true}*/}
-                            {/*        type='radio'*/}
-                            {/*        id='nonwhite'*/}
-                            {/*        name='race'*/}
-                            {/*        className='form-check-input'*/}
-                            {/*        value={Race.NONWHITE}*/}
-                            {/*        onChange={this.handleTextUpdate('race')}*/}
-                            {/*        checked={this.state.client.race === Race.NONWHITE}*/}
-                            {/*    />*/}
-                            {/*    <label htmlFor='nonwhite' className='form-check-label'>Non-White</label>*/}
-                            {/*</div>*/}
-                            {/*<div className='form-check form-check-inline'>*/}
-                            {/*    <input*/}
-                            {/*        required={true}*/}
-                            {/*        type='radio'*/}
-                            {/*        id='white'*/}
-                            {/*        name='race'*/}
-                            {/*        className='form-check-input'*/}
-                            {/*        value={Race.WHITE}*/}
-                            {/*        onChange={this.handleTextUpdate('race')}*/}
-                            {/*        checked={this.state.client.race === Race.WHITE}*/}
-                            {/*    />*/}
-                            {/*    <label htmlFor='white' className='form-check-label'>White</label>*/}
-                            {/*</div>*/}
+                            <label htmlFor='race' className='col-sm-2'>Primary Race</label>
+                            <div className='col-md-10'>
+                                {this.renderRaceChoice('race', [Race.ASIAN, Race.BLACK, Race.CAUCASIAN, Race.NATIVE_AMERICAN, Race.PACIFIC_ISLANDER, Race.REFUSED, Race.OTHER_RACE])}
+                            </div>
+                        </div>
+                        <div className='form-group row'>
+                            <label htmlFor='race' className='col-sm-2'>Seconday Race</label>
+                            <div className='col-md-10'>
+                                {this.renderRaceChoice('race_secondary', [Race.ASIAN, Race.BLACK, Race.CAUCASIAN, Race.NATIVE_AMERICAN, Race.PACIFIC_ISLANDER, Race.REFUSED, Race.OTHER_RACE, Race.NOT_APPLICABLE])}
+                            </div>
+                        </div>
+                        <div className='form-group row'>
+                            <label htmlFor='hispanic' className='col-sm-2'>Hispanic?</label>
+                            <div className='col-md-10'>
+                                <input name='hispanic'
+                                       type='checkbox'
+                                       checked={this.state.client.getHispanic()}
+                                       onChange={this.handleBooleanUpdate('hispanic')} />
+                            </div>
                         </div>
                         <div className='form-group row'>
                             <label htmlFor='phone' className='col-sm-2'>Phone</label>

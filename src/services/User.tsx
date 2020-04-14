@@ -118,7 +118,6 @@ export const InitialPasswordSet = (email: string, token: string, password: strin
                 resp.json().then(
                     json => {
                         if (resp.ok) {
-                            console.log('abc def')
                             window.location.href = '/profile'
                         } else {
                             dispatch(setErrorMessage(json['message']))

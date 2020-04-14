@@ -2,14 +2,8 @@ import React, {Fragment} from 'react';
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
-import {
-    DeleteClient,
-    DeleteClientBan,
-    GetSingleClient,
-    GetSingleClientBan,
-    NewClientBan
-} from "../../services/Client";
-import {withRouter, RouteChildrenProps} from 'react-router-dom'
+import {DeleteClient, DeleteClientBan, GetSingleClient, GetSingleClientBan, NewClientBan} from "../../services/Client";
+import {RouteChildrenProps, withRouter} from 'react-router-dom'
 import FileContainer from "../../components/app/FileContainer";
 import Client from "../../data/Client";
 import Env from "../../environment/Env";
@@ -23,7 +17,6 @@ import BanModal from "../../components/client/BanModal";
 import Ban from "../../data/Ban";
 import BanBuilder from "../../data/BanBuilder";
 import TextModal from "../../components/app/TextModal";
-import {rawToDraft, draftToHtml} from 'react-wysiwyg-typescript'
 import {GetNote, SetNote} from "../../services/Note";
 import {formatEnum} from "../../util/StringUtil";
 
@@ -221,6 +214,8 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('DOB', this.state.client?.dateOfBirth.mmddyyyy)}
                                 {this.displayAttributeRow('Age', DateUtil.getAge(this.state.client?.dateOfBirth))}
                                 {this.displayAttributeRow('Race', formatEnum(Race[this.state.client?.race].toString()))}
+                                {this.displayAttributeRow('Secondary Race', formatEnum(Race[this.state.client.raceSecondary || Race.NOT_APPLICABLE].toString()))}
+                                {this.displayAttributeRow('Hispanic?', this.state.client?.hispanic ? 'Yes' : 'No')}
                                 {this.displayAttributeRow('Gender', formatEnum(Gender[this.state.client?.gender].toString()))}
                                 {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}

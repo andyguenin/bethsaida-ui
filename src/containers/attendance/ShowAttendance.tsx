@@ -6,7 +6,6 @@ import {withRouter, RouteChildrenProps} from 'react-router-dom'
 import FileContainer from "../../components/app/FileContainer";
 import {Title} from "../../components/app/Title";
 import {Loader} from "../../components/app/loader/Loader";
-import {GetSingleEvent} from "../../services/Event";
 import BethsaidaEvent from "../../data/BethsaidaEvent";
 import Service from "../../data/Service";
 import {GetSingleService} from "../../services/Service";
@@ -15,14 +14,15 @@ import {GetSingleUser, LoadAllUsers} from "../../services/User";
 import Notes from "../../components/Notes";
 import {GetAllClients} from "../../services/Client";
 import Client from "../../data/Client";
-import AttendanceModal from "../../components/event/AttendanceModal";
+import AttendanceModal from "../../components/attendance/AttendanceModal";
 import {createAttendanceRecord, getAttendanceRecords, removeAttendance} from "../../services/Attendance";
 import Attendance from "../../data/Attendance";
 import {GetNote, SetNote} from "../../services/Note";
+import {GetSingleEvent} from "../../services/Event";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
-    eventState: state.eventState,
+    eventState: state.attendanceState,
     base: state.base
 })
 
@@ -69,7 +69,7 @@ interface IState {
 
 type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
 
-class ShowEvent extends React.Component<Props, IState> {
+class ShowAttendance extends React.Component<Props, IState> {
 
     private summaryNumber = 5;
 
@@ -108,7 +108,6 @@ class ShowEvent extends React.Component<Props, IState> {
                     this.props.getSingleUser(event.userCreatorId || '', (user: User) => {
                         this.props.getAllAttendance(event, (attendances: Attendance[]) => {
                             this.props.getNote(id || '', (note) => {
-                                console.log(note);
                                 this.setState(Object.assign({},
                                     this.state,
                                     {
@@ -186,14 +185,14 @@ class ShowEvent extends React.Component<Props, IState> {
             <FileContainer>
                 <Loader
                     loading={this.state.loading}
-                    emptyText='No event found.'
+                    emptyText='No attendance sheet found.'
                     isEmpty={this.state.event === undefined}
                 >
                     <Title name={this.state.service?.name + ' - ' + this.state.event?.date.mmddyyyy}>
                         <button
                             className='btn btn-success form-control'
                             type='button'
-                            onClick={() => window.location.href = '/event/' + (this.state.event?.id || '') + '/edit'}>
+                            onClick={() => window.location.href = '/attendance/' + (this.state.event?.id || '') + '/edit'}>
                             Edit
                         </button>
                     </Title>
@@ -269,4 +268,4 @@ class ShowEvent extends React.Component<Props, IState> {
     }
 }
 
-export default withRouter(connector(ShowEvent))
+export default withRouter(connector(ShowAttendance))

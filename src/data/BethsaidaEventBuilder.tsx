@@ -82,7 +82,7 @@ export default class BethsaidaEventBuilder {
 
     public build(): BethsaidaEvent {
         if(this._id === undefined || this._serviceId === undefined || this._capacity === undefined || this._date === undefined) {
-            throw Error('Could not create event object. Missing some fields');
+            throw Error('Could not create attendance object. Missing some fields');
         }
         return new BethsaidaEvent(
             this._id,

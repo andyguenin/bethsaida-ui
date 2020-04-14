@@ -106,6 +106,10 @@ class EditClient extends React.Component<Props, State> {
                             return this.props.updateClient(cb, (id) => {
                                 window.location.href = '/client/' + id;
                             }, this.setErrorMessage)
+
+                            // console.log(cb)
+                            // console.log(cb.build())
+                            // return true;
                         }}
                         cancelAction={() => window.location.href = '/client/' + this.props.match?.params.id}
                     />

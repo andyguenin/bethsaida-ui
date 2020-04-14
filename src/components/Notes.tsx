@@ -85,7 +85,6 @@ export default class Notes extends React.Component<Props, State> {
                                         }}/>
                                     <div className='button-row'>
                                         <Button type='button' className='btn' onClick={() => {
-                                            console.log(this.props.notes);
                                             this.setState((s, p) => Object.assign({}, s, {
                                                 notes: s.initialNote,
                                                 inEditMode: false

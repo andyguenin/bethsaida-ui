@@ -1,4 +1,4 @@
-import React, {ChangeEvent, Fragment, MouseEventHandler} from 'react';
+import React, {ChangeEvent} from 'react';
 import {connect, ConnectedProps} from 'react-redux';
 import {AppState} from "../../reducers/AppState";
 import {Loader} from "../../components/app/loader/Loader"
@@ -8,9 +8,6 @@ import {DeleteClient, GetAllClients} from "../../services/Client";
 import {Title} from "../../components/app/Title";
 import Client from "../../data/Client";
 import FileContainer from "../../components/app/FileContainer";
-import Env from "../../environment/Env";
-import Credentials from "../../data/Credentials";
-import ClientBuilder from "../../data/ClientBuilder";
 import {Gender} from "../../data/Gender";
 import {Race} from "../../data/Race";
 import DateUtil from "../../util/DateUtil";
@@ -145,6 +142,8 @@ class AllClients extends React.Component<Props, State> {
                                 <th>Name</th>
                                 <th>Gender</th>
                                 <th>Race</th>
+                                <th>Secondary Race</th>
+                                <th>Hispanic</th>
                                 <th>Age</th>
                             </tr>
                             </thead>
@@ -171,6 +170,12 @@ class AllClients extends React.Component<Props, State> {
                 </td>
                 <td>
                     {formatEnum(Race[client.race])}
+                </td>
+                <td>
+                    {(client.raceSecondary !== undefined && client.raceSecondary !== Race.NOT_APPLICABLE) ? formatEnum(Race[client.raceSecondary]) : ''}
+                </td>
+                <td>
+                    {client.hispanic ? 'Yes' : ''}
                 </td>
                 <td>
                     {DateUtil.getAge(client.dateOfBirth)}

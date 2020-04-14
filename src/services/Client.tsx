@@ -5,7 +5,6 @@ import {removeClient, setClientData} from "../actions/Client";
 import ClientBuilder from "../data/ClientBuilder";
 import Env from "../environment/Env";
 import ServiceBase from "./ServiceBase";
-import Service from "../data/Service";
 import {clearErrorMessage, setErrorMessage} from "../actions/Base";
 import Ban from "../data/Ban";
 import BanBuilder from "../data/BanBuilder";
@@ -33,7 +32,9 @@ function parseClient(input: any): Client {
         input['clientPhoto'],
         input['photoId'],
         input['phone'],
-        (input['intakeUser'] !== undefined ? input['intakeUser']['name'] : undefined)
+        (input['intakeUser'] !== undefined ? input['intakeUser']['name'] : undefined),
+        input['raceSecondary'],
+        input['hispanic']
     )
 }
 
