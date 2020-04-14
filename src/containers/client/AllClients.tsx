@@ -1,4 +1,4 @@
-import React, {ChangeEvent} from 'react';
+import React, {ChangeEvent, Fragment} from 'react';
 import {connect, ConnectedProps} from 'react-redux';
 import {AppState} from "../../reducers/AppState";
 import {Loader} from "../../components/app/loader/Loader"
@@ -40,7 +40,12 @@ interface State {
     loading: boolean
     filterText: string,
     viewBannedButtonText: string,
-    showOnlyBannedClients: boolean
+    showOnlyBannedClients: boolean,
+    
+    page: number,
+    perpage: number,
+    show: Client[],
+    maxpage: number
 }
 
 class AllClients extends React.Component<Props, State> {
@@ -53,7 +58,12 @@ class AllClients extends React.Component<Props, State> {
             loading: false,
             filterText: '',
             viewBannedButtonText: 'banned',
-            showOnlyBannedClients: false
+            showOnlyBannedClients: false,
+            
+            page: 0,
+            perpage: 10,
+            show: [],
+            maxpage: 0
         }
 
         this.filterClientsAction = this.filterClientsAction.bind(this);
@@ -64,18 +74,6 @@ class AllClients extends React.Component<Props, State> {
         this.props.loadAllClients(this.updateGridClients);
     }
 
-    // private deleteClick = (client: Client): void => {
-    //     if (client.id !== undefined) {
-    //         const confirmation = window.confirm('Are you sure you want to delete ' + client.fullName + '\'s client profile?');
-    //         if (confirmation) {
-    //             this.props.deleteClient(
-    //                 client.id,
-    //                 () => this.filterClients(this.state.filterText)
-    //             )
-    //         }
-    //     }
-    // }
-
     private updateGridClients = (clients: Client[]): void => {
         this.setState(
             Object.assign(
@@ -85,7 +83,8 @@ class AllClients extends React.Component<Props, State> {
                     loading: false,
                     gridClients: this.props.clientState.clientSortFunction(clients)
                 }
-            )
+            ),
+            () => this.setPage(0)
         )
     }
 
@@ -113,6 +112,33 @@ class AllClients extends React.Component<Props, State> {
         this.filterClients(text);
     }
 
+    private setPage = (page: number): void => {
+        this.setState(Object.assign({}, this.state, {
+            page,
+            show: this.state.gridClients.slice(page * this.state.perpage, (page + 1) * this.state.perpage),
+            maxpage: Math.floor(this.state.gridClients.length / this.state.perpage)
+        }))
+    }
+
+    private pageControls = () => {
+        return (
+            <Fragment>
+                <button
+                    type='button'
+                    onClick={() => (this.state.page !== 0) ? this.setPage(this.state.page - 1) : undefined}
+                    className={'btn btn-info ' + (this.state.page === 0 ? 'disabled' : '')}
+                >&lt; Previous</button>
+                &nbsp;&nbsp;&nbsp;
+                Page {this.state.page + 1} / {this.state.maxpage + 1}
+                &nbsp;&nbsp;&nbsp;
+                <button
+                    type='button'
+                    onClick={() => (this.state.page !== this.state.maxpage) ? this.setPage(this.state.page + 1) : undefined}
+                    className={'btn btn-info ' + (this.state.page === this.state.maxpage ? 'disabled' : '')}>Next &gt;</button>
+            </Fragment>
+        )
+    }
+
     public render() {
         return (
             <FileContainer>
@@ -129,6 +155,9 @@ class AllClients extends React.Component<Props, State> {
                         placeholder='Search Client'
                         onChange={this.filterClientsAction}
                     />
+                    <div className='d-small-inline d-lg-none'>
+                        {this.pageControls()}
+                    </div>
                 </Title>
                 <Loader
                     loading={this.state.loading}
@@ -148,9 +177,15 @@ class AllClients extends React.Component<Props, State> {
                             </tr>
                             </thead>
                             <tbody>
-                            {this.state.gridClients.map(c => this.singleRow(c))}
+                            {this.state.show.map(c => this.singleRow(c))}
                             </tbody>
                         </table>
+                        <div className='d-sm-none d-lg-flex row padding-bottom-15'>
+                            <div className='col-12 text-center'>
+                                {this.pageControls()}
+                            </div>
+
+                        </div>
                     </div>
                 </Loader>
             </FileContainer>

@@ -47,7 +47,7 @@ class Dashboard extends React.Component<Props, State> {
                 <Loader loading={this.state.stats === undefined} emptyText={''} isEmpty={false}>
                     <div className='row'>
                         <div className='col-md-4'>
-                            <h2>Summary Statistics</h2>
+                            <h2>Quick Facts</h2>
                             <table className='table table-bordered table-hover'>
                                 <tr><td>Number of Clients</td><td>{this.state.stats?.numClients}</td></tr>
                                 <tr><td>Number of Unique Visits</td><td>{this.state.stats?.numUniqueVisits}</td></tr>
