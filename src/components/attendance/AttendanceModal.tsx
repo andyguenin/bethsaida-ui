@@ -58,14 +58,16 @@ export default class AttendanceModal extends React.Component<Props, State> {
     };
 
     private renderSingleClientRow = (client: Client) => {
+        const image = (client.clientPhoto || client.photoId) + '_250.png';
         return <tr
+            className={client.isBanned ? 'banned-row' : ''}
             key={client.id}
             onClick={(e) => {
                 this.updateGridState(true, undefined);
                 this.props.selectFunction(client)
             }}>
             <td>
-                <img src={Env.get().imageUrl + '/' + client.clientPhoto + '_250.png'}
+                <img src={Env.get().imageUrl + '/' + image}
                      alt={'photo of ' + client.fullName}/>
             </td>
             <td>{client.fullName}</td>
@@ -83,7 +85,7 @@ export default class AttendanceModal extends React.Component<Props, State> {
         } else {
             const rows = clients.slice(0, this.state.showOnlySummary ? this.props.summaryCount : clients.length).map(this.renderSingleClientRow);
             const table =
-                <table className='table table-hover'>
+                <table className='table table-hover table-striped'>
                     <thead className='thead-dark'>
                     <tr>
                         <th>Photo</th>

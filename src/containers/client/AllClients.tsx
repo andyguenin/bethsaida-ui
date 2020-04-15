@@ -41,7 +41,7 @@ interface State {
     filterText: string,
     viewBannedButtonText: string,
     showOnlyBannedClients: boolean,
-    
+
     page: number,
     perpage: number,
     show: Client[],
@@ -59,7 +59,7 @@ class AllClients extends React.Component<Props, State> {
             filterText: '',
             viewBannedButtonText: 'banned',
             showOnlyBannedClients: false,
-            
+
             page: 0,
             perpage: 10,
             show: [],
@@ -92,7 +92,6 @@ class AllClients extends React.Component<Props, State> {
         this.updateGridClients(
             this.props.clientState.clientFilterFunction(textInput,
                 this.props.clientState.clients.filter((c) => c.isBanned || !this.state.showOnlyBannedClients))
-
         );
     }
 
@@ -107,6 +106,7 @@ class AllClients extends React.Component<Props, State> {
     }
 
     private filterClientsAction = (e: ChangeEvent<HTMLInputElement>): void => {
+        e.preventDefault()
         const text = e.target.value;
         this.setState(Object.assign({}, this.state, {filterText: text}));
         this.filterClients(text);
@@ -127,7 +127,8 @@ class AllClients extends React.Component<Props, State> {
                     type='button'
                     onClick={() => (this.state.page !== 0) ? this.setPage(this.state.page - 1) : undefined}
                     className={'btn btn-info ' + (this.state.page === 0 ? 'disabled' : '')}
-                >&lt; Previous</button>
+                >&lt; Previous
+                </button>
                 &nbsp;&nbsp;&nbsp;
                 Page {this.state.page + 1} / {this.state.maxpage + 1}
                 &nbsp;&nbsp;&nbsp;
@@ -146,7 +147,8 @@ class AllClients extends React.Component<Props, State> {
                     <button type='button' className='btn btn-success form-control'
                             onClick={() => window.location.href = '/client/new'}>New Client
                     </button>
-                    <button type='button' className='btn btn-danger form-control' onClick={this.toggleOnlyBannedClients}>
+                    <button type='button' className='btn btn-danger form-control'
+                            onClick={this.toggleOnlyBannedClients}>
                         View {this.state.viewBannedButtonText} clients
                     </button>
                     <input

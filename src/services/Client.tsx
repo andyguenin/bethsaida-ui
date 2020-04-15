@@ -34,7 +34,8 @@ function parseClient(input: any): Client {
         input['phone'],
         (input['intakeUser'] !== undefined ? input['intakeUser']['name'] : undefined),
         input['raceSecondary'],
-        input['hispanic']
+        input['hispanic'],
+        input['banId']
     )
 }
 

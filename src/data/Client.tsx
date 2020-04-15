@@ -23,6 +23,7 @@ export default class Client{
     public readonly fullName: string;
     public readonly raceSecondary?: Race;
     public readonly hispanic?: boolean;
+    public readonly banId?: string;
 
     constructor(
         firstName: string,
@@ -40,7 +41,8 @@ export default class Client{
         phone?: string,
         intakeUser?: string,
         raceSecondary?: Race,
-        hispanic?: boolean
+        hispanic?: boolean,
+        banId?: string
 
     ) {
         this.id = id;
@@ -59,6 +61,7 @@ export default class Client{
         this.isBanned = isBanned;
         this.raceSecondary = raceSecondary;
         this.hispanic = hispanic;
+        this.banId = banId;
 
         this.fullName = firstName + (middleName === undefined ? ' ' : ' ' + middleName + ' ') + lastName;
     }

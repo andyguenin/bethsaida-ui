@@ -15,7 +15,10 @@ export class Title extends React.Component<IProps> {
                     <h1>{this.props.name}</h1>
                 </div>
                 <div className='col-sm-12 col-lg-6'>
-                    <form className='form-inline' id='buttonid'>
+                    <form className='form-inline' id='buttonid' onSubmit={e => {
+                        e.preventDefault()
+                        console.log(e.currentTarget)
+                    }}>
                         {this.props.children}
                     </form>
                 </div>

@@ -149,6 +149,15 @@ export default class ClientBuilder {
         return this._hispanic || false;
     }
 
+    public setBanId(id?: string): ClientBuilder {
+        this._banId = id;
+        return this;
+    }
+
+    public getBanId(): string | undefined {
+        return this._banId;
+    }
+
     private _id?: string;
     private _firstName?: string;
     private _middleName?: string;
@@ -163,7 +172,8 @@ export default class ClientBuilder {
     private _intakeDate?: string;
     private _isBanned?: boolean;
     private _raceSecondary?: Race;
-    private _hispanic?: boolean
+    private _hispanic?: boolean;
+    private _banId?: string;
 
     public setField(id: string, value: string) {
         switch (id) {
@@ -194,8 +204,9 @@ export default class ClientBuilder {
             case 'intakeDate':
                 return this.setIntakeDate(value);
             case 'hispanic':
-                console.log('set hispanic: ' + value)
                 return this.setHispanic(value.toLowerCase() === 'true')
+            case 'banId':
+                return this.setBanId(value)
         }
     }
 
@@ -233,7 +244,8 @@ export default class ClientBuilder {
                 (this.phone || '').replace(new RegExp('[^0-9]', 'g'), ''),
                 undefined,
                 this._raceSecondary,
-                this._hispanic
+                this._hispanic,
+                this._banId
             )
         } else {
             throw new Error('Could not create client due to missing required fields.')
@@ -270,6 +282,7 @@ export default class ClientBuilder {
             .setGender(client.gender.toString())
             .setIntakeDate(client.intakeDate?.jsDate)
             .setHispanic(client.hispanic || false)
+            .setBanId(client.banId)
 
 
     }
@@ -290,6 +303,8 @@ export default class ClientBuilder {
             .setRaceSecondary(Race.NOT_APPLICABLE.toString())
             .setGender(Gender.MALE.toString())
             .setIntakeDate(BDate.fromDate(new Date()).jsDate)
-            .setHispanic(false);
+            .setHispanic(false)
+            .setBanId(undefined)
+            ;
     }
 }

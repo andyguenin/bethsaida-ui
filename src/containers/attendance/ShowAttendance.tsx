@@ -12,13 +12,16 @@ import {GetSingleService} from "../../services/Service";
 import User from "../../data/User";
 import {GetSingleUser, LoadAllUsers} from "../../services/User";
 import Notes from "../../components/Notes";
-import {GetAllClients} from "../../services/Client";
+import {GetAllClients, GetSingleClientBan} from "../../services/Client";
 import Client from "../../data/Client";
 import AttendanceModal from "../../components/attendance/AttendanceModal";
 import {createAttendanceRecord, getAttendanceRecords, removeAttendance} from "../../services/Attendance";
 import Attendance from "../../data/Attendance";
 import {GetNote, SetNote} from "../../services/Note";
 import {GetSingleEvent} from "../../services/Event";
+import TextModal from "../../components/app/TextModal";
+import Ban from "../../data/Ban";
+import ElemModal from "../../components/app/ElemModal";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -36,7 +39,8 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
         getAllAttendance: (event: BethsaidaEvent, success: (attendances: Attendance[]) => void) => dispatch(getAttendanceRecords(event, success)),
         removeAttendance: (id: string, action: (id: string) => void) => dispatch(removeAttendance(id, action)),
         setNote: (id: string, note: string, action: (text: string) => void) => dispatch(SetNote(id, note, action)),
-        getNote: (id: string, action: (text: string) => void) => dispatch(GetNote(id, action))
+        getNote: (id: string, action: (text: string) => void) => dispatch(GetNote(id, action)),
+        getSingleClientBan: (id: string, action: (ban?: Ban) => void) => dispatch(GetSingleClientBan(id, action))
     };
 }
 
@@ -64,7 +68,9 @@ interface IState {
     attendanceLoading: boolean,
     attendanceInfo: AttendanceEnhanced[],
     showModal: boolean,
-    note: string
+    note: string,
+    errorModalClient?: Client,
+    errorModalMessage?: JSX.Element
 }
 
 type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
@@ -127,23 +133,55 @@ class ShowAttendance extends React.Component<Props, IState> {
         }
     }
 
+    private getBanModalText(client: Client, text: string) {
+        return (
+            <div>
+                <h1>{client.fullName} is banned from Downtown Daily Bread</h1>
+                <p>
+                    Please do not let them use any services or resources.
+                </p>
+                <p>
+                    <div dangerouslySetInnerHTML={{__html: text || ''}}/>
+                </p>
+            </div>
+
+        )
+
+    }
+
     private clientSelect = (c: Client): void => {
-        this.showModal(false);
-        if (this.state.event !== undefined) {
-            this.props.addAttendance(c, this.state.event, (attendance) => {
-                this.setState(Object.assign({},
-                    this.state,
-                    {
-                        attendanceInfo: this.buildAttendanceEnhanced([attendance])
-                    }))
-            })
-        }
+        this.showModal(false, () => {
+            if (c.isBanned) {
+                const setModalClient = (errorModalMessage?: JSX.Element) => this.setState(Object.assign({}, this.state, {errorModalClient: c, errorModalMessage}))
+                if(c.id) {
+                    this.props.getSingleClientBan(c.id, (ban) =>{
+                        if(ban !== undefined) {
+                            setModalClient(this.getBanModalText(c, ban.notes || ''))
+                        } else {
+                            setModalClient(undefined)
+                        }
+                    })
+                } else {
+                    setModalClient(undefined)
+                }
+            } else {
+                if (this.state.event !== undefined) {
+                    this.props.addAttendance(c, this.state.event, (attendance) => {
+                        this.setState(Object.assign({},
+                            this.state,
+                            {
+                                attendanceInfo: this.buildAttendanceEnhanced([attendance])
+                            }))
+                    })
+                }
+            }
+        })
     };
 
 
-    private showModal = (showModal: boolean): void => {
+    private showModal = (showModal: boolean, next: () => void = () => undefined): void => {
         this.setState(
-            Object.assign({}, this.state, {showModal})
+            Object.assign({}, this.state, {showModal}), next
         )
     }
 
@@ -207,6 +245,9 @@ class ShowAttendance extends React.Component<Props, IState> {
                         closeModal={() => this.showModal(false)}
                         show={this.state.showModal}
                     />
+                    <ElemModal title='Ban Notes' show={this.state.errorModalClient !== undefined} close={() => this.setState(Object.assign({}, this.state, {errorModalClient: undefined}))}>
+                        {this.state.errorModalMessage}
+                    </ElemModal>
                     <div className='row'>
                         <div className='col-md-3'>
                             <table className='table table-bordered table-hover'>
@@ -260,7 +301,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                             onUpdate={(d, e) => this.props.setNote((this.state.event as BethsaidaEvent).id || '', d, (note) => {
                                 e(note)
                             })}
-                        notes={this.state.note}/>
+                            notes={this.state.note}/>
                     </div>
                 </Loader>
             </FileContainer>
