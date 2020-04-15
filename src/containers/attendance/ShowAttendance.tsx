@@ -19,7 +19,6 @@ import {createAttendanceRecord, getAttendanceRecords, removeAttendance} from "..
 import Attendance from "../../data/Attendance";
 import {GetNote, SetNote} from "../../services/Note";
 import {GetSingleEvent} from "../../services/Event";
-import TextModal from "../../components/app/TextModal";
 import Ban from "../../data/Ban";
 import ElemModal from "../../components/app/ElemModal";
 
@@ -66,7 +65,7 @@ interface IState {
     service?: Service
     user?: User,
     attendanceLoading: boolean,
-    attendanceInfo: AttendanceEnhanced[],
+    attendances: Attendance[],
     showModal: boolean,
     note: string,
     errorModalClient?: Client,
@@ -84,25 +83,10 @@ class ShowAttendance extends React.Component<Props, IState> {
         this.state = {
             loading: true,
             attendanceLoading: false,
-            attendanceInfo: [],
+            attendances: [],
             showModal: false,
             note: ''
         }
-    }
-
-    buildAttendanceEnhanced = (attendance: Attendance[]): AttendanceEnhanced[] => {
-        const ae: AttendanceEnhanced[] = attendance.flatMap((a) => {
-            const client = this.props.clientState.clients.find((c) => c.id === a.clientId);
-            if (client !== undefined) {
-                return [{
-                    attendance: a,
-                    client: client
-                }]
-            } else {
-                return []
-            }
-        });
-        return this.state.attendanceInfo.concat(ae);
     }
 
     componentDidMount(): void {
@@ -121,14 +105,24 @@ class ShowAttendance extends React.Component<Props, IState> {
                                         service: service,
                                         user: user,
                                         loading: false,
-                                        attendanceInfo: this.buildAttendanceEnhanced(attendances),
+                                        attendances,
                                         note: note
                                     }
-                                ))
+                                ), () => {
+                                    setInterval(() => this.loadAttendances(), 10000)
+                                })
                             })
                         })
                     })
                 })
+            })
+        }
+    }
+
+    private loadAttendances() {
+        if (this.state.event) {
+            this.props.getAllAttendance(this.state.event, (attendances: Attendance[]) => {
+                this.setState((state, props) => Object.assign({}, state, {attendances}))
             })
         }
     }
@@ -152,10 +146,13 @@ class ShowAttendance extends React.Component<Props, IState> {
     private clientSelect = (c: Client): void => {
         this.showModal(false, () => {
             if (c.isBanned) {
-                const setModalClient = (errorModalMessage?: JSX.Element) => this.setState(Object.assign({}, this.state, {errorModalClient: c, errorModalMessage}))
-                if(c.id) {
-                    this.props.getSingleClientBan(c.id, (ban) =>{
-                        if(ban !== undefined) {
+                const setModalClient = (errorModalMessage?: JSX.Element) => this.setState(Object.assign({}, this.state, {
+                    errorModalClient: c,
+                    errorModalMessage
+                }))
+                if (c.id) {
+                    this.props.getSingleClientBan(c.id, (ban) => {
+                        if (ban !== undefined) {
                             setModalClient(this.getBanModalText(c, ban.notes || ''))
                         } else {
                             setModalClient(undefined)
@@ -167,11 +164,9 @@ class ShowAttendance extends React.Component<Props, IState> {
             } else {
                 if (this.state.event !== undefined) {
                     this.props.addAttendance(c, this.state.event, (attendance) => {
-                        this.setState(Object.assign({},
-                            this.state,
-                            {
-                                attendanceInfo: this.buildAttendanceEnhanced([attendance])
-                            }))
+                        this.setState((state, props) => Object.assign({}, state, {
+                            attendances: state.attendances.concat([attendance])
+                        }))
                     })
                 }
             }
@@ -185,23 +180,32 @@ class ShowAttendance extends React.Component<Props, IState> {
         )
     }
 
-    private renderSingleAttendance = (ae: AttendanceEnhanced) => {
+    private getClientById = (clientId: string): Client => {
+        const client = this.props.clientState.clients.find((c) => c.id === clientId)
+        if(client === undefined) {
+            throw new Error('can not map client from id')
+        }
+        return client
+    }
+
+    private renderSingleAttendance = (att: Attendance) => {
+        const client = this.getClientById(att.clientId)
         return (
-            <tr className='pointer' key={ae.client.id} onClick={() => {
-                window.location.href = '/client/' + ae.client.id
+            <tr className='pointer' key={client.id} onClick={() => {
+                window.location.href = '/client/' + client.id
             }}>
-                <td>{ae.client.fullName}</td>
+                <td>{client.fullName}</td>
                 <td>
-                    {ae.attendance.checkinTime.toLocaleString()}
+                    {att.checkinTime.toLocaleString()}
                 </td>
                 <td>
                     <div className='pointer' onClick={(e) => {
                         e.stopPropagation();
-                        const confirm = window.confirm("Are you sure you want to remove the attendance record of " + ae.client.fullName + "?");
+                        const confirm = window.confirm("Are you sure you want to remove the attendance record of " + client.fullName + "?");
                         if (confirm) {
-                            this.props.removeAttendance(ae.attendance.id, (id: string) => {
-                                return this.setState(Object.assign({}, this.state, {
-                                    attendanceInfo: this.state.attendanceInfo.filter((a) => a.attendance.id !== id)
+                            this.props.removeAttendance(att.id, (id: string) => {
+                                return this.setState((state, props) => Object.assign({}, this.state, {
+                                    attendances: state.attendances.filter((r) => r.id !== id)
                                 }))
                             })
                         }
@@ -212,8 +216,8 @@ class ShowAttendance extends React.Component<Props, IState> {
     }
 
     private renderAttendance = () => {
-        return this.state.attendanceInfo.sort((a, b) => {
-            return b.attendance.checkinTime.valueOf() - a.attendance.checkinTime.valueOf()
+        return this.state.attendances.sort((a, b) => {
+            return b.checkinTime.valueOf() - a.checkinTime.valueOf()
         }).map(this.renderSingleAttendance)
     }
 
@@ -236,7 +240,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                     </Title>
                     <AttendanceModal
                         clients={this.props.clientState.clients.filter((c) => {
-                            return !this.state.attendanceInfo.map((a) => a.client).includes(c)
+                            return !this.state.attendances.map((a) => a.clientId).includes(c.id || '')
                         })}
                         summaryCount={5}
                         sortFunction={this.props.clientState.clientSortFunction}
@@ -245,7 +249,8 @@ class ShowAttendance extends React.Component<Props, IState> {
                         closeModal={() => this.showModal(false)}
                         show={this.state.showModal}
                     />
-                    <ElemModal title='Ban Notes' show={this.state.errorModalClient !== undefined} close={() => this.setState(Object.assign({}, this.state, {errorModalClient: undefined}))}>
+                    <ElemModal title='Ban Notes' show={this.state.errorModalClient !== undefined}
+                               close={() => this.setState(Object.assign({}, this.state, {errorModalClient: undefined}))}>
                         {this.state.errorModalMessage}
                     </ElemModal>
                     <div className='row'>
@@ -269,7 +274,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                                 </tr>
                                 <tr>
                                     <td>Current Attendance</td>
-                                    <td>{this.state.attendanceInfo.length}</td>
+                                    <td>{this.state.attendances.length}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -282,7 +287,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                             </div>
                             <Loader loading={this.state.attendanceLoading}
                                     emptyText={'No clients on attendance sheet yet.'}
-                                    isEmpty={this.state.attendanceInfo.length === 0}>
+                                    isEmpty={this.state.attendances.length === 0}>
                                 <table className='table table-bordered table-hover'>
                                     <thead className='thead-dark'>
                                     <tr>
