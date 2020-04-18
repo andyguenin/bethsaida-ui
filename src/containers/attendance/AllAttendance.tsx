@@ -115,14 +115,14 @@ class AllAttendance extends React.Component<Props, State> {
             <FileContainer>
                 <Title name='Attendance Management'>
                     <button type='button' className='btn btn-success form-control'
-                            onClick={() => window.location.href = '/attendance/new'}>New Attendance
+                            onClick={() => window.location.href = '/attendance/new'}>New Attendance Sheet
                     </button>
                     <button
                         className='btn btn-info form-control'
                         type='button'
                         onClick={() => window.location.href = '/attendance/archive'}
                     >
-                        Attendance Archive
+                        Attendance Sheet Archive
                     </button>
                 </Title>
                 <Loader

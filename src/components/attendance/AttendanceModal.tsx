@@ -139,7 +139,6 @@ export default class AttendanceModal extends React.Component<Props, State> {
                     <ModalFooter>
                         <button type="button" className='btn btn-info pointer' onClick={() => this.props.closeModal()}>Close
                         </button>
-                        <button type="button" className="btn btn-primary">Sign In Client</button>
                     </ModalFooter>
                 </Modal>)
 

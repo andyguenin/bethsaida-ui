@@ -32,7 +32,7 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         getSingleEvent: (id: string, action: (c: BethsaidaEvent) => void) => dispatch(GetSingleEvent(id, action)),
         getSingleService: (id: string, action: (s: Service) => void) => dispatch(GetSingleService(id, action)),
-        loadAllClients: () => dispatch(GetAllClients(() => undefined)),
+        loadAllClients: (andThen: () => void) => dispatch(GetAllClients((c) => andThen())),
         getSingleUser: (id: string, action: (u: User) => void) => dispatch(GetSingleUser(id, action)),
         addAttendance: (client: Client, event: BethsaidaEvent, action: (att: Attendance) => void) => dispatch(createAttendanceRecord(client, event, action)),
         getAllAttendance: (event: BethsaidaEvent, success: (attendances: Attendance[]) => void) => dispatch(getAttendanceRecords(event, success)),
@@ -90,33 +90,35 @@ class ShowAttendance extends React.Component<Props, IState> {
     }
 
     componentDidMount(): void {
-        this.props.loadAllClients();
-        if (this.props.match?.params) {
-            const id = this.props.match?.params.id || '';
-            this.props.getSingleEvent(id, (event: BethsaidaEvent) => {
-                this.props.getSingleService(event.serviceId, (service: Service) => {
-                    this.props.getSingleUser(event.userCreatorId || '', (user: User) => {
-                        this.props.getAllAttendance(event, (attendances: Attendance[]) => {
-                            this.props.getNote(id || '', (note) => {
-                                this.setState(Object.assign({},
-                                    this.state,
-                                    {
-                                        event: event,
-                                        service: service,
-                                        user: user,
-                                        loading: false,
-                                        attendances,
-                                        note: note
-                                    }
-                                ), () => {
-                                    setInterval(() => this.loadAttendances(), 10000)
+        this.props.loadAllClients(() => {
+                if (this.props.match?.params) {
+                    const id = this.props.match?.params.id || '';
+                    this.props.getSingleEvent(id, (event: BethsaidaEvent) => {
+                        this.props.getSingleService(event.serviceId, (service: Service) => {
+                            this.props.getSingleUser(event.userCreatorId || '', (user: User) => {
+                                this.props.getAllAttendance(event, (attendances: Attendance[]) => {
+                                    this.props.getNote(id || '', (note) => {
+                                        this.setState(Object.assign({},
+                                            this.state,
+                                            {
+                                                event: event,
+                                                service: service,
+                                                user: user,
+                                                loading: false,
+                                                attendances,
+                                                note: note
+                                            }
+                                        ), () => {
+                                            setInterval(() => this.loadAttendances(), 10000)
+                                        })
+                                    })
                                 })
                             })
                         })
                     })
-                })
-            })
-        }
+                }
+            }
+        )
     }
 
     private loadAttendances() {
@@ -182,7 +184,7 @@ class ShowAttendance extends React.Component<Props, IState> {
 
     private getClientById = (clientId: string): Client => {
         const client = this.props.clientState.clients.find((c) => c.id === clientId)
-        if(client === undefined) {
+        if (client === undefined) {
             throw new Error('can not map client from id')
         }
         return client
@@ -217,7 +219,7 @@ class ShowAttendance extends React.Component<Props, IState> {
 
     private renderAttendance = () => {
         return this.state.attendances.sort((a, b) => {
-            return b.checkinTime.valueOf() - a.checkinTime.valueOf()
+            return a.checkinTime.valueOf() - b.checkinTime.valueOf()
         }).map(this.renderSingleAttendance)
     }
 
