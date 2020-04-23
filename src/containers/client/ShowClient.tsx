@@ -19,6 +19,8 @@ import BanBuilder from "../../data/BanBuilder";
 import TextModal from "../../components/app/TextModal";
 import {GetNote, SetNote} from "../../services/Note";
 import {formatEnum} from "../../util/StringUtil";
+import User from "../../data/User";
+import {GetAllUsers} from "../../services/User";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -27,13 +29,14 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        getSingleClient: (id: string, action: (c: Client) => void) => dispatch(GetSingleClient(id, action)),
+        getSingleClient: (id: string, action: (c: Client) => void, users: User[]) => dispatch(GetSingleClient(id, action, users)),
         getSingleClientBan: (id: string, action: (ban?: Ban) => void) => dispatch(GetSingleClientBan(id, action)),
         newBan: (id: string, ban: Ban, action: (ban: Ban) => void) => dispatch(NewClientBan(id, ban, action)),
         deleteBan: (id: string, action: () => void) => dispatch(DeleteClientBan(id, action)),
         deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action)),
         setNote: (id: string, note: string, action: (text: string) => void) => dispatch(SetNote(id, note, action)),
-        getNote: (id: string, action: (text: string) => void) => dispatch(GetNote(id, action))
+        getNote: (id: string, action: (text: string) => void) => dispatch(GetNote(id, action)),
+        getUsers: (action: (users: User[]) => void) => dispatch(GetAllUsers(action))
     };
 }
 
@@ -53,7 +56,8 @@ interface IState {
     showBanModal: boolean,
     showTextModal: boolean,
     ban?: Ban,
-    note?: string
+    note?: string,
+    users: User[]
 }
 
 type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
@@ -66,7 +70,8 @@ class ShowClient extends React.Component<Props, IState> {
         this.state = {
             client: undefined,
             showBanModal: false,
-            showTextModal: false
+            showTextModal: false,
+            users: []
         }
 
     }
@@ -74,12 +79,14 @@ class ShowClient extends React.Component<Props, IState> {
     componentDidMount(): void {
         const id = this.props.match?.params.id;
         if (id) {
-            this.props.getSingleClient(id, (c: Client) => {
-                this.props.getSingleClientBan(id, (b?: Ban) => {
-                    this.props.getNote(id, (note: string) => {
-                        this.setState({client: c, ban: b, note: note})
+            this.props.getUsers((users) => {
+                this.props.getSingleClient(id, (c: Client) => {
+                    this.props.getSingleClientBan(id, (b?: Ban) => {
+                        this.props.getNote(id, (note: string) => {
+                            this.setState({client: c, ban: b, note: note, users})
+                        })
                     })
-                })
+                }, users)
             })
         }
     }
@@ -219,7 +226,7 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Gender', formatEnum(Gender[this.state.client?.gender].toString()))}
                                 {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}
-                                {this.displayAttributeRow('Intake User', this.state.client?.intakeUser)}
+                                {this.displayAttributeRow('Intake User', this.state.client?.intakeUser?.getFullName())}
                                 <tr>
                                     <td>Photo ID</td>
                                     <td>{this.displayImage('photo id scan', client.fullName, client.photoId)}

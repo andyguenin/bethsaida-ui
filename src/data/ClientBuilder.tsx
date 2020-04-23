@@ -2,6 +2,7 @@ import BDate from "./BDate";
 import Client from "./Client";
 import {Race} from "./Race";
 import {Gender} from "./Gender";
+import User from "./User";
 
 
 export default class ClientBuilder {
@@ -158,6 +159,15 @@ export default class ClientBuilder {
         return this._banId;
     }
 
+    public setIntakeUser(user?: User): ClientBuilder {
+        this._intakeUser = user;
+        return this;
+    }
+
+    public getIntakeUser(): User | undefined {
+        return this._intakeUser;
+    }
+
     private _id?: string;
     private _firstName?: string;
     private _middleName?: string;
@@ -174,6 +184,7 @@ export default class ClientBuilder {
     private _raceSecondary?: Race;
     private _hispanic?: boolean;
     private _banId?: string;
+    private _intakeUser?: User;
 
     public setField(id: string, value: string) {
         switch (id) {
@@ -227,6 +238,7 @@ export default class ClientBuilder {
             || this._race === undefined
             || this._gender === undefined
             || this._intakeDate === undefined
+            || this._intakeUser === undefined
         )) {
             return new Client(
                 this._firstName,
@@ -235,6 +247,7 @@ export default class ClientBuilder {
                 this._race,
                 this._gender,
                 this._isBanned || false,
+                this._intakeUser,
                 BDate.fromjsDate(this._intakeDate),
                 this._nicknames,
                 this._id,
@@ -242,7 +255,6 @@ export default class ClientBuilder {
                 this._clientPhoto === '' ? undefined : this._clientPhoto,
                 this._photoId === '' ? undefined : this._photoId,
                 (this.phone || '').replace(new RegExp('[^0-9]', 'g'), ''),
-                undefined,
                 this._raceSecondary,
                 this._hispanic,
                 this._banId
@@ -283,6 +295,7 @@ export default class ClientBuilder {
             .setIntakeDate(client.intakeDate?.jsDate)
             .setHispanic(client.hispanic || false)
             .setBanId(client.banId)
+            .setIntakeUser(client.intakeUser)
 
 
     }

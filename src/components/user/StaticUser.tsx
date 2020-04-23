@@ -11,7 +11,7 @@ export default class StaticUser extends React.Component<Props> {
     render() {
         return (
             <Fragment>
-                <Title name={this.props.user.name}>
+                <Title name={this.props.user.getFullName()}>
                     <button type='button' className='btn btn-success' onClick={() => {
                         window.location.href = ('/user/' + this.props.user.id + '/edit')
                     }}>

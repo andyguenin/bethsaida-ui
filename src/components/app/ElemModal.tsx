@@ -1,17 +1,15 @@
 import React from 'react';
-import {Modal, ModalBody} from "react-bootstrap";
+import {Modal, ModalBody, ModalFooter} from "react-bootstrap";
 import ModalHeader from "react-bootstrap/ModalHeader";
 
 interface Props {
     title?: string
     show: boolean
     close: () => void
+    submitButton?: boolean
 }
 
 export default class ElemModal extends React.Component<Props> {
-    constructor(props: Props) {
-        super(props);
-    }
 
     render() {
         return <Modal show={this.props.show} size='xl'>
@@ -24,6 +22,24 @@ export default class ElemModal extends React.Component<Props> {
             <ModalBody>
                 {this.props.children}
             </ModalBody>
+            {
+                (
+                    () => {
+                        if(this.props.submitButton !== undefined && this.props.submitButton) {
+                            return (
+                                <ModalFooter>
+                                    <button type='button' className='btn btn-danger' onClick={() => this.props.close()}>
+                                        Close
+                                    </button>
+                                    <button type='submit' className='btn btn-success'>
+                                        Submit
+                                    </button>
+                                </ModalFooter>
+                            )
+                        }
+                    }
+                )()
+            }
         </Modal>;
     }
 

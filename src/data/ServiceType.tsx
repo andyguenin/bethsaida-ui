@@ -1,4 +1,4 @@
 export enum ServiceType {
-    RECURRING = 0,
-    SINGLE
+    SHELTER = 0,
+    SHOWER = 1
 }

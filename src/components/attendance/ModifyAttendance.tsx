@@ -119,7 +119,7 @@ export default class ModifyAttendance extends React.Component<Props, State> {
                     <Loader loading={this.state.loading} emptyText='' isEmpty={false}>
                         <form onSubmit={this.handleSubmit()}>
                             <div className='form-group row'>
-                                <label htmlFor='service_name' className='col-sm-2'>Service Name</label>
+                                <label htmlFor='service_name' className='col-sm-2'>Shelter</label>
                                 {/*<input type='text'*/}
                                 {/*       className='form-control col-sm-10'*/}
                                 {/*       id='service_name'*/}

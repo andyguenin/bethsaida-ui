@@ -1,6 +1,7 @@
 export default class User {
 
-    public readonly name: string;
+    public readonly firstName: string;
+    public readonly lastName: string;
     public readonly email: string;
     public readonly password?: string;
     public readonly admin: boolean;
@@ -12,10 +13,11 @@ export default class User {
     public readonly id?: string;
 
 
-    constructor(name: string, email: string, admin: boolean, createTime: Date, latestActivity: Date,
+    constructor(firstName: string, lastName: string, email: string, admin: boolean, createTime: Date, latestActivity: Date,
                 confirmed: boolean, adminLock: boolean, userLock: boolean, password?: string, id?: string) {
         this.id = id;
-        this.name = name;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.admin = admin;
@@ -24,5 +26,9 @@ export default class User {
         this.confirmed = confirmed;
         this.adminLock = adminLock;
         this.userLock = userLock;
+    }
+
+    public getFullName(): string {
+        return this.firstName + ' ' + this.lastName;
     }
 }

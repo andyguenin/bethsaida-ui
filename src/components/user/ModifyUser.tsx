@@ -69,13 +69,25 @@ export default class ModifyUser extends React.Component<Props, State> {
                 <div className='offset-1 col-10'>
                     <form onSubmit={this.handleSubmit}>
                         <div className='form-group row'>
-                            <label htmlFor='name' className='col-sm-2'>Name</label>
+                            <label htmlFor='firstName' className='col-sm-2'>First Name</label>
                             <input type='text'
                                    className='form-control col-sm-10'
-                                   id='name'
-                                   placeholder='Name'
-                                   value={this.state.user.getName()}
-                                   onChange={this.handleTextUpdate('name')}
+                                   id='firstName'
+                                   placeholder='First Name'
+                                   value={this.state.user.getFirstName()}
+                                   onChange={this.handleTextUpdate('firstName')}
+                                   autoComplete="off"
+                                   required={true}
+                            />
+                        </div>
+                        <div className='form-group row'>
+                            <label htmlFor='lastName' className='col-sm-2'>Last Name</label>
+                            <input type='text'
+                                   className='form-control col-sm-10'
+                                   id='lastName'
+                                   placeholder='Last Name'
+                                   value={this.state.user.getLastName()}
+                                   onChange={this.handleTextUpdate('lastsName')}
                                    autoComplete="off"
                                    required={true}
                             />

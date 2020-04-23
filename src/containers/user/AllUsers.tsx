@@ -8,7 +8,8 @@ import {LoadAllServices} from "../../services/Service";
 import Service from "../../data/Service";
 import {Loader} from "../../components/app/loader/Loader";
 import User from "../../data/User";
-import {LoadAllUsers} from "../../services/User";
+import {GetAllUsers} from "../../services/User";
+import {userSortFunc} from "../../util/UserUtil";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -18,7 +19,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadAllUsers: (updateFunc: (users: User[]) => void) => dispatch(LoadAllUsers(updateFunc))
+        loadAllUsers: (updateFunc: (users: User[]) => void) => dispatch(GetAllUsers(updateFunc))
     }
 }
 
@@ -55,7 +56,7 @@ class AllUsers extends React.Component<Props, State> {
                 Object.assign({},
                     this.state,
                     {
-                        users: s.sort((a, b) => a.name.localeCompare(b.name)),
+                        users: userSortFunc(s),
                         loading: false
                     }
                 )
@@ -95,7 +96,7 @@ class AllUsers extends React.Component<Props, State> {
                                 <tr key={s.id} className='clickable-row' onClick={() => {
                                     window.location.href = '/user/' + s.id;
                                 }}>
-                                    <td className=''>{s.name}</td>
+                                    <td className=''>{s.getFullName()}</td>
                                     <td className=''>{s.email}</td>
                                     <td>{s.confirmed ? "✓ YES" : 'x NO'}</td>
                                     <td>{s.admin ? "✓ YES" : 'x NO'}</td>

@@ -17,7 +17,7 @@ const mapStateToProps = (state: AppState) => ({
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         newEvent: (builder: BethsaidaEventBuilder) => dispatch(NewEventRequest(builder, (id) => {
-            window.location.href='/attendance/'+id;
+            window.location.href='/shelter/'+id;
         }))
     }
 }
@@ -39,7 +39,7 @@ class NewAttendance extends React.Component<Props> {
                 <Title name="New Attendance Sheet" />
                 <ModifyAttendance
                     attendance={BethsaidaEventBuilder.emptyBuilder()}
-                    cancelAction={() => window.location.href='/attendance'}
+                    cancelAction={() => window.location.href='/shelter'}
                     submitAction={(c: BethsaidaEventBuilder) => {this.props.newEvent(c); return true;}}
                     submitText='Create Attendance Sheet'
                 />

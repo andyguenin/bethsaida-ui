@@ -20,15 +20,15 @@ import AttendanceArchive from "../../containers/attendance/AttendanceArchive";
 import ShowAttendance from "../../containers/attendance/ShowAttendance";
 import EditAttendance from "../../containers/attendance/EditAttendance";
 import Maintenance from "./Maintenance";
-import StaticUser from "../user/StaticUser";
 import ShowUser from "../../containers/user/ShowUser";
 import Profile from "../../containers/user/Profile";
 import EditUser from "../../containers/user/EditUser";
 import AllUsers from "../../containers/user/AllUsers";
 import NewUser from "../../containers/user/NewUser";
 import ResetPassword from "../../containers/user/ResetPassword";
-import BannedClients from "../../containers/client/BannedClients";
 import Confirm from "../../containers/user/Confirm";
+import AllLockers from "../../containers/lockers/AllLockers";
+import AllMail from "../../containers/mail/AllMail";
 
 
 export default class App extends React.Component<{}> {
@@ -51,11 +51,11 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/user/:id' component={ShowUser} />
                             <Route exact path='/user/:id/edit' component={EditUser} />
 
-                            <Route exact path='/attendance' component={ActiveAttendance}/>
-                            <Route exact path='/attendance/new' component={NewAttendance} />
-                            <Route exact path='/attendance/archive/' component={AttendanceArchive}/>
-                            <Route exact path='/attendance/:id' component={ShowAttendance} />
-                            <Route exact path='/attendance/:id/edit' component={EditAttendance} />
+                            <Route exact path='/shelter' component={ActiveAttendance}/>
+                            <Route exact path='/shelter/new' component={NewAttendance} />
+                            <Route exact path='/shelter/archive/' component={AttendanceArchive}/>
+                            <Route exact path='/shelter/:id' component={ShowAttendance} />
+                            <Route exact path='/shelter/:id/edit' component={EditAttendance} />
 
                             <Route exact path='/service' component={AllServices} />
                             <Route exact path='/service/new' component={NewService} />
@@ -63,10 +63,13 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/service/:id/edit' component={EditService} />
 
                             <Route exact path="/client/new" component={NewClient}/>
-                            <Route exact path="/client/banned" component={BannedClients} />
                             <Route exact path="/client/:id/edit" component={EditClient}/>
                             <Route exact path="/client/:id" component={ShowClient}/>
                             <Route exact path="/client" component={ClientList}/>
+
+                            <Route exact path="/locker" component={AllLockers} />
+
+                            <Route exact path='/mail' component={AllMail} />
 
                             <Route exact path="/" component={Home}/>
                             <Route path="/" component={NotFound}/>

@@ -7,6 +7,9 @@ import FileContainer from "../../components/app/FileContainer";
 import {ModifyClient} from "../../components/client/ModifyClient";
 import ClientBuilder from "../../data/ClientBuilder";
 import {NewClientRequest} from "../../services/Client";
+import User from "../../data/User";
+import {GetAllUsers} from "../../services/User";
+import Credentials from "../../data/Credentials";
 
 const mapStateToProps = (state: AppState) => ({
     client: state.clientState,
@@ -17,7 +20,8 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         newClient: (c: ClientBuilder) => dispatch(NewClientRequest(c, (id) => {
             window.location.href='/client/'+id;
-        }))
+        })),
+        getAllUsers: (action: (u: User[]) => void) => dispatch(GetAllUsers(action))
     }
 }
 
@@ -30,17 +34,40 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 
 type Props = PropsFromRedux
 
-class NewClient extends React.Component<Props> {
+interface State {
+    users: User[]
+    currentUser?: User
+}
+
+class NewClient extends React.Component<Props, State> {
+
+    constructor(props: Props) {
+        super(props);
+
+        this.state = {
+            users: []
+        }
+    }
+
+    componentDidMount(): void {
+        this.props.getAllUsers((users) => {
+            const currentUser = users.find((u) => u.id === new Credentials().getId())
+            this.setState((state, props) => Object.assign({}, state, {users, currentUser}))
+        })
+    }
 
     render() {
+        const builder = ClientBuilder.emptyBuilder().setIntakeUser(this.state.currentUser)
+        console.log(builder)
         return (
             <FileContainer>
                 <Title name="New Client" />
                 <ModifyClient
-                    clientBuilder={ClientBuilder.emptyBuilder()}
+                    clientBuilder={builder}
                     cancelAction={() => window.location.href='/client'}
                     submitAction={(c: ClientBuilder) => {this.props.newClient(c); return true}}
                     submitText='Create Client'
+                    users={this.state.users}
                 />
             </FileContainer>
         )

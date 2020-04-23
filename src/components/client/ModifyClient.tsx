@@ -6,6 +6,8 @@ import Env from "../../environment/Env";
 import {DeleteImage, UploadImage} from "../../services/Client";
 import {Loader} from "../app/loader/Loader";
 import {formatEnum} from "../../util/StringUtil";
+import UserSelect from "../app/UserSelect";
+import User from "../../data/User";
 
 
 interface IProps {
@@ -13,6 +15,7 @@ interface IProps {
     submitText: string
     cancelAction: () => void
     submitAction: (c: ClientBuilder) => boolean
+    users: User[]
 }
 
 interface IState {
@@ -27,7 +30,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
     private generateDefaultState(builder: ClientBuilder): IState {
         return ({
             client: builder,
-            disableInputs: false
+            disableInputs: false,
         })
     }
 
@@ -37,6 +40,12 @@ export class ModifyClient extends React.Component<IProps, IState> {
         this.handleTextUpdate = this.handleTextUpdate.bind(this);
 
         this.state = this.generateDefaultState(props.clientBuilder);
+    }
+
+    componentDidUpdate(prevProps: Readonly<IProps>, prevState: Readonly<IState>, snapshot?: any): void {
+        if(this.props.clientBuilder.getIntakeUser() !== prevProps.clientBuilder.getIntakeUser()) {
+            this.setState((state, props) => this.generateDefaultState(props.clientBuilder));
+        }
     }
 
     private isIdLoading = (id: string): boolean => {
@@ -156,8 +165,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
             if (this.props.submitAction(this.state.client)) {
                 this.setButtonDisable()(false)
             }
-
-
         }
     }
 
@@ -175,10 +182,16 @@ export class ModifyClient extends React.Component<IProps, IState> {
                     {},
                     this.state,
                     {client: this.state.client.setField(field, e.target.checked ? 'true' : 'false')}
-                    );
-            console.log(newState)
+                );
             this.setState(newState);
         }
+    }
+
+    private setIntakeUser = (user?: User) => {
+        this.setState((state, props) => Object.assign({}, state, {
+            client: state.client.setIntakeUser(user),
+        }))
+
     }
 
     private renderRaceChoice(name: string, choices: (Race)[]) {
@@ -308,7 +321,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                 <input name='hispanic'
                                        type='checkbox'
                                        checked={this.state.client.getHispanic()}
-                                       onChange={this.handleBooleanUpdate('hispanic')} />
+                                       onChange={this.handleBooleanUpdate('hispanic')}/>
                             </div>
                         </div>
                         <div className='form-group row'>
@@ -320,8 +333,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
                         </div>
                         <div className='form-group row'>
                             {this.displayImage("Client Photo", "clientPhoto")}
-                            {/*</div>*/}
-                            {/*<div className='form-group row'>*/}
                             {this.displayImage("Photo ID", "photoId")}
                         </div>
                         <div className='form-group row'>
@@ -331,6 +342,39 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                    onChange={this.handleTextUpdate('intakeDate')}
                                    required={true}
                             />
+                        </div>
+                        <div className='form-group row'>
+                            <label htmlFor='intake_date' className='col-sm-2'>Intake Employee</label>
+                            <div className='col-sm-10'>
+                                {
+                                    (
+                                        () => {
+                                            const intakeUser = this.state.client.getIntakeUser()
+                                            if (intakeUser === undefined) {
+                                                return <UserSelect
+                                                    id='user'
+                                                    users={this.props.users}
+                                                    action={this.setIntakeUser}
+                                                />
+                                            } else {
+                                                return <div className='input-group'>
+                                                    <input className='form-control disabled' disabled={true}
+                                                           value={intakeUser.getFullName()}
+                                                    />
+                                                    <div className='input-group-append'>
+                                                        <div className='input-group-text pointer' onClick={
+                                                            () => {
+                                                                this.setIntakeUser(undefined);
+                                                            }
+                                                        }>Clear
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    )()
+                                }
+                            </div>
                         </div>
                         <div className="form-group row">
                             <div className='offset-sm-3 col-sm-3'>

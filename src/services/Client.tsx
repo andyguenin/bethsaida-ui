@@ -8,35 +8,43 @@ import ServiceBase from "./ServiceBase";
 import {clearErrorMessage, setErrorMessage} from "../actions/Base";
 import Ban from "../data/Ban";
 import BanBuilder from "../data/BanBuilder";
+import User from "../data/User";
 
-function parseClient(input: any): Client {
-    return new Client(
-        input['firstName'],
-        input['lastName'],
-        new BDate(
-            input['dateOfBirth']['year'],
-            input['dateOfBirth']['month'],
-            input['dateOfBirth']['day']
-        ),
-        input['race'],
-        input['gender'],
-        input['isBanned'] as boolean,
-        new BDate(
-            input['intakeDate']['year'],
-            input['intakeDate']['month'],
-            input['intakeDate']['day']
-        ),
-        input['nicknames'],
-        input['id'],
-        input['middleName'],
-        input['clientPhoto'],
-        input['photoId'],
-        input['phone'],
-        (input['intakeUser'] !== undefined ? input['intakeUser']['name'] : undefined),
-        input['raceSecondary'],
-        input['hispanic'],
-        input['banId']
-    )
+function parseClient(users: User[]): (input: any) => Client {
+    return (input) => {
+        const user = users.find((u) => u.id === input['intakeUserId'])
+        if (user !== undefined) {
+            return new Client(
+                input['firstName'],
+                input['lastName'],
+                new BDate(
+                    input['dateOfBirth']['year'],
+                    input['dateOfBirth']['month'],
+                    input['dateOfBirth']['day']
+                ),
+                input['race'],
+                input['gender'],
+                input['isBanned'] as boolean,
+                user,
+                new BDate(
+                    input['intakeDate']['year'],
+                    input['intakeDate']['month'],
+                    input['intakeDate']['day']
+                ),
+                input['nicknames'],
+                input['id'],
+                input['middleName'],
+                input['clientPhoto'],
+                input['photoId'],
+                input['phone'],
+                input['raceSecondary'],
+                input['hispanic'],
+                input['banId']
+            )
+        } else {
+            throw Error("Could not find intake user id")
+        }
+    }
 }
 
 function parseBan(input: any): Ban {
@@ -51,7 +59,6 @@ function parseBan(input: any): Ban {
         .setStop(new Date(input['stop']))
         .build()
 }
-
 
 
 export const DeleteClientBan = (clientId: string, action: () => void): AsyncAction =>
@@ -117,7 +124,7 @@ export const GetSingleClientBan = (clientId: string, updateFunc: (ban?: Ban) => 
     }
 
 
-export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAction =>
+export const GetAllClients = (updateFunc: (clients: Client[]) => void, users: User[]): AsyncAction =>
     (dispatch, state, x) => {
         fetch(Env.get().fullUrl() + '/client', {
             method: 'GET',
@@ -128,7 +135,7 @@ export const GetAllClients = (updateFunc: (clients: Client[]) => void): AsyncAct
                     json => {
                         if (r.ok) {
                             if ((json as []).length !== 0) {
-                                const data = json.map(parseClient);
+                                const data = json.map(parseClient(users));
                                 dispatch(setClientData(data));
                                 updateFunc(data);
                             } else {
@@ -151,7 +158,7 @@ export const DeleteImage = (imageTag: string, updateFunc: () => void): void => {
 }
 
 
-export const GetSingleClient = (id: string, action: (c: Client) => void): AsyncAction => {
+export const GetSingleClient = (id: string, action: (c: Client) => void, users: User[]): AsyncAction => {
     return (dispatch) => {
         fetch(Env.get().fullUrl() + '/client/' + id, {
             method: 'GET',
@@ -160,7 +167,7 @@ export const GetSingleClient = (id: string, action: (c: Client) => void): AsyncA
             r => r.json().then(
                 json => {
                     if (r.ok) {
-                        const client = parseClient(json)
+                        const client = parseClient(users)(json)
                         action(client);
                     }
                 }
@@ -195,7 +202,7 @@ export const UpdateClient = (
             fetch(Env.get().fullUrl() + '/client/' + clientBuilder.id + '/update', {
                 method: 'POST',
                 headers: ServiceBase.jsonHeader,
-                body: JSON.stringify(clientBuilder.build())
+                body: JSON.stringify(clientBuilder.build().toJson())
             }).then(
                 resp => resp.json().then(
                     json => {
@@ -219,7 +226,7 @@ export const NewClientRequest = (clientBuilder: ClientBuilder, successAction: (i
         fetch(Env.get().fullUrl() + '/client/new', {
             method: 'POST',
             headers: ServiceBase.jsonHeader,
-            body: JSON.stringify(clientBuilder.build())
+            body: JSON.stringify(clientBuilder.build().toJson())
         }).then(
             resp => resp.json().then(
                 json => {

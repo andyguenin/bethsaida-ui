@@ -6,6 +6,7 @@ import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
 import {clearErrorMessage} from "../../actions/Base";
+import ErrorMessage from "./ErrorMessage";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -80,9 +81,20 @@ class TopNav extends React.Component<Props, State> {
 
                         <a className="nav-link" href="/client" id='client'>Clients</a>
 
+                        <a className="nav-link" href="/shelter" id="Shelter">
+                            Shelters
+                        </a>
 
-                        <a className="nav-link" href="/attendance" id="Attendance">
-                            Attendance
+                        <a className='nav-link' href='/locker' id='Locker'>
+                            Lockers
+                        </a>
+
+                        <a className='nav-link' href='/mail' id='Mail'>
+                            Mail
+                        </a>
+
+                        <a className='nav-link' href='/shower' id='Shower'>
+                            Showers
                         </a>
 
 
@@ -92,7 +104,7 @@ class TopNav extends React.Component<Props, State> {
                                     if (new Credentials().getDisplayAdmin()) {
                                         return (
                                             <Fragment>
-                                                <a className="nav-link" href="/service" id="Services">Services</a>
+                                                {/*<a className="nav-link" href="/service" id="Services">Services Management</a>*/}
                                                 <a className='nav-link' href='/admin' id='Admin'>Admin
                                                 </a>
                                             </Fragment>
@@ -111,25 +123,7 @@ class TopNav extends React.Component<Props, State> {
                     <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
                     </button>
                 </nav>
-                {
-
-                    (() => {
-                        if (this.props.base.error.enabled) {
-                            return <div className='alert alert-danger site-error row'>
-                                <div className='col-11'>
-                                    {this.props.base.error.message}
-                                </div>
-                                <div className='pointer col-1 text-right' onClick={this.props.clearError}>
-                                    &times;
-                                </div>
-                            </div>
-                        } else {
-                            return <Fragment/>
-                        }
-                    })()
-
-                }
-
+                <ErrorMessage show={this.props.base.error.enabled} errorMessage={this.props.base.error.message} className='site-error'/>
             </Fragment>
 
         )

@@ -97,6 +97,9 @@ img {
     color: #ffde00;
     text-decoration: underline; }
 
+.error-background {
+  background-color: rgba(255, 0, 0, 0.25); }
+
 .table-striped {
   cursor: pointer; }
 
@@ -114,3 +117,30 @@ div.text-editor {
 
 .padding-bottom-15 {
   padding-bottom: 15px; }
+
+.autocomplete {
+  position: relative;
+  display: inline-block;
+  width: 100%; }
+  .autocomplete input {
+    width: 100%; }
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  width: 100%;
+  z-index: 20; }
+  .autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #cccccc; }
+  .autocomplete-items div:hover {
+    background-color: #e4606d; }
+
+.autocomplete-item .client-name {
+  border: 0px;
+  font-size: 22px;
+  display: inline;
+  background-color: rgba(0, 0, 0, 0); }

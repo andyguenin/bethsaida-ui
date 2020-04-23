@@ -4,7 +4,8 @@ export default class UserBuilder {
 
 
     private _id?: string;
-    private _name?: string;
+    private _firstName?: string;
+    private _lastName?: string;
     private _email?: string;
     private _password?: string;
     private _admin?: boolean;
@@ -50,13 +51,22 @@ export default class UserBuilder {
         return this._id;
     }
 
-    public setName(name: string | undefined): UserBuilder {
-        this._name = name;
+    public setFirstName(name: string | undefined): UserBuilder {
+        this._firstName = name;
         return this;
     }
 
-    public getName(): string | undefined {
-        return this._name;
+    public getFirstName(): string | undefined {
+        return this._firstName;
+    }
+
+    public setLastName(name: string | undefined): UserBuilder {
+        this._lastName = name;
+        return this;
+    }
+
+    public getLastName(): string | undefined {
+        return this._lastName;
     }
 
     public setEmail(email: string | undefined): UserBuilder {
@@ -100,10 +110,15 @@ export default class UserBuilder {
         return this._latestActivity;
     }
 
+    public getFullName(): string {
+        return this._firstName + ' ' + this._lastName
+    }
+
     public static load(user?: User): UserBuilder {
         if(user !== undefined) {
             return new UserBuilder()
-                .setName(user.name)
+                .setFirstName(user.firstName)
+                .setLastName(user.lastName)
                 .setId(user.id)
                 .setEmail(user.email)
                 .setAdmin(user.admin)
@@ -116,8 +131,10 @@ export default class UserBuilder {
         switch(field) {
             case 'id':
                 return this.setId(value);
-            case 'name':
-                return this.setName(value);
+            case 'firstName':
+                return this.setFirstName(value);
+            case 'lastName':
+                return this.setLastName(value);
             case 'email':
                 return this.setEmail(value);
             case 'password':
@@ -130,11 +147,12 @@ export default class UserBuilder {
     }
 
     public build(): User {
-        if(this._name === undefined || this._email === undefined ) {
+        if(this._firstName === undefined || this._lastName === undefined || this._email === undefined ) {
             throw new Error('Cannot build user with missing attributes')
         } else {
             return new User(
-                this._name,
+                this._firstName,
+                this._lastName,
                 this._email,
                 this._admin || false,
                 this._createTime || new Date(),
@@ -149,7 +167,8 @@ export default class UserBuilder {
 
     public static emptyBuilder(): UserBuilder {
         return new UserBuilder()
-            .setName('')
+            .setFirstName('')
+            .setLastName('')
             .setId('')
             .setEmail('')
             .setPassword('')

@@ -11,6 +11,8 @@ import ClientBuilder from "../../data/ClientBuilder";
 import {DeleteClient, GetSingleClient, UpdateClient} from "../../services/Client";
 import Client from "../../data/Client";
 import ErrorMessage from "../../components/app/ErrorMessage";
+import User from "../../data/User";
+import {GetAllUsers} from "../../services/User";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -20,7 +22,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadClient: (id: string, action: (c: Client) => void) => dispatch(GetSingleClient(id, action)),
+        loadClient: (id: string, action: (c: Client) => void, users: User[]) => dispatch(GetSingleClient(id, action, users)),
         updateClient: (client: ClientBuilder, action: (id: string) => void, failure: (message: string) => void): boolean => {
             dispatch(UpdateClient(
                 client,
@@ -29,7 +31,8 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
             ))
             return true
         },
-        deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action))
+        deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action)),
+        loadUsers: (action: (user: User[]) => void) => dispatch(GetAllUsers(action))
     }
 }
 
@@ -47,7 +50,8 @@ interface IRoute {
 interface State {
     loadedClient?: Client,
     loading: boolean,
-    errorMessage?: string
+    errorMessage?: string,
+    users: User[]
 }
 
 type Props = PropsFromRedux & RouteChildrenProps<IRoute> & {}
@@ -58,7 +62,8 @@ class EditClient extends React.Component<Props, State> {
 
         this.state = {
             loadedClient: undefined,
-            loading: true
+            loading: true,
+            users: []
         }
 
     }
@@ -76,17 +81,20 @@ class EditClient extends React.Component<Props, State> {
 
     componentDidMount(): void {
         if (this.props.match?.params) {
-            this.props.loadClient(this.props.match?.params.id, (c) => {
-                this.setState(
-                    Object.assign(
+            const params = this.props.match?.params.id;
+            this.props.loadUsers((users) => {
+                this.props.loadClient(params, (loadedClient) => {
+                    const newState = Object.assign(
                         {},
                         this.state,
                         {
-                            loadedClient: c,
-                            loading: false
+                            loadedClient,
+                            loading: false,
+                            users
                         }
                     )
-                )
+                    this.setState(newState)
+                }, users)
             })
         }
     }
@@ -101,17 +109,14 @@ class EditClient extends React.Component<Props, State> {
 
                     <ModifyClient
                         clientBuilder={this.state.loadedClient === undefined ? ClientBuilder.emptyBuilder() : ClientBuilder.load(this.state.loadedClient)}
-                        submitText='Edit Client'
+                        submitText='Save Client'
                         submitAction={(cb) => {
                             return this.props.updateClient(cb, (id) => {
                                 window.location.href = '/client/' + id;
                             }, this.setErrorMessage)
-
-                            // console.log(cb)
-                            // console.log(cb.build())
-                            // return true;
                         }}
                         cancelAction={() => window.location.href = '/client/' + this.props.match?.params.id}
+                        users={this.state.users}
                     />
                 </Loader>
             </FileContainer>

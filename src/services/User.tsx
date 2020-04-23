@@ -6,7 +6,8 @@ import {setErrorMessage} from "../actions/Base";
 
 const parse = (data: any): User => {
     return new User(
-        data['name'],
+        data['firstName'],
+        data['lastName'],
         data['email'],
         data['admin'],
         new Date(data['createTime']),
@@ -41,7 +42,7 @@ export const GetSingleUser = (id: string, success: (user: User) => void): AsyncA
 
 
 
-export const LoadAllUsers = (success: (users: User[]) => void): AsyncAction => {
+export const GetAllUsers = (success: (users: User[]) => void): AsyncAction => {
     return (dispatch) => {
         fetch(Env.get().fullUrl() + '/user/', {
             method: 'GET',

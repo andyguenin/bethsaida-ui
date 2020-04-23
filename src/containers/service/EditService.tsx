@@ -6,10 +6,6 @@ import {Title} from "../../components/app/Title";
 import {withRouter, RouteChildrenProps} from 'react-router-dom'
 import {Loader} from "../../components/app/loader/Loader";
 import FileContainer from "../../components/app/FileContainer";
-import {ModifyClient} from "../../components/client/ModifyClient";
-import ClientBuilder from "../../data/ClientBuilder";
-import {GetSingleClient, UpdateClient} from "../../services/Client";
-import Client from "../../data/Client";
 import ErrorMessage from "../../components/app/ErrorMessage";
 import Service from "../../data/Service";
 import {GetSingleService, UpdateService} from "../../services/Service";

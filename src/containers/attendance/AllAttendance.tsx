@@ -9,7 +9,7 @@ import {LoadAllEvents} from "../../services/Event";
 import BethsaidaEvent from "../../data/BethsaidaEvent";
 import Service from "../../data/Service";
 import {LoadAllServices} from "../../services/Service";
-import {LoadAllUsers} from "../../services/User";
+import {GetAllUsers} from "../../services/User";
 import User from "../../data/User";
 
 
@@ -22,7 +22,7 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         loadAllEvents: (updateFunc: (events: BethsaidaEvent[]) => void, archive: boolean) => dispatch(LoadAllEvents(updateFunc, archive)),
         loadAllServices: (updateFunc: (services: Service[]) => void) => dispatch(LoadAllServices(updateFunc)),
-        loadAllUsers: (updateFunc: (users: User[]) => void) => dispatch(LoadAllUsers(updateFunc))
+        loadAllUsers: (updateFunc: (users: User[]) => void) => dispatch(GetAllUsers(updateFunc))
     }
 }
 
@@ -113,14 +113,14 @@ class AllAttendance extends React.Component<Props, State> {
     public render() {
         return (
             <FileContainer>
-                <Title name='Attendance Management'>
+                <Title name='Shelter Attendance Management'>
                     <button type='button' className='btn btn-success form-control'
-                            onClick={() => window.location.href = '/attendance/new'}>New Attendance Sheet
+                            onClick={() => window.location.href = '/shelter/new'}>New Attendance Sheet
                     </button>
                     <button
                         className='btn btn-info form-control'
                         type='button'
-                        onClick={() => window.location.href = '/attendance/archive'}
+                        onClick={() => window.location.href = '/shelter/archive'}
                     >
                         Attendance Sheet Archive
                     </button>
@@ -144,7 +144,7 @@ class AllAttendance extends React.Component<Props, State> {
                         {this.state.gridEvent.map((s) => {
                             return (
                                 <tr key={s.id} className='clickable-row' onClick={() => {
-                                    window.location.href = '/attendance/' + s.id;
+                                    window.location.href = '/shelter/' + s.id;
                                 }}>
                                     <td className='align-content-center'>{
                                         (() => {
@@ -164,7 +164,7 @@ class AllAttendance extends React.Component<Props, State> {
                                             if (s.userCreatorId) {
                                                 const user = this.state.users.get(s.userCreatorId);
                                                 if (user !== undefined) {
-                                                    return user.name
+                                                    return user.getFullName()
                                                 }
                                             }
                                             return <i>UNKNOWN</i>

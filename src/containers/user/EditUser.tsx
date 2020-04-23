@@ -106,7 +106,7 @@ class EditUser extends React.Component<Props, State> {
     public render() {
         return (
             <FileContainer>
-                <Title name={'Edit User - ' + this.state.formUserBuilder.getName()}/>
+                <Title name={'Edit User - ' + this.state.formUserBuilder.getFullName()}/>
                 <Loader
                     loading={this.state.loading}
                     isEmpty={this.state.user === undefined}

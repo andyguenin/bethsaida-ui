@@ -89,8 +89,8 @@ export default class BanModal extends React.Component<Props, State> {
             <form onSubmit={this.handleSubmit}>
                 <ModalHeader>
                     <h5 className='modal-title'>Ban {this.props.client.fullName}</h5>
-                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                        <span onClick={this.props.closeModal}>&times;</span>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.props.closeModal}>
+                        <span>&times;</span>
                     </button>
                 </ModalHeader>
                 <ModalBody>

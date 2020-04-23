@@ -10,7 +10,7 @@ import BethsaidaEvent from "../../data/BethsaidaEvent";
 import Service from "../../data/Service";
 import {GetSingleService} from "../../services/Service";
 import User from "../../data/User";
-import {GetSingleUser, LoadAllUsers} from "../../services/User";
+import {GetSingleUser, GetAllUsers} from "../../services/User";
 import Notes from "../../components/Notes";
 import {GetAllClients, GetSingleClientBan} from "../../services/Client";
 import Client from "../../data/Client";
@@ -21,6 +21,8 @@ import {GetNote, SetNote} from "../../services/Note";
 import {GetSingleEvent} from "../../services/Event";
 import Ban from "../../data/Ban";
 import ElemModal from "../../components/app/ElemModal";
+import {clientFilterFunc, clientSortFunc} from "../../util/ClientUtil";
+import Credentials from "../../data/Credentials";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -32,14 +34,14 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         getSingleEvent: (id: string, action: (c: BethsaidaEvent) => void) => dispatch(GetSingleEvent(id, action)),
         getSingleService: (id: string, action: (s: Service) => void) => dispatch(GetSingleService(id, action)),
-        loadAllClients: (andThen: () => void) => dispatch(GetAllClients((c) => andThen())),
-        getSingleUser: (id: string, action: (u: User) => void) => dispatch(GetSingleUser(id, action)),
+        loadAllClients: (andThen: () => void, users: User[]) => dispatch(GetAllClients((c) => andThen(), users)),
         addAttendance: (client: Client, event: BethsaidaEvent, action: (att: Attendance) => void) => dispatch(createAttendanceRecord(client, event, action)),
         getAllAttendance: (event: BethsaidaEvent, success: (attendances: Attendance[]) => void) => dispatch(getAttendanceRecords(event, success)),
         removeAttendance: (id: string, action: (id: string) => void) => dispatch(removeAttendance(id, action)),
         setNote: (id: string, note: string, action: (text: string) => void) => dispatch(SetNote(id, note, action)),
         getNote: (id: string, action: (text: string) => void) => dispatch(GetNote(id, action)),
-        getSingleClientBan: (id: string, action: (ban?: Ban) => void) => dispatch(GetSingleClientBan(id, action))
+        getSingleClientBan: (id: string, action: (ban?: Ban) => void) => dispatch(GetSingleClientBan(id, action)),
+        getAllUsers: (action: (users: User[]) => void) => dispatch(GetAllUsers(action))
     };
 }
 
@@ -90,12 +92,15 @@ class ShowAttendance extends React.Component<Props, IState> {
     }
 
     componentDidMount(): void {
-        this.props.loadAllClients(() => {
-                if (this.props.match?.params) {
-                    const id = this.props.match?.params.id || '';
-                    this.props.getSingleEvent(id, (event: BethsaidaEvent) => {
-                        this.props.getSingleService(event.serviceId, (service: Service) => {
-                            this.props.getSingleUser(event.userCreatorId || '', (user: User) => {
+        // this.props.getSingleUser(event.userCreatorId || '', (user: User) => {
+        this.props.getAllUsers((users: User[]) => {
+            const currentUser = users.find((u) => new Credentials().getId() === u.id)
+            if(currentUser !== undefined) {
+                this.props.loadAllClients(() => {
+                    if (this.props.match?.params) {
+                        const id = this.props.match?.params.id || '';
+                        this.props.getSingleEvent(id, (event: BethsaidaEvent) => {
+                            this.props.getSingleService(event.serviceId, (service: Service) => {
                                 this.props.getAllAttendance(event, (attendances: Attendance[]) => {
                                     this.props.getNote(id || '', (note) => {
                                         this.setState(Object.assign({},
@@ -103,7 +108,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                                             {
                                                 event: event,
                                                 service: service,
-                                                user: user,
+                                                user: currentUser,
                                                 loading: false,
                                                 attendances,
                                                 note: note
@@ -115,10 +120,10 @@ class ShowAttendance extends React.Component<Props, IState> {
                                 })
                             })
                         })
-                    })
-                }
+                    }
+                }, users)
             }
-        )
+        })
     }
 
     private loadAttendances() {
@@ -236,7 +241,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                         <button
                             className='btn btn-success form-control'
                             type='button'
-                            onClick={() => window.location.href = '/attendance/' + (this.state.event?.id || '') + '/edit'}>
+                            onClick={() => window.location.href = '/shelter/' + (this.state.event?.id || '') + '/edit'}>
                             Edit
                         </button>
                     </Title>
@@ -245,8 +250,8 @@ class ShowAttendance extends React.Component<Props, IState> {
                             return !this.state.attendances.map((a) => a.clientId).includes(c.id || '')
                         })}
                         summaryCount={5}
-                        sortFunction={this.props.clientState.clientSortFunction}
-                        filterFunction={this.props.clientState.clientFilterFunction}
+                        sortFunction={clientSortFunc}
+                        filterFunction={clientFilterFunc}
                         selectFunction={this.clientSelect}
                         closeModal={() => this.showModal(false)}
                         show={this.state.showModal}
@@ -268,7 +273,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                                 <tr>
                                     <td>Event Creator</td>
                                     <td>{(this.state.user !== undefined)
-                                        ? this.state.user.name : '-'}</td>
+                                        ? this.state.user.getFullName() : '-'}</td>
                                 </tr>
                                 <tr>
                                     <td>Capacity</td>

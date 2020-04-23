@@ -103,9 +103,9 @@ class EditAttendance extends React.Component<Props, State> {
                         attendance={BethsaidaEventBuilder.load(this.state.loadedEvent)}
                         submitText='Edit Attendance Sheet'
                         submitAction={(cb) => this.props.updateEvent(cb, (id) => {
-                            window.location.href = '/attendance/' + id;
+                            window.location.href = '/shelter/' + id;
                         }, this.setErrorMessage)}
-                        cancelAction={() => window.location.href = '/attendance/' + this.props.match?.params.id}
+                        cancelAction={() => window.location.href = '/shelter/' + this.props.match?.params.id}
                     />
                 </Loader>
             </FileContainer>

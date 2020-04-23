@@ -1,7 +1,10 @@
 import BDate from "./BDate";
 import {Race} from "./Race";
 import {Gender} from "./Gender";
-import Ban from "./Ban";
+import emptyImage from '../assets/unknown-image.png'
+import Env from "../environment/Env";
+import React from "react";
+import User from "./User";
 
 export default class Client{
     public readonly firstName: string;
@@ -10,6 +13,7 @@ export default class Client{
     public readonly race: Race;
     public readonly gender: Gender;
     public readonly isBanned: boolean;
+    public readonly intakeUser: User;
     public readonly intakeDate?: BDate;
 
 
@@ -19,7 +23,7 @@ export default class Client{
     public readonly clientPhoto?: string;
     public readonly photoId?: string;
     public readonly phone?: string;
-    public readonly intakeUser?: string;
+
     public readonly fullName: string;
     public readonly raceSecondary?: Race;
     public readonly hispanic?: boolean;
@@ -32,6 +36,7 @@ export default class Client{
         race: Race,
         gender: Gender,
         isBanned: boolean,
+        intakeUser: User,
         intakeDate: BDate,
         nicknames?: string[],
         id?: string,
@@ -39,7 +44,6 @@ export default class Client{
         clientPhoto?: string,
         photoId?: string,
         phone?: string,
-        intakeUser?: string,
         raceSecondary?: Race,
         hispanic?: boolean,
         banId?: string
@@ -66,6 +70,8 @@ export default class Client{
         this.fullName = firstName + (middleName === undefined ? ' ' : ' ' + middleName + ' ') + lastName;
     }
 
+    private imageUrl = Env.get().imageUrl;
+
     public getPrettyPhone(): string | undefined {
         if(this.phone !== undefined) {
             if(this.phone.length === 10) {
@@ -76,6 +82,25 @@ export default class Client{
         } else {
             return undefined
         }
+    }
+
+    public smallImageTag() {
+        if(this.clientPhoto !== undefined) {
+            return <img src={this.imageUrl + '/' + this.clientPhoto + '_250.png'} />
+        }
+
+        if (this.photoId !== undefined) {
+            return <img src={this.imageUrl + '/' + this.photoId + '_250.png'} />
+        }
+        return <img src={emptyImage} width='250px'/>
+    }
+
+    public toJson = (): any => {
+        let obj: any = Object.assign({}, this)
+        const id = this.intakeUser.id
+        delete obj['intakeUser'];
+        obj['intakeUserId'] = id
+        return obj
     }
 
 }

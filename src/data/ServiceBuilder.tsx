@@ -80,7 +80,7 @@ export default class ServiceBuilder {
             return new Service(
                 this._id,
                 this._name,
-                ServiceType.RECURRING,
+                ServiceType.SHELTER,
                 (this._defaultCapacity === -1 ? undefined : this._defaultCapacity)
             )
         }
@@ -103,7 +103,7 @@ export default class ServiceBuilder {
         return new ServiceBuilder()
             .setId('')
             .setName('')
-            .setServiceType(ServiceType.RECURRING.toString())
+            .setServiceType(ServiceType.SHELTER.toString())
             .setDefaultCapacity('-1')
     }
 

@@ -12,6 +12,9 @@ import {Gender} from "../../data/Gender";
 import {Race} from "../../data/Race";
 import DateUtil from "../../util/DateUtil";
 import {formatEnum} from "../../util/StringUtil";
+import {clientFilterFunc, clientSortFunc} from '../../util/ClientUtil';
+import User from "../../data/User";
+import {GetAllUsers} from "../../services/User";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -21,8 +24,9 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadAllClients: (updateFunc: (clients: Client[]) => void) => dispatch(GetAllClients(updateFunc)),
-        deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action))
+        loadAllClients: (updateFunc: (clients: Client[]) => void, users: User[]) => dispatch(GetAllClients(updateFunc, users)),
+        deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action)),
+        getAllUsers: (action: (users: User[]) => void) => dispatch(GetAllUsers(action))
     }
 }
 
@@ -70,8 +74,11 @@ class AllClients extends React.Component<Props, State> {
     }
 
     componentDidMount(): void {
-        this.setState(Object.assign({}, this.state, {loading: true}));
-        this.props.loadAllClients(this.updateGridClients);
+        this.props.getAllUsers((users) => {
+            this.setState(Object.assign({}, this.state, {loading: true}), () => {
+                this.props.loadAllClients(this.updateGridClients, users);
+            })
+        })
     }
 
     private updateGridClients = (clients: Client[]): void => {
@@ -81,7 +88,7 @@ class AllClients extends React.Component<Props, State> {
                 this.state,
                 {
                     loading: false,
-                    gridClients: this.props.clientState.clientSortFunction(clients)
+                    gridClients: clientSortFunc(clients)
                 }
             ),
             () => this.setPage(0)
@@ -90,8 +97,7 @@ class AllClients extends React.Component<Props, State> {
 
     private filterClients = (textInput: string) => {
         this.updateGridClients(
-            this.props.clientState.clientFilterFunction(textInput,
-                this.props.clientState.clients.filter((c) => c.isBanned || !this.state.showOnlyBannedClients))
+            clientFilterFunc(textInput, this.props.clientState.clients.filter((c) => c.isBanned || !this.state.showOnlyBannedClients))
         );
     }
 
@@ -157,9 +163,6 @@ class AllClients extends React.Component<Props, State> {
                         placeholder='Search Client'
                         onChange={this.filterClientsAction}
                     />
-                    <div className='d-small-inline d-lg-none'>
-                        {this.pageControls()}
-                    </div>
                 </Title>
                 <Loader
                     loading={this.state.loading}
@@ -170,6 +173,7 @@ class AllClients extends React.Component<Props, State> {
                         <table className="table table-striped client-table table-hover">
                             <thead className='thead-dark'>
                             <tr>
+                                <th>{this.pageControls()}</th>
                                 <th>Name</th>
                                 <th>Gender</th>
                                 <th>Race</th>
@@ -182,12 +186,12 @@ class AllClients extends React.Component<Props, State> {
                             {this.state.show.map(c => this.singleRow(c))}
                             </tbody>
                         </table>
-                        <div className='d-sm-none d-lg-flex row padding-bottom-15'>
-                            <div className='col-12 text-center'>
-                                {this.pageControls()}
-                            </div>
+                        {/*<div className='d-sm-none d-lg-flex row padding-bottom-15'>*/}
+                        {/*    <div className='col-12 text-center'>*/}
+                        {/*        {this.pageControls()}*/}
+                        {/*    </div>*/}
 
-                        </div>
+                        {/*</div>*/}
                     </div>
                 </Loader>
             </FileContainer>
@@ -199,6 +203,9 @@ class AllClients extends React.Component<Props, State> {
             <tr className={'clickable-row ' + (client.isBanned ? 'banned-row' : '')} key={client.id} onClick={() => {
                 window.location.href = '/client/' + client.id
             }}>
+                <td>
+                    {client.smallImageTag()}
+                </td>
                 <td>
                     {client.fullName}
                 </td>
