@@ -100,6 +100,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
                     (message: string) => {
                         this.handleImageStateUpdate(id, undefined);
                         this.setIdLoading(id, false)
+                        alert('There was an issue uploading the image. Please try to upload a .jpg, .jpeg, or a .png file')
                     })
             }
         }

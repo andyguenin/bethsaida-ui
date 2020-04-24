@@ -98,11 +98,9 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
                                                    onChange={this.updateField('password')}/>
                                             <label htmlFor="inputPassword">Password</label>
                                         </div>
-                                        {/*<div className="custom-control custom-checkbox mb-3">*/}
-                                        {/*    <input type="checkbox" className="custom-control-input" id="customCheck1"/>*/}
-                                        {/*    <label className="custom-control-label" htmlFor="customCheck1">Remember*/}
-                                        {/*        password</label>*/}
-                                        {/*</div>*/}
+                                        <div className='form-group text-right'>
+                                            <a href='/forgot-password'>Forgot Password</a>
+                                        </div>
                                         <button
                                             className={"btn btn-lg btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
                                             type="submit">Sign in
@@ -126,6 +124,9 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
                                        placeholder="Password" required value={this.state.password}
                                        onChange={this.updateField('password')}/>
                                 <label htmlFor="inputPassword">Password</label>
+                            </div>
+                            <div className='form-group'>
+                                Forgot Password
                             </div>
                             <button
                                 className={"btn btn-lg btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}

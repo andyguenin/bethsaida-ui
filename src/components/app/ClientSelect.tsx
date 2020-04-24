@@ -7,7 +7,8 @@ import {clientFilterFunc, clientSortFunc} from "../../util/ClientUtil";
 interface Props {
     id: string
     clients: Client[]
-    action: (c: Client) => void
+    action: (c?: Client) => void
+    selectedClient?: Client
 }
 
 interface State {
@@ -71,16 +72,15 @@ export default class ClientSelect extends React.Component<Props, State> {
 
 
     render(): React.ReactNode {
-        return (
-            <div className={'autocomplete'}
-                 onBlur={(e) => {
-                     setTimeout(() =>
-                         this.setState((state, props) => Object.assign({}, state, {submenuOpen: false})),
-                         200
-
-                     )
-                 }
-                 }
+        if (this.props.selectedClient === undefined) {
+            return <div className={'autocomplete'}
+                        onBlur={(e) => {
+                            setTimeout(() =>
+                                    this.setState((state, props) => Object.assign({}, state, {submenuOpen: false})),
+                                200
+                            )
+                        }
+                        }
             >
                 <input
                     id={this.props.id}
@@ -94,6 +94,22 @@ export default class ClientSelect extends React.Component<Props, State> {
                     {this.state.clientsToShow.map(this.singleRow)}
                 </div>
             </div>
-        )
+        } else {
+            return <div className='input-group'>
+                <input className='form-control disabled' disabled={true}
+                       value={this.props.selectedClient.fullName}
+                />
+                <div className='input-group-append'>
+                    <div className='input-group-text pointer' onClick={
+                        () => {
+                            this.setState((state, props) => Object.assign({}, state, {text: ''}),
+                                () => this.props.action(undefined)
+                            )
+                        }
+                    }>Clear
+                    </div>
+                </div>
+            </div>
+        }
     }
 }

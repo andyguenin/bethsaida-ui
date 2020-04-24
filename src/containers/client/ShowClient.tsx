@@ -21,6 +21,7 @@ import {GetNote, SetNote} from "../../services/Note";
 import {formatEnum} from "../../util/StringUtil";
 import User from "../../data/User";
 import {GetAllUsers} from "../../services/User";
+import unknown from '../../assets/unknown-image.png';
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -106,7 +107,12 @@ class ShowClient extends React.Component<Props, IState> {
                          src={Env.get().imageUrl + '/' + imageTag + '_250.png'}
                          alt={imageType.charAt(0).toUpperCase() + imageType.slice(1) + ' of ' + name}/>)
         } else {
-            return (<b>No {imageType} found for {name}</b>)
+            if(imageType === 'photograph') {
+                return (<img width='100%' src={unknown} />)
+            } else {
+                return <b>No photo id found for {name}</b>
+            }
+
 
         }
     }

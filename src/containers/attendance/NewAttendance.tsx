@@ -6,7 +6,7 @@ import {Title} from "../../components/app/Title";
 import FileContainer from "../../components/app/FileContainer";
 import ModifyAttendance from "../../components/attendance/ModifyAttendance";
 import BethsaidaEventBuilder from "../../data/BethsaidaEventBuilder";
-import {NewEventRequest} from "../../services/Event";
+import {NewEvent} from "../../services/Event";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -16,7 +16,7 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        newEvent: (builder: BethsaidaEventBuilder) => dispatch(NewEventRequest(builder, (id) => {
+        newEvent: (builder: BethsaidaEventBuilder) => dispatch(NewEvent(builder, (id) => {
             window.location.href='/shelter/'+id;
         }))
     }

@@ -15,7 +15,7 @@ import Notes from "../../components/Notes";
 import {GetAllClients, GetSingleClientBan} from "../../services/Client";
 import Client from "../../data/Client";
 import AttendanceModal from "../../components/attendance/AttendanceModal";
-import {createAttendanceRecord, getAttendanceRecords, removeAttendance} from "../../services/Attendance";
+import {CreateAttendanceRecord, GetAttendanceRecords, removeAttendance} from "../../services/Attendance";
 import Attendance from "../../data/Attendance";
 import {GetNote, SetNote} from "../../services/Note";
 import {GetSingleEvent} from "../../services/Event";
@@ -35,8 +35,9 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
         getSingleEvent: (id: string, action: (c: BethsaidaEvent) => void) => dispatch(GetSingleEvent(id, action)),
         getSingleService: (id: string, action: (s: Service) => void) => dispatch(GetSingleService(id, action)),
         loadAllClients: (andThen: () => void, users: User[]) => dispatch(GetAllClients((c) => andThen(), users)),
-        addAttendance: (client: Client, event: BethsaidaEvent, action: (att: Attendance) => void) => dispatch(createAttendanceRecord(client, event, action)),
-        getAllAttendance: (event: BethsaidaEvent, success: (attendances: Attendance[]) => void) => dispatch(getAttendanceRecords(event, success)),
+        addAttendance: (client: Client, event: BethsaidaEvent, user: User, action: (att: Attendance) => void) =>
+            dispatch(CreateAttendanceRecord(client, event, user, action)),
+        getAllAttendance: (event: BethsaidaEvent, success: (attendances: Attendance[]) => void) => dispatch(GetAttendanceRecords(event, success)),
         removeAttendance: (id: string, action: (id: string) => void) => dispatch(removeAttendance(id, action)),
         setNote: (id: string, note: string, action: (text: string) => void) => dispatch(SetNote(id, note, action)),
         getNote: (id: string, action: (text: string) => void) => dispatch(GetNote(id, action)),
@@ -92,7 +93,6 @@ class ShowAttendance extends React.Component<Props, IState> {
     }
 
     componentDidMount(): void {
-        // this.props.getSingleUser(event.userCreatorId || '', (user: User) => {
         this.props.getAllUsers((users: User[]) => {
             const currentUser = users.find((u) => new Credentials().getId() === u.id)
             if(currentUser !== undefined) {
@@ -169,8 +169,8 @@ class ShowAttendance extends React.Component<Props, IState> {
                     setModalClient(undefined)
                 }
             } else {
-                if (this.state.event !== undefined) {
-                    this.props.addAttendance(c, this.state.event, (attendance) => {
+                if (this.state.event !== undefined && this.state.user !== undefined) {
+                    this.props.addAttendance(c, this.state.event, this.state.user, (attendance) => {
                         this.setState((state, props) => Object.assign({}, state, {
                             attendances: state.attendances.concat([attendance])
                         }))

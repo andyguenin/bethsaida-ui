@@ -4,7 +4,7 @@ import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import FileContainer from "../../components/app/FileContainer";
 import {Title} from "../../components/app/Title";
-import {LoadAllServices} from "../../services/Service";
+import {GetAllServices} from "../../services/Service";
 import Service from "../../data/Service";
 import {Loader} from "../../components/app/loader/Loader";
 import User from "../../data/User";

@@ -116,7 +116,8 @@ class AllMail extends React.Component<Props, State> {
             return Object.assign({}, state, {
                 mailClientBuilder: {user: currentUser},
                 endDate: BDate.fromDate(new Date()).jsDate,
-                closeUserId: ''
+                closeUserId: '',
+                modalError: undefined
             })
         })
     }
@@ -233,38 +234,16 @@ class AllMail extends React.Component<Props, State> {
                 submitButton={true}
                 onSubmit={this.submitForm}
             >
+                <ErrorMessage show={this.state.modalError !== undefined} errorMessage={this.state.modalError} />
                 <div className='form-group row'>
                     <label htmlFor='client' className='col-sm-2'>Client</label>
                     <div className='col-sm-10'>
-                        {
-                            (
-                                () => {
-
-                                    if (this.state.mailClientBuilder.client === undefined) {
-                                        return <ClientSelect
-                                            id='client'
-                                            clients={this.state.availableClients}
-                                            action={this.setClient}
-                                        />
-                                    } else {
-
-                                        return <div className='input-group'>
-                                            <input className='form-control disabled' disabled={true}
-                                                   value={this.state.mailClientBuilder.client.fullName}
-                                            />
-                                            <div className='input-group-append'>
-                                                <div className='input-group-text pointer' onClick={
-                                                    () => {
-                                                        this.setClient(undefined);
-                                                    }
-                                                }>Clear
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            )()
-                        }
+                        <ClientSelect
+                            id='client'
+                            clients={this.state.availableClients}
+                            action={this.setClient}
+                            selectedClient={this.state.mailClientBuilder.client}
+                        />
                     </div>
                 </div>
                 <div className='form-group row'>

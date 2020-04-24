@@ -80,7 +80,7 @@ export default class ServiceBuilder {
             return new Service(
                 this._id,
                 this._name,
-                ServiceType.SHELTER,
+                this._serviceType || ServiceType.SHELTER,
                 (this._defaultCapacity === -1 ? undefined : this._defaultCapacity)
             )
         }

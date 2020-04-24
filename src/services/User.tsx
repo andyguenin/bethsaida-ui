@@ -41,7 +41,6 @@ export const GetSingleUser = (id: string, success: (user: User) => void): AsyncA
 }
 
 
-
 export const GetAllUsers = (success: (users: User[]) => void): AsyncAction => {
     return (dispatch) => {
         fetch(Env.get().fullUrl() + '/user/', {
@@ -127,5 +126,13 @@ export const InitialPasswordSet = (email: string, token: string, password: strin
                 )
             }
         )
+    }
+}
+
+export const ForgetPassword = (email: string): AsyncAction => {
+    return (dispatch) => {
+        fetch(Env.get().fullUrl() + '/user/forgot-password/' + email, {
+            method: 'POST'
+        })
     }
 }

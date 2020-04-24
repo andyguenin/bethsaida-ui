@@ -5,19 +5,24 @@ import Service from "../data/Service";
 import ServiceBuilder from "../data/ServiceBuilder";
 import ClientBuilder from "../data/ClientBuilder";
 import {setErrorMessage} from "../actions/Base";
+import {ServiceType} from "../data/ServiceType";
+
 
 function parseService(input: any): Service {
+    const idx = +(input['serviceType']);
+    const serviceType = ServiceType[ServiceType[idx] as keyof typeof ServiceType];
+
     const service = new Service(
         input['id'],
         input['name'],
-        input['serviceType'],
+        serviceType,
         input['maxCapacity']
     );
     return service;
 }
 
 
-export const LoadAllServices = (update: (c: Service[]) => void): AsyncAction => {
+export const GetAllServices = (update: (c: Service[]) => void): AsyncAction => {
     return (dispatch) => {
         LoadAllServices2(update, (s) => dispatch(setErrorMessage(s)));
     }

@@ -5,13 +5,15 @@ import ServiceBase from "./ServiceBase";
 import {AsyncAction} from "../actions/Async";
 import {clearErrorMessage, setErrorMessage} from "../actions/Base";
 import Attendance from "../data/Attendance";
+import User from "../data/User";
 
 const parse = (data: any, id?: string): Attendance => {
     return new Attendance(
         data['id'] || id,
         new Date(data['checkInTime']),
         data['clientId'],
-        data['eventId']
+        data['eventId'],
+        data['userId']
     )
 }
 
@@ -36,7 +38,7 @@ export const removeAttendance = (id: string, act: (id: string) => void): AsyncAc
     }
 }
 
-export const getAttendanceRecords = (event: BethsaidaEvent, success: (attendances: Attendance[]) => void): AsyncAction => {
+export const GetAttendanceRecords = (event: BethsaidaEvent, success: (attendances: Attendance[]) => void): AsyncAction => {
     return (dispatch) => {
         fetch(Env.get().fullUrl() + '/attendance/event/' + event.id, {
             method: 'GET',
@@ -59,7 +61,7 @@ export const getAttendanceRecords = (event: BethsaidaEvent, success: (attendance
     }
 }
 
-export const createAttendanceRecord = (client: Client, event: BethsaidaEvent, success: (attendance: Attendance) => void): AsyncAction => {
+export const CreateAttendanceRecord = (client: Client, event: BethsaidaEvent, user: User, success: (attendance: Attendance) => void): AsyncAction => {
     return (dispatch) => {
         if (client.id !== undefined) {
             const checkInTime = new Date();
@@ -69,7 +71,8 @@ export const createAttendanceRecord = (client: Client, event: BethsaidaEvent, su
                 body: JSON.stringify({
                     eventId: event.id,
                     clientId: client.id,
-                    checkInTime: checkInTime
+                    checkInTime: checkInTime,
+                    userId: user.id
                 })
             }).then(
                 resp => {
@@ -80,7 +83,8 @@ export const createAttendanceRecord = (client: Client, event: BethsaidaEvent, su
                                     data['id'],
                                     checkInTime,
                                     client.id || '',
-                                    event.id
+                                    event.id,
+                                    user.id || ''
                                 );
                                 dispatch(clearErrorMessage())
                                 success(attend);

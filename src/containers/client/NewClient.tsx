@@ -58,7 +58,6 @@ class NewClient extends React.Component<Props, State> {
 
     render() {
         const builder = ClientBuilder.emptyBuilder().setIntakeUser(this.state.currentUser)
-        console.log(builder)
         return (
             <FileContainer>
                 <Title name="New Client" />

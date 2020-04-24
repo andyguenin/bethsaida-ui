@@ -9,7 +9,8 @@ import {userFilterFunc, userSortFunc} from "../../util/UserUtil";
 interface Props {
     id: string
     users: User[]
-    action: (u: User) => void
+    action: (u?: User) => void
+    selectedUser?: User
 }
 
 interface State {
@@ -71,29 +72,46 @@ export default class UserSelect extends React.Component<Props, State> {
 
 
     render(): React.ReactNode {
-        return (
-            <div className={'autocomplete'}
-                 onBlur={(e) => {
-                     setTimeout(() =>
-                         this.setState((state, props) => Object.assign({}, state, {submenuOpen: false})),
-                         200
-
-                     )
-                 }
-                 }
-            >
-                <input
-                    id={this.props.id}
-                    type='text'
-                    className='form-control'
-                    onChange={this.onChange}
-                    placeholder='Employee'
-                    value={this.state.text}
+        if(this.props.selectedUser === undefined) {
+            return (
+                <div className={'autocomplete'}
+                     onBlur={(e) => {
+                         setTimeout(() =>
+                                 this.setState((state, props) => Object.assign({}, state, {submenuOpen: false})),
+                             200
+                         )
+                     }
+                     }
+                >
+                    <input
+                        id={this.props.id}
+                        type='text'
+                        className='form-control'
+                        onChange={this.onChange}
+                        placeholder='Employee'
+                        value={this.state.text}
+                    />
+                    <div className={'autocomplete-items ' + (this.state.submenuOpen ? '' : 'd-none')}>
+                        {this.state.usersToShow.map(this.singleRow)}
+                    </div>
+                </div>
+            )
+        } else {
+            return <div className='input-group'>
+                <input className='form-control disabled' disabled={true}
+                       value={this.props.selectedUser.getFullName()}
                 />
-                <div className={'autocomplete-items ' + (this.state.submenuOpen ? '' : 'd-none')}>
-                    {this.state.usersToShow.map(this.singleRow)}
+                <div className='input-group-append'>
+                    <div className='input-group-text pointer' onClick={
+                        () => {
+                            this.setState((state, props) => Object.assign({}, state, {text: ''}),
+                                () => this.props.action(undefined)
+                            )
+                        }
+                    }>Clear
+                    </div>
                 </div>
             </div>
-        )
+        }
     }
 }

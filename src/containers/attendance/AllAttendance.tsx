@@ -5,12 +5,13 @@ import {AsyncDispatch} from "../../actions/Async";
 import FileContainer from "../../components/app/FileContainer";
 import {Title} from "../../components/app/Title";
 import {Loader} from "../../components/app/loader/Loader";
-import {LoadAllEvents} from "../../services/Event";
+import {GetAllEvents} from "../../services/Event";
 import BethsaidaEvent from "../../data/BethsaidaEvent";
 import Service from "../../data/Service";
-import {LoadAllServices} from "../../services/Service";
+import {GetAllServices} from "../../services/Service";
 import {GetAllUsers} from "../../services/User";
 import User from "../../data/User";
+import {ServiceType} from "../../data/ServiceType";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -20,8 +21,8 @@ const mapStateToProps = (state: AppState) => ({
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
-        loadAllEvents: (updateFunc: (events: BethsaidaEvent[]) => void, archive: boolean) => dispatch(LoadAllEvents(updateFunc, archive)),
-        loadAllServices: (updateFunc: (services: Service[]) => void) => dispatch(LoadAllServices(updateFunc)),
+        loadAllEvents: (updateFunc: (events: BethsaidaEvent[]) => void, archive: boolean) => dispatch(GetAllEvents(updateFunc, archive, ServiceType.SHELTER)),
+        loadAllServices: (updateFunc: (services: Service[]) => void) => dispatch(GetAllServices(updateFunc)),
         loadAllUsers: (updateFunc: (users: User[]) => void) => dispatch(GetAllUsers(updateFunc))
     }
 }
@@ -117,13 +118,30 @@ class AllAttendance extends React.Component<Props, State> {
                     <button type='button' className='btn btn-success form-control'
                             onClick={() => window.location.href = '/shelter/new'}>New Attendance Sheet
                     </button>
-                    <button
-                        className='btn btn-info form-control'
-                        type='button'
-                        onClick={() => window.location.href = '/shelter/archive'}
-                    >
-                        Attendance Sheet Archive
-                    </button>
+                    {
+                        (
+                            () => {
+                                if(this.props.archive) {
+                                    return <button
+                                        className='btn btn-info form-control'
+                                        type='button'
+                                        onClick={() => window.location.href = '/shelter'}
+                                    >
+                                        Active Attendance Sheets
+                                    </button>
+                                } else {
+                                    return <button
+                                        className='btn btn-info form-control'
+                                        type='button'
+                                        onClick={() => window.location.href = '/shelter/archive'}
+                                    >
+                                        Attendance Sheet Archive
+                                    </button>
+                                }
+                            }
+                        )()
+                    }
+
                 </Title>
                 <Loader
                     loading={this.state.loading}

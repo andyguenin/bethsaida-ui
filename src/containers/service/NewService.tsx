@@ -39,7 +39,9 @@ class NewService extends React.Component<Props> {
                 <ModifyService
                     service={ServiceBuilder.emptyBuilder()}
                     cancelAction={() => window.location.href='/service'}
-                    submitAction={(c: ServiceBuilder) => {this.props.newService(c); return true;}}
+                    submitAction={(c: ServiceBuilder) => {
+                        this.props.newService(c); return true;
+                    }}
                     submitText='Create Service'
                 />
             </FileContainer>

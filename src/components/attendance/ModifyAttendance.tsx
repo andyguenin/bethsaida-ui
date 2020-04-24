@@ -3,7 +3,7 @@ import ServiceBuilder from "../../data/ServiceBuilder";
 import {ServiceType} from "../../data/ServiceType";
 import BethsaidaAttendanceBuilder from "../../data/BethsaidaEventBuilder";
 import Service from "../../data/Service";
-import {LoadAllServices, LoadAllServices2} from "../../services/Service";
+import {GetAllServices, LoadAllServices2} from "../../services/Service";
 import {Loader} from "../app/loader/Loader";
 
 

@@ -250,35 +250,13 @@ class AllLockers extends React.Component<Props, State> {
                     <div className='form-group row'>
                         <label htmlFor='client' className='col-sm-2'>Client</label>
                         <div className='col-sm-10'>
-                            {
-                                (
-                                    () => {
 
-                                        if (this.state.lockerBuilder.client === undefined) {
-                                            return <ClientSelect
-                                                id='client'
-                                                clients={this.state.availableClients}
-                                                action={this.setClient}
-                                            />
-                                        } else {
-
-                                            return <div className='input-group'>
-                                                <input className='form-control disabled' disabled={true}
-                                                       value={this.state.lockerBuilder.client.fullName}
-                                                />
-                                                <div className='input-group-append'>
-                                                    <div className='input-group-text pointer' onClick={
-                                                        () => {
-                                                            this.setClient(undefined);
-                                                        }
-                                                    }>Clear
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        }
-                                    }
-                                )()
-                            }
+                            <ClientSelect
+                                id='client'
+                                clients={this.state.availableClients}
+                                action={this.setClient}
+                                selectedClient={this.state.lockerBuilder.client}
+                            />
                         </div>
                     </div>
                     <div className='form-group row'>

@@ -5,6 +5,8 @@ import BethsaidaEvent from "../data/BethsaidaEvent";
 import EventBuilder from "../data/BethsaidaEventBuilder";
 import BDate from "../data/BDate";
 import {setErrorMessage} from "../actions/Base";
+import {ServiceType} from "../data/ServiceType";
+import {Race} from "../data/Race";
 
 function parseEvent(input: any): BethsaidaEvent {
     const event = new BethsaidaEvent(
@@ -22,9 +24,10 @@ function parseEvent(input: any): BethsaidaEvent {
 }
 
 
-export const LoadAllEvents = (update: (c: BethsaidaEvent[]) => void, archive: boolean): AsyncAction => {
+export const GetAllEvents = (update: (c: BethsaidaEvent[]) => void, archive: boolean, serviceType: ServiceType): AsyncAction => {
     return (dispatch) => {
-        fetch(Env.get().fullUrl() + '/event/' + (archive ? '' : 'active'), {
+        const s = ServiceType[serviceType].toString().toLocaleLowerCase()
+        fetch(Env.get().fullUrl() + '/event/' + (archive ? '' : 'active/') + s, {
             method: 'GET',
             headers: ServiceBase.authenticationHeader
         }).then(
@@ -67,7 +70,7 @@ export const GetSingleEvent = (id: string, action: (c: BethsaidaEvent) => void):
     }
 }
 
-export const NewEventRequest = (builder: EventBuilder, successAction: (id: string) => void): AsyncAction =>
+export const NewEvent = (builder: EventBuilder, successAction: (id: string) => void): AsyncAction =>
     (dispatch) => {
         fetch(Env.get().fullUrl() + '/event/new', {
             method: 'POST',

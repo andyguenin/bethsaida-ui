@@ -29,6 +29,8 @@ import ResetPassword from "../../containers/user/ResetPassword";
 import Confirm from "../../containers/user/Confirm";
 import AllLockers from "../../containers/lockers/AllLockers";
 import AllMail from "../../containers/mail/AllMail";
+import ForgotPassword from "../../containers/user/ForgotPassword";
+import AllShowers from "../../containers/shower/AllShowers";
 
 
 export default class App extends React.Component<{}> {
@@ -43,6 +45,7 @@ export default class App extends React.Component<{}> {
                             <Route exact path='/login' component={Login}/>
                             <Route exact path='/logout' component={Logout}/>
                             <Route exact path='/confirm/:email/:token' component={Confirm} />
+                            <Route exact path='/forgot-password' component={ForgotPassword} />
 
                             <Route exact path='/profile' component={Profile} />
                             <Route exact path='/admin' component={AllUsers} />
@@ -70,6 +73,8 @@ export default class App extends React.Component<{}> {
                             <Route exact path="/locker" component={AllLockers} />
 
                             <Route exact path='/mail' component={AllMail} />
+
+                            <Route exact path='/shower' component={AllShowers} />
 
                             <Route exact path="/" component={Home}/>
                             <Route path="/" component={NotFound}/>
