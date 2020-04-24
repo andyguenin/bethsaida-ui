@@ -151,7 +151,7 @@ class AllShowers extends React.Component<Props, State> {
                             })
                             return state;
                         }
-                    })
+                    }, andThen)
                 })
         })
     }
@@ -197,12 +197,6 @@ class AllShowers extends React.Component<Props, State> {
 
         this.setState((state, props) => {
             const clientsToShow = state.clients.filter(c => attendances.find(a => a.clientId === c.id) === undefined)
-
-
-
-            console.log(state.clients)
-            console.log(attendances)
-            console.log(clientsToShow)
 
             return Object.assign({}, state, {
                 loading: false,
@@ -293,7 +287,7 @@ class AllShowers extends React.Component<Props, State> {
                     <div className='form-group row'>
                         <label htmlFor='shower_date' className='col-sm-2'>Shower Date</label>
                         <div className={'col-sm-10'}>
-                            <input type='date' className='form-control' id='shower_date'
+                            <input type='date' className='form-control' id='shower_date' disabled={true}
                                    placeholder='Shower Date'
                                    value={this.state.attendanceBuilder?.date}
                                    onChange={(e) => {
@@ -316,9 +310,9 @@ class AllShowers extends React.Component<Props, State> {
                             <UserSelect
                                 id='employee'
                                 users={this.state.users}
-                                action={(client) => this.setState((state, props) => {
+                                action={(user) => this.setState((state, props) => {
                                     return Object.assign({}, state, {
-                                        attendanceBuilder: Object.assign({}, state.attendanceBuilder, {client})
+                                        attendanceBuilder: Object.assign({}, state.attendanceBuilder, {user})
                                     })
                                 })}
                                 selectedUser={this.state.attendanceBuilder?.user}
@@ -327,27 +321,6 @@ class AllShowers extends React.Component<Props, State> {
                     </div>
 
                 </FormModal>
-
-                <FormModal
-                    title={'Check in a client'}
-                    show={false}
-                    close={() => undefined}
-                    submitButton={true}
-                    onSubmit={() => undefined}
-                >
-                    <div className='form-group row'>
-                        <label htmlFor='end_date' className='col-sm-2'>Assignment End Date</label>
-                        <div className={'col-sm-10'}>
-                            {/*<input type='date' className='form-control' id='end_date'*/}
-                            {/*       placeholder='End Date'*/}
-                            {/*       value={this.state.lockerBuilder.endDate}*/}
-                            {/*       onChange={this.onLockerUpdate("endDate")}*/}
-                            {/*       autoComplete="off"*/}
-                            {/*/>*/}
-                        </div>
-                    </div>
-                </FormModal>
-
                 <Loader loading={this.state.loading} emptyText={'No clients have showered on this day.'}
                         isEmpty={this.state.attendance.length === 0}>
                     <table className='table table-hover'>

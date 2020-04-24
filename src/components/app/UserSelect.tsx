@@ -84,7 +84,7 @@ export default class UserSelect extends React.Component<Props, State> {
                      }
                 >
                     <input
-                        id={this.props.id}
+                        id={'clientselect-' + this.props.id}
                         type='text'
                         className='form-control'
                         onChange={this.onChange}
