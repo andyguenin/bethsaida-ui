@@ -7,6 +7,10 @@ import FileContainer from "../../components/app/FileContainer";
 import {GetSummaryStats} from "../../services/Stats";
 import SummaryStats from "../../data/SummaryStats";
 import {Loader} from "../../components/app/loader/Loader";
+import Chart from "../../components/app/Chart";
+import Series from "../../data/chart/Series";
+import DatePoint from "../../data/chart/DatePoint";
+import {Chart2} from "../../components/app/Chart2";
 
 const mapStateToProps = (state: AppState) => state
 
@@ -32,6 +36,27 @@ interface State {
 
 class Dashboard extends React.Component<Props, State> {
 
+    generateSeries = () => {
+
+        let dates: Date[] = [];
+        for (let i = 0; i < 30; ++i) {
+            dates.push(new Date(2020, 0, i + 1))
+        }
+        let l: any = {'Day Shelter': [40, 50], 'Night Shelter': [30, 40], 'Showers': [10, 20]}
+        const series = ['Day Shelter', 'Night Shelter', 'Showers']
+        const a = series.map(s => {
+            const range = l[s]
+            const min = range[0]
+            const max = range[1]
+            return new Series(s,
+                dates.map(date => {
+                    return new DatePoint(date, Math.random() * (max - min) + min)
+                })
+            )
+        })
+        return a;
+    }
+
     constructor(props: Props) {
         super(props);
         this.state = {}
@@ -43,19 +68,16 @@ class Dashboard extends React.Component<Props, State> {
     public render() {
         return (
             <FileContainer>
-                <Title name='Dashboard' />
+                <Title name='Dashboard'/>
                 <Loader loading={this.state.stats === undefined} emptyText={''} isEmpty={false}>
                     <div className='row'>
-                        <div className='col-md-4'>
-                            <h2>Quick Facts</h2>
-                            <table className='table table-bordered table-hover'>
-                                <tr><td>Number of Clients</td><td>{this.state.stats?.numClients}</td></tr>
-                                <tr><td>Number of Unique Visits</td><td>{this.state.stats?.numUniqueVisits}</td></tr>
-                                <tr><td>Number of Attendance Sheets</td><td>{this.state.stats?.numAttendanceSheets}</td></tr>
-                            </table>
+                        <div className='col-12'>
+                            <Chart2 id={'abc'} className={'tall-chart'} data={this.generateSeries()}/>
                         </div>
-                        <div className='col-md-4'>
-                            <h2>Today's Activity</h2>
+                    </div>
+                    <div className='row'>
+                        <div className='col-12'>
+                            <Chart2 id={'def'} data={this.generateSeries()}/>
                         </div>
                     </div>
                 </Loader>

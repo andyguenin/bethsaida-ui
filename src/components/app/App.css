@@ -144,3 +144,6 @@ div.text-editor {
   font-size: 22px;
   display: inline;
   background-color: rgba(0, 0, 0, 0); }
+
+.tall-chart {
+  height: 300px; }
