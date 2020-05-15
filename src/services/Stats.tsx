@@ -2,6 +2,7 @@ import {AsyncAction} from "../actions/Async";
 import Env from "../environment/Env";
 import ServiceBase from "./ServiceBase";
 import SummaryStats from "../data/SummaryStats";
+import Stats from "../data/Stats";
 
 export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction => {
     return (d) => {
@@ -9,13 +10,36 @@ export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction 
             method: 'GET',
             headers: ServiceBase.authenticationHeader
         }).then(resp => {
-            if(resp.ok) {
+            if (resp.ok) {
                 resp.json().then(
                     json => {
                         const stats = new SummaryStats(
                             json['numAttendanceSheets'],
                             json['numClients'],
-                            json['numUniqueVisits']
+                            json['numUniqueVisits'],
+                            json['monthlyStats'].map((d: any) => new Stats(
+                                d['month'],
+                                d['year'],
+                                d['numClients'],
+                                d['numEvents'],
+                                d['numFemale'],
+                                d['numMale'],
+                                d['serviceName'],
+                                d['totalVisits']
+                                )
+                            ),
+                            json['dailyStats'].map((d: any) => new Stats(
+                                d['month'],
+                                d['year'],
+                                d['numClients'],
+                                d['numEvents'],
+                                d['numFemale'],
+                                d['numMale'],
+                                d['serviceName'],
+                                d['totalVisits'],
+                                d['day']
+                                )
+                            )
                         )
                         action(stats)
                     }

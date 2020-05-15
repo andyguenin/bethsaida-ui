@@ -1,6 +1,7 @@
 //@import "~bootstrap/scss/_functions.scss";
 //@import "~bootstrap/scss/_variables.scss";
 //@import "~bootstrap/scss/mixins/_breakpoints.scss";
+//@import "~open-iconic/font/css/open-iconic-bootstrap.scss";
 
 $ddb-orange: orange;
 
@@ -209,3 +210,22 @@ div.text-editor {
 .tall-chart {
   height: 300px;
 }
+
+.chart {
+  margin-bottom: 30px;
+}
+
+.expander {
+  width: 100%;
+  cursor: pointer;
+  margin-bottom: 50px;
+  padding-left: 75px;
+}
+
+.chart-group {
+  border: 1px solid #d0bcac;
+  margin-bottom: 20px;
+  padding: 5px;
+  border-radius: 5px;
+}
+

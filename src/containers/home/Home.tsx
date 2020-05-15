@@ -7,10 +7,14 @@ import FileContainer from "../../components/app/FileContainer";
 import {GetSummaryStats} from "../../services/Stats";
 import SummaryStats from "../../data/SummaryStats";
 import {Loader} from "../../components/app/loader/Loader";
-import Chart from "../../components/app/Chart";
+import {DailyLineChart} from "../../components/app/chart/DailyLineChart";
 import Series from "../../data/chart/Series";
 import DatePoint from "../../data/chart/DatePoint";
-import {Chart2} from "../../components/app/Chart2";
+import {MonthlyBarChart} from "../../components/app/chart/MonthlyBarChart";
+import Stats from "../../data/Stats";
+import Expander from "../../components/app/Expander";
+import {MonthlyLineChart} from "../../components/app/chart/MonthlyLineChart";
+import DataTable from "../../components/app/DataTable";
 
 const mapStateToProps = (state: AppState) => state
 
@@ -32,36 +36,79 @@ type Props = PropsFromRedux & {}
 
 interface State {
     stats?: SummaryStats
+    filteredIntakeSeries: Series
+    nonIntakeSeries: Series[]
+    nonIntakeDailySeries: Series[]
 }
 
 class Dashboard extends React.Component<Props, State> {
 
-    generateSeries = () => {
+    dateformat = require('dateformat')
 
-        let dates: Date[] = [];
-        for (let i = 0; i < 30; ++i) {
-            dates.push(new Date(2020, 0, i + 1))
-        }
-        let l: any = {'Day Shelter': [40, 50], 'Night Shelter': [30, 40], 'Showers': [10, 20]}
-        const series = ['Day Shelter', 'Night Shelter', 'Showers']
-        const a = series.map(s => {
-            const range = l[s]
-            const min = range[0]
-            const max = range[1]
-            return new Series(s,
-                dates.map(date => {
-                    return new DatePoint(date, Math.random() * (max - min) + min)
+    extractFilteredIntakeSeries = (monthlyStats: Stats[]) => {
+        const s = new Series("Intake", monthlyStats.map(ms =>
+                new DatePoint(new Date(ms.year, ms.month), ms.totalVisits)
+            )
+                .filter(dp => {
+                    const monthDiff =
+                        (new Date().getFullYear() - dp.t.getFullYear()) * 12 + (new Date().getMonth() - dp.t.getMonth())
+                    return monthDiff >= 0 && monthDiff <= 24
+                }).sort((a, b) => {
+                    return -(b.t.getFullYear() * 12 + b.t.getMonth()) + (a.t.getFullYear() * 12 + a.t.getMonth())
                 })
+        )
+        return s;
+    }
+
+    extractSeries = (monthlyState: Stats[], firstDayOfPeriod: Date, mapper: (s: Stats) => number): Series[] => {
+        let names: string[] = monthlyState
+            .map(d => d.serviceName)
+            .sort((a, b) => a.localeCompare(b))
+        names = names
+            .filter((d, i) => {
+                return i === 0 || names[i - 1] !== d
+            })
+
+        const ret = names.map(n => {
+            return new Series(
+                n,
+                monthlyState
+                    .filter(s => s.serviceName === n).filter(s => new Date(s.year, s.month - 1, s.day) >= firstDayOfPeriod)
+                    .map(r => new DatePoint(new Date(r.year, r.month - 1, r.day), mapper(r)))
             )
         })
-        return a;
+        return ret;
     }
 
     constructor(props: Props) {
         super(props);
-        this.state = {}
+        this.state = {
+            nonIntakeSeries: [],
+            filteredIntakeSeries: new Series("intake", []),
+            nonIntakeDailySeries: []
+        }
+
+        const now = new Date()
+        const month24Ago = new Date(now.getFullYear(), now.getMonth() - 24, 1)
+
+        const day30Ago = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30)
+
+
         this.props.summaryStats(stats => {
-            this.setState(Object.assign({}, this.state, {stats}))
+            this.setState(Object.assign({}, this.state, {
+                stats,
+                nonIntakeSeries: this.extractSeries(
+                    stats.monthlyStats.filter(r => r.serviceName.toLowerCase() !== 'intake'),
+                    month24Ago,
+                    r => r.totalVisits
+                ),
+                filteredIntakeSeries: this.extractFilteredIntakeSeries(stats.monthlyStats.filter(r => r.serviceName.toLowerCase() === 'intake')),
+                nonIntakeDailySeries: this.extractSeries(
+                    stats.dailyStats,
+                    day30Ago,
+                    r => r.totalVisits
+                )
+            }))
         })
     }
 
@@ -71,13 +118,39 @@ class Dashboard extends React.Component<Props, State> {
                 <Title name='Dashboard'/>
                 <Loader loading={this.state.stats === undefined} emptyText={''} isEmpty={false}>
                     <div className='row'>
-                        <div className='col-12'>
-                            <Chart2 id={'abc'} className={'tall-chart'} data={this.generateSeries()}/>
+                        <div className='col-xl-6'>
+                            <div className={'chart-group'}>
+                                <MonthlyLineChart id={'month-24-by-service'} className={'tall-chart'}
+                                                  title={'Trailing 24 month unique visits by service'}
+                                                  data={this.state.nonIntakeSeries}/>
+                                <br/>
+                                <Expander header={'Data Values'}>
+                                    <DataTable data={this.state.nonIntakeSeries} monthly={true}/>
+                                </Expander>
+                            </div>
                         </div>
-                    </div>
-                    <div className='row'>
-                        <div className='col-12'>
-                            <Chart2 id={'def'} data={this.generateSeries()}/>
+
+                        <div className='col-xl-6'>
+                            <div className={'chart-group'}>
+                                <MonthlyBarChart id={'month-24-intake'} className={'tall-chart'}
+                                                 title={'Trailing 24 monthly new intake'}
+                                                 data={this.state.filteredIntakeSeries}/> <br/>
+                                <Expander header={'Data Values'}>
+                                    <DataTable data={[this.state.filteredIntakeSeries]} monthly={true}/>
+                                </Expander>
+                            </div>
+                        </div>
+
+                        <div className='col-xl-12'>
+                            <div className={'chart-group'}>
+                                <DailyLineChart id={'day-30-usage'} className={'tall-chart'}
+                                                title={'30 day service usage'}
+                                                data={this.state.nonIntakeDailySeries}/><br/>
+                                <Expander header={'30 day service usage values'}>
+                                    <DataTable data={this.state.nonIntakeDailySeries} monthly={false}/>
+                                </Expander>
+                            </div>
+
                         </div>
                     </div>
                 </Loader>

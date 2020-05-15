@@ -31,6 +31,11 @@ import AllLockers from "../../containers/lockers/AllLockers";
 import AllMail from "../../containers/mail/AllMail";
 import ForgotPassword from "../../containers/user/ForgotPassword";
 import AllShowers from "../../containers/shower/AllShowers";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fab, faChevronDown, faChevronUp)
 
 
 export default class App extends React.Component<{}> {

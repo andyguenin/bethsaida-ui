@@ -1,4 +1,5 @@
 import BDate from "../data/BDate";
+import ArrayUtil from "./ArrayUtil";
 
 export default class DateUtil {
 
@@ -15,5 +16,35 @@ export default class DateUtil {
         } else {
             return undefined;
         }
+    }
+
+    public static getEqualSpacedSeries(l: Date[], monthly: boolean): Date[] {
+        const sorted = l.sort((a, b) => b < a ? 1 : (b === a ? 0 : -1))
+
+        if(monthly) {
+            const months = ((sorted[sorted.length - 1].getFullYear() * 12 + sorted[sorted.length - 1].getMonth())) -
+                (sorted[0].getFullYear() * 12 + sorted[0].getMonth()) + 1
+
+            let retval: Date[] = []
+
+            for(let i = 0; i < months; ++i) {
+                retval = retval.concat(new Date(sorted[0].getFullYear(), sorted[0].getMonth() + i))
+            }
+            return retval;
+        } else {
+            let date = sorted[0]
+
+            let retval: Date[] = []
+
+            while(date <= sorted[sorted.length - 1]) {
+                retval = retval.concat(date)
+                date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)
+            }
+
+            return retval;
+        }
+
+
+
     }
 }
