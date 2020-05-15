@@ -35,13 +35,26 @@ type PropsFromRedux = ConnectedProps<typeof connector>
 
 type Props = PropsFromRedux & {}
 
+interface YearlyStats {
+    previous_year: Stats,
+    current_year: Stats,
+    current_year_proj: Stats,
+    previous_year_white: number,
+    current_year_white: number,
+    current_year_proj_white: number,
+    previous_year_nonwhite: number,
+    current_year_nonwhite: number,
+    current_year_proj_nonwhite: number,
+}
+
 interface State {
     stats?: SummaryStats
     filteredIntakeSeries: Series
-    month24uniqueVisits: Series[]
-    month24totalVisits: Series[]
+    month12uniqueVisits: Series[]
+    month12totalVisits: Series[]
     day30uniqueVisits: Series[]
-    day30dayShelterGender: Series[]
+    month30dayShelterGender: Series[]
+    yearlyStats: YearlyStats
 }
 
 class Dashboard extends React.Component<Props, State> {
@@ -55,7 +68,7 @@ class Dashboard extends React.Component<Props, State> {
                 .filter(dp => {
                     const monthDiff =
                         (new Date().getFullYear() - dp.t.getFullYear()) * 12 + (new Date().getMonth() - dp.t.getMonth())
-                    return monthDiff >= 0 && monthDiff <= 24
+                    return monthDiff >= 0 && monthDiff <= 12
                 }).sort((a, b) => {
                     return -(b.t.getFullYear() * 12 + b.t.getMonth()) + (a.t.getFullYear() * 12 + a.t.getMonth())
                 })
@@ -63,8 +76,8 @@ class Dashboard extends React.Component<Props, State> {
         return s;
     }
 
-    extractSeries = (monthlyState: Stats[], firstDayOfPeriod: Date, mapper: (s: Stats) => number): Series[] => {
-        let names: string[] = monthlyState
+    extractSeries = (stats: Stats[], firstDayOfPeriod: Date, mapper: (s: Stats) => number): Series[] => {
+        let names: string[] = stats
             .map(d => d.serviceName)
             .sort((a, b) => a.localeCompare(b))
         names = names
@@ -75,7 +88,7 @@ class Dashboard extends React.Component<Props, State> {
         const ret = names.map(n => {
             return new Series(
                 n,
-                monthlyState
+                stats
                     .filter(s => s.serviceName === n).filter(s => new Date(s.year, s.month - 1, s.day) >= firstDayOfPeriod)
                     .map(r => new DatePoint(new Date(r.year, r.month - 1, r.day), mapper(r)))
             )
@@ -86,15 +99,26 @@ class Dashboard extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            month24uniqueVisits: [],
-            month24totalVisits: [],
+            month12uniqueVisits: [],
+            month12totalVisits: [],
             filteredIntakeSeries: new Series("intake", []),
             day30uniqueVisits: [],
-            day30dayShelterGender: []
+            month30dayShelterGender: [],
+            yearlyStats: {
+                current_year: Stats.empty(),
+                current_year_proj: Stats.empty(),
+                previous_year: Stats.empty(),
+                current_year_nonwhite: 0,
+                current_year_proj_nonwhite: 0,
+                previous_year_nonwhite: 0,
+                current_year_proj_white: 0,
+                current_year_white: 0,
+                previous_year_white: 0
+            }
         }
 
         const now = new Date()
-        const month24Ago = new Date(now.getFullYear(), now.getMonth() - 24, 1)
+        const month12Ago = new Date(now.getFullYear(), now.getMonth() - 12, 1)
 
         const day30Ago = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 30)
 
@@ -117,7 +141,7 @@ class Dashboard extends React.Component<Props, State> {
                         .filter(s => s.serviceName.toLowerCase() === 'day shelter')
                         .filter(s => {
                             const d = new Date(s.year, s.month, s.day)
-                            const com = (d >= month24Ago && d <= new Date())
+                            const com = (d >= month12Ago && d <= new Date())
                             return com
                         })
                         .map(r => new DatePoint(new Date(r.year, r.month, r.day), f(r)))
@@ -126,14 +150,14 @@ class Dashboard extends React.Component<Props, State> {
 
             this.setState(Object.assign({}, this.state, {
                 stats,
-                month24uniqueVisits: this.extractSeries(
+                month12uniqueVisits: this.extractSeries(
                     stats.monthlyStats.filter(r => r.serviceName.toLowerCase() !== 'intake'),
-                    month24Ago,
+                    month12Ago,
                     r => r.numClients
                 ),
-                month24totalVisits: this.extractSeries(
+                month12totalVisits: this.extractSeries(
                     stats.monthlyStats.filter(r => r.serviceName.toLowerCase() !== 'intake'),
-                    month24Ago,
+                    month12Ago,
                     r => r.totalVisits
                 ),
                 filteredIntakeSeries: this.extractFilteredIntakeSeries(stats.monthlyStats.filter(r => r.serviceName.toLowerCase() === 'intake')),
@@ -142,9 +166,29 @@ class Dashboard extends React.Component<Props, State> {
                     day30Ago,
                     r => r.totalVisits
                 ),
-                day30dayShelterGender: genderBreakdown
+                month30dayShelterGender: genderBreakdown,
+                yearlyStats: {
+                    current_year: stats.yearlyStats.find(r => r.serviceName === 'current_total') || Stats.empty(),
+                    current_year_proj: stats.yearlyStats.find(r => r.serviceName === 'current_projection') || Stats.empty(),
+                    previous_year: stats.yearlyStats.find(r => r.serviceName === 'prev_total') || Stats.empty(),
+                    current_year_nonwhite: stats.getNumberOfNonwhite('current_total'),
+                    current_year_proj_nonwhite: stats.getNumberOfNonwhite('current_projection'),
+                    previous_year_nonwhite: stats.getNumberOfNonwhite('prev_total'),
+                    current_year_proj_white: stats.getNumberOfWhite('current_total'),
+                    current_year_white: stats.getNumberOfWhite('current_projection'),
+                    previous_year_white: stats.getNumberOfWhite('prev_total')
+
+                }
             }))
         })
+    }
+
+    private percentOrDash(num: number): string {
+        if(isNaN(num)) {
+            return '-'
+        } else {
+            return (num * 100).toFixed(2) + '%'
+        }
     }
 
     public render() {
@@ -155,31 +199,127 @@ class Dashboard extends React.Component<Props, State> {
                     <div className='row'>
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
-                                <MonthlyLineChart id={'month-24-unique-by-service'} className={'tall-chart'}
-                                                  title={'Trailing 24 month unique visits by service'}
-                                                  data={this.state.month24uniqueVisits}/>
+                                <table className='table table-hover'>
+                                    <thead className='thead-dark'>
+                                    <tr>
+                                        <th> </th>
+                                        <th>{new Date().getFullYear() - 1}</th>
+                                        <th>{new Date().getFullYear()} (projected)</th>
+                                        <th>{new Date().getFullYear()}</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>Unique Client Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year.numClients}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj.numClients}</td>
+                                        <td>{this.state.yearlyStats.current_year.numClients}</td>
+
+                                    </tr>
+                                    <tr className={'divider'}>
+                                        <td>Total Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year.totalVisits}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj.totalVisits}</td>
+                                        <td>{this.state.yearlyStats.current_year.totalVisits}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Number Female Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year.numFemale}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj.numFemale}</td>
+                                        <td>{this.state.yearlyStats.current_year.numFemale}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Number Male Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year.numMale}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj.numMale}</td>
+                                        <td>{this.state.yearlyStats.current_year.numMale}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Number Other Gender Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year.numOther()}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj.numOther()}</td>
+                                        <td>{this.state.yearlyStats.current_year.numOther()}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Percent Female Visits</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year.numFemale / this.state.yearlyStats.previous_year.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj.numFemale / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year.numFemale / this.state.yearlyStats.current_year.totalVisits)}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Percent Male Visits</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year.numMale / this.state.yearlyStats.previous_year.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj.numMale / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year.numMale / this.state.yearlyStats.current_year.totalVisits)}</td>
+
+                                    </tr>
+                                    <tr className='divider'>
+                                        <td>Percent Other Gender Visits</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year.numOther() / this.state.yearlyStats.previous_year.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj.numOther() / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year.numOther() / this.state.yearlyStats.current_year.totalVisits)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Number White Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year_white}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj_white}</td>
+                                        <td>{this.state.yearlyStats.current_year_white}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Number Non-white Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year_nonwhite}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj_nonwhite}</td>
+                                        <td>{this.state.yearlyStats.current_year_nonwhite}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Percent White Visits</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year_white / this.state.yearlyStats.previous_year.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_white / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_white / this.state.yearlyStats.current_year.totalVisits)}</td>
+
+                                    </tr>
+                                    <tr className=''>
+                                        <td>Percent Non-white Visits</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year_nonwhite / this.state.yearlyStats.previous_year.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_nonwhite / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_nonwhite / this.state.yearlyStats.current_year.totalVisits)}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className='col-xl-6'>
+                            <div className={'chart-group'}>
+                                <MonthlyLineChart id={'month-12-unique-by-service'} className={'tall-chart'}
+                                                  title={'Trailing 12 month unique visits by service'}
+                                                  data={this.state.month12uniqueVisits}/>
                                 <br/>
                                 <Expander header={'Data Values'}>
-                                    <DataTable data={this.state.month24uniqueVisits} monthly={true}/>
+                                    <DataTable data={this.state.month12uniqueVisits} monthly={true}/>
                                 </Expander>
                             </div>
                         </div>
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
-                                <MonthlyLineChart id={'month-24-total-by-service'} className={'tall-chart'}
-                                                  title={'Trailing 24 month total visits by service'}
-                                                  data={this.state.month24totalVisits}/>
+                                <MonthlyLineChart id={'month-12-total-by-service'} className={'tall-chart'}
+                                                  title={'Trailing 12 month total visits by service'}
+                                                  data={this.state.month12totalVisits}/>
                                 <br/>
                                 <Expander header={'Data Values'}>
-                                    <DataTable data={this.state.month24totalVisits} monthly={true}/>
+                                    <DataTable data={this.state.month12totalVisits} monthly={true}/>
                                 </Expander>
                             </div>
                         </div>
 
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
-                                <MonthlyBarChart id={'month-24-intake'} className={'tall-chart'}
-                                                 title={'Trailing 24 monthly new intake'}
+                                <MonthlyBarChart id={'month-12-intake'} className={'tall-chart'}
+                                                 title={'Trailing 12 monthly new intake'}
                                                  data={this.state.filteredIntakeSeries}/> <br/>
                                 <Expander header={'Data Values'}>
                                     <DataTable data={[this.state.filteredIntakeSeries]} monthly={true}/>
@@ -189,11 +329,11 @@ class Dashboard extends React.Component<Props, State> {
 
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
-                                <MonthlyLineChart id={'month-24-day-shelter-gender'} className={'tall-chart'}
-                                                 title={'Trailing 24 monthly unique visits by gender'}
-                                                 data={this.state.day30dayShelterGender}/> <br/>
+                                <MonthlyLineChart id={'day-30-day-shelter-gender'} className={'tall-chart'}
+                                                 title={'Trailing 12 month Day Shelter visits by gender'}
+                                                 data={this.state.month30dayShelterGender}/> <br/>
                                 <Expander header={'Data Values'}>
-                                    <DataTable data={this.state.day30dayShelterGender} monthly={true}/>
+                                    <DataTable data={this.state.month30dayShelterGender} monthly={true}/>
                                 </Expander>
                             </div>
                         </div>

@@ -30,7 +30,17 @@ export class MonthlyLineChart extends React.Component {
 
 
     componentDidMount() {
+        window.addEventListener('resize', this.create_chart)
+        this.create_chart()
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.create_chart)
+    }
+
+    create_chart = () => {
         if (this.dates.length > 1 && this.raw_data.length > 0) {
+            select('#' + this.props.id).selectAll("*").remove()
 
             const dateformat = require('dateformat')
 

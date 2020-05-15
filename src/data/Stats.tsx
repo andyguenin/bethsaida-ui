@@ -1,4 +1,4 @@
-export default class Stats {
+export default class  Stats {
     readonly month: number
     readonly year: number
     readonly day: number
@@ -30,4 +30,14 @@ export default class Stats {
         this.serviceName = serviceName;
         this.totalVisits = totalVisits;
     }
+
+    public numOther(): number {
+        return this.totalVisits - this.numFemale - this.numMale
+    }
+
+
+    public static empty(): Stats {
+        return new Stats(1, 1900, 0, 0, 0, 0, '', 0)
+    }
+
 }

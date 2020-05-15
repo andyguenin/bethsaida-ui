@@ -10,6 +10,16 @@ export class DailyBarChart extends React.Component {
 
 
     componentDidMount() {
+        this.create_chart()
+        window.addEventListener('resize', this.create_chart)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.create_chart)
+    }
+
+    create_chart = () => {
+        select('#' + this.props.id).selectAll("*").remove()
         const raw_data = this.props.data
 
         const data = [raw_data]

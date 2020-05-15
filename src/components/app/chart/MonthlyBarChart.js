@@ -6,10 +6,19 @@ import {colors} from './Color'
 export class MonthlyBarChart extends React.Component {
 
     componentDidMount() {
+        this.create_chart()
+        window.addEventListener('resize', this.create_chart)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.create_chart)
+    }
+
+    create_chart = () => {
         const raw_data = this.props.data.data
 
         if(raw_data.length > 1) {
-
+            select('#' + this.props.id).selectAll("*").remove()
 
             const dateformat = require('dateformat')
 

@@ -162,3 +162,6 @@ div.text-editor {
   margin-bottom: 20px;
   padding: 5px;
   border-radius: 5px; }
+
+.divider {
+  border-bottom: 2px solid; }
