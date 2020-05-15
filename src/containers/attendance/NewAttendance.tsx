@@ -36,7 +36,7 @@ class NewAttendance extends React.Component<Props> {
     render() {
         return (
             <FileContainer>
-                <Title name="New Attendance Sheet" />
+                <Title name=" New Attendance Sheet" />
                 <ModifyAttendance
                     attendance={BethsaidaEventBuilder.emptyBuilder()}
                     cancelAction={() => window.location.href='/shelter'}

@@ -16,6 +16,7 @@ import Expander from "../../components/app/Expander";
 import {MonthlyLineChart} from "../../components/app/chart/MonthlyLineChart";
 import DataTable from "../../components/app/DataTable";
 
+
 const mapStateToProps = (state: AppState) => state
 
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
@@ -37,8 +38,10 @@ type Props = PropsFromRedux & {}
 interface State {
     stats?: SummaryStats
     filteredIntakeSeries: Series
-    nonIntakeSeries: Series[]
-    nonIntakeDailySeries: Series[]
+    month24uniqueVisits: Series[]
+    month24totalVisits: Series[]
+    day30uniqueVisits: Series[]
+    day30dayShelterGender: Series[]
 }
 
 class Dashboard extends React.Component<Props, State> {
@@ -83,9 +86,11 @@ class Dashboard extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            nonIntakeSeries: [],
+            month24uniqueVisits: [],
+            month24totalVisits: [],
             filteredIntakeSeries: new Series("intake", []),
-            nonIntakeDailySeries: []
+            day30uniqueVisits: [],
+            day30dayShelterGender: []
         }
 
         const now = new Date()
@@ -95,19 +100,49 @@ class Dashboard extends React.Component<Props, State> {
 
 
         this.props.summaryStats(stats => {
+
+            const genderBreakdown = (["Male", "Female", "Other"]).map(g => {
+
+                let f: (s: Stats) => number
+                if(g === "Male") {
+                    f = (s) => s.numMale
+                } else if(g === "Female") {
+                    f = (s) => s.numFemale
+                } else {
+                    f = (s) => s.numClients - (s.numFemale + s.numMale)
+                }
+                return new Series(
+                    g,
+                    stats.monthlyStats
+                        .filter(s => s.serviceName.toLowerCase() === 'day shelter')
+                        .filter(s => {
+                            const d = new Date(s.year, s.month, s.day)
+                            const com = (d >= month24Ago && d <= new Date())
+                            return com
+                        })
+                        .map(r => new DatePoint(new Date(r.year, r.month, r.day), f(r)))
+                )
+            })
+
             this.setState(Object.assign({}, this.state, {
                 stats,
-                nonIntakeSeries: this.extractSeries(
+                month24uniqueVisits: this.extractSeries(
+                    stats.monthlyStats.filter(r => r.serviceName.toLowerCase() !== 'intake'),
+                    month24Ago,
+                    r => r.numClients
+                ),
+                month24totalVisits: this.extractSeries(
                     stats.monthlyStats.filter(r => r.serviceName.toLowerCase() !== 'intake'),
                     month24Ago,
                     r => r.totalVisits
                 ),
                 filteredIntakeSeries: this.extractFilteredIntakeSeries(stats.monthlyStats.filter(r => r.serviceName.toLowerCase() === 'intake')),
-                nonIntakeDailySeries: this.extractSeries(
+                day30uniqueVisits: this.extractSeries(
                     stats.dailyStats,
                     day30Ago,
                     r => r.totalVisits
-                )
+                ),
+                day30dayShelterGender: genderBreakdown
             }))
         })
     }
@@ -120,12 +155,23 @@ class Dashboard extends React.Component<Props, State> {
                     <div className='row'>
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
-                                <MonthlyLineChart id={'month-24-by-service'} className={'tall-chart'}
+                                <MonthlyLineChart id={'month-24-unique-by-service'} className={'tall-chart'}
                                                   title={'Trailing 24 month unique visits by service'}
-                                                  data={this.state.nonIntakeSeries}/>
+                                                  data={this.state.month24uniqueVisits}/>
                                 <br/>
                                 <Expander header={'Data Values'}>
-                                    <DataTable data={this.state.nonIntakeSeries} monthly={true}/>
+                                    <DataTable data={this.state.month24uniqueVisits} monthly={true}/>
+                                </Expander>
+                            </div>
+                        </div>
+                        <div className='col-xl-6'>
+                            <div className={'chart-group'}>
+                                <MonthlyLineChart id={'month-24-total-by-service'} className={'tall-chart'}
+                                                  title={'Trailing 24 month total visits by service'}
+                                                  data={this.state.month24totalVisits}/>
+                                <br/>
+                                <Expander header={'Data Values'}>
+                                    <DataTable data={this.state.month24totalVisits} monthly={true}/>
                                 </Expander>
                             </div>
                         </div>
@@ -141,13 +187,24 @@ class Dashboard extends React.Component<Props, State> {
                             </div>
                         </div>
 
+                        <div className='col-xl-6'>
+                            <div className={'chart-group'}>
+                                <MonthlyLineChart id={'month-24-day-shelter-gender'} className={'tall-chart'}
+                                                 title={'Trailing 24 monthly unique visits by gender'}
+                                                 data={this.state.day30dayShelterGender}/> <br/>
+                                <Expander header={'Data Values'}>
+                                    <DataTable data={this.state.day30dayShelterGender} monthly={true}/>
+                                </Expander>
+                            </div>
+                        </div>
+
                         <div className='col-xl-12'>
                             <div className={'chart-group'}>
                                 <DailyLineChart id={'day-30-usage'} className={'tall-chart'}
                                                 title={'30 day service usage'}
-                                                data={this.state.nonIntakeDailySeries}/><br/>
+                                                data={this.state.day30uniqueVisits}/><br/>
                                 <Expander header={'30 day service usage values'}>
-                                    <DataTable data={this.state.nonIntakeDailySeries} monthly={false}/>
+                                    <DataTable data={this.state.day30uniqueVisits} monthly={false}/>
                                 </Expander>
                             </div>
 

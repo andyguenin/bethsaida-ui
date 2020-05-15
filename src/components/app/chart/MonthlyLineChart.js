@@ -141,10 +141,6 @@ export class MonthlyLineChart extends React.Component {
                 })
 
             for (let i = 0; i < this.raw_data.length; ++i) {
-                // const series = this.raw_data[i].data
-                //
-                // console.log(series)
-
                 const series_raw = monthOffsetSeries[i]
 
                 let series = []
@@ -154,7 +150,6 @@ export class MonthlyLineChart extends React.Component {
                         y: (series_raw.find(function(d) { return d.t === i}) || {y: 0}).y
                     })
                 }
-                console.log(series)
 
                 plotGroup.append('path')
                     .datum(series)

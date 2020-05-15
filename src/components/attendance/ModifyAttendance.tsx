@@ -1,9 +1,8 @@
 import React, {ChangeEvent, FormEvent} from 'react';
-import ServiceBuilder from "../../data/ServiceBuilder";
 import {ServiceType} from "../../data/ServiceType";
 import BethsaidaAttendanceBuilder from "../../data/BethsaidaEventBuilder";
 import Service from "../../data/Service";
-import {GetAllServices, LoadAllServices2} from "../../services/Service";
+import {LoadAllServices2} from "../../services/Service";
 import {Loader} from "../app/loader/Loader";
 
 
@@ -41,7 +40,7 @@ export default class ModifyAttendance extends React.Component<Props, State> {
                     {},
                     this.state,
                     {
-                        services: c,
+                        services: c.filter(r => r.serviceType !== ServiceType.SHOWER),
                         loading: false
                     }
                 )
