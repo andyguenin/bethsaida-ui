@@ -62,8 +62,17 @@ export default class SummaryStats {
         }
     }
 
-    public getNumberOfNonwhite(name: string): number {
-        const retVal = this._raceStats.filter(r => r.name !== name && r.race.toLowerCase() === 'white').map(r => r.count)
+    public getNumberOfBlack(name: string): number {
+        const retVal = this._raceStats.filter(r => r.name === name && r.race.toLowerCase() === 'black').map(r => r.count)
+        if (retVal.length === 0) {
+            return 0
+        } else {
+            return retVal.reduce((a, b) => a + b)
+        }
+    }
+
+    public getNumberOfOther(name: string): number {
+        const retVal = this._raceStats.filter(r => r.name === name && !(r.race.toLowerCase() === 'black' || r.race.toLowerCase() === 'white')).map(r => r.count)
         if (retVal.length === 0) {
             return 0
         } else {

@@ -42,9 +42,12 @@ interface YearlyStats {
     previous_year_white: number,
     current_year_white: number,
     current_year_proj_white: number,
-    previous_year_nonwhite: number,
-    current_year_nonwhite: number,
-    current_year_proj_nonwhite: number,
+    previous_year_black: number,
+    current_year_black: number,
+    current_year_proj_black: number,
+    previous_year_other: number,
+    current_year_other: number,
+    current_year_proj_other: number
 }
 
 interface State {
@@ -108,12 +111,15 @@ class Dashboard extends React.Component<Props, State> {
                 current_year: Stats.empty(),
                 current_year_proj: Stats.empty(),
                 previous_year: Stats.empty(),
-                current_year_nonwhite: 0,
-                current_year_proj_nonwhite: 0,
-                previous_year_nonwhite: 0,
+                current_year_black: 0,
+                current_year_proj_black: 0,
+                previous_year_black: 0,
                 current_year_proj_white: 0,
                 current_year_white: 0,
-                previous_year_white: 0
+                previous_year_white: 0,
+                current_year_other: 0,
+                current_year_proj_other: 0,
+                previous_year_other: 0
             }
         }
 
@@ -171,12 +177,15 @@ class Dashboard extends React.Component<Props, State> {
                     current_year: stats.yearlyStats.find(r => r.serviceName === 'current_total') || Stats.empty(),
                     current_year_proj: stats.yearlyStats.find(r => r.serviceName === 'current_projection') || Stats.empty(),
                     previous_year: stats.yearlyStats.find(r => r.serviceName === 'prev_total') || Stats.empty(),
-                    current_year_nonwhite: stats.getNumberOfNonwhite('current_total'),
-                    current_year_proj_nonwhite: stats.getNumberOfNonwhite('current_projection'),
-                    previous_year_nonwhite: stats.getNumberOfNonwhite('prev_total'),
+                    current_year_black: stats.getNumberOfBlack('current_total'),
+                    current_year_proj_black: stats.getNumberOfBlack('current_projection'),
+                    previous_year_black: stats.getNumberOfBlack('prev_total'),
                     current_year_proj_white: stats.getNumberOfWhite('current_total'),
                     current_year_white: stats.getNumberOfWhite('current_projection'),
-                    previous_year_white: stats.getNumberOfWhite('prev_total')
+                    previous_year_white: stats.getNumberOfWhite('prev_total'),
+                    current_year_other: stats.getNumberOfOther('current_total'),
+                    current_year_proj_other: stats.getNumberOfOther('current_projection'),
+                    previous_year_other: stats.getNumberOfOther('prev_total')
 
                 }
             }))
@@ -231,24 +240,17 @@ class Dashboard extends React.Component<Props, State> {
 
                                     </tr>
                                     <tr>
-                                        <td>Number Male Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year.numMale}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj.numMale}</td>
-                                        <td>{this.state.yearlyStats.current_year.numMale}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Number Other Gender Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year.numOther()}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj.numOther()}</td>
-                                        <td>{this.state.yearlyStats.current_year.numOther()}</td>
-
-                                    </tr>
-                                    <tr>
                                         <td>Percent Female Visits</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.previous_year.numFemale / this.state.yearlyStats.previous_year.totalVisits)}</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj.numFemale / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.current_year.numFemale / this.state.yearlyStats.current_year.totalVisits)}</td>
+
+                                    </tr>
+                                    <tr>
+                                        <td>Number Male Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year.numMale}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj.numMale}</td>
+                                        <td>{this.state.yearlyStats.current_year.numMale}</td>
 
                                     </tr>
                                     <tr>
@@ -258,11 +260,30 @@ class Dashboard extends React.Component<Props, State> {
                                         <td>{this.percentOrDash(this.state.yearlyStats.current_year.numMale / this.state.yearlyStats.current_year.totalVisits)}</td>
 
                                     </tr>
+                                    <tr>
+                                        <td>Number Other Gender Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year.numOther()}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj.numOther()}</td>
+                                        <td>{this.state.yearlyStats.current_year.numOther()}</td>
+
+                                    </tr>
                                     <tr className='divider'>
                                         <td>Percent Other Gender Visits</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.previous_year.numOther() / this.state.yearlyStats.previous_year.totalVisits)}</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj.numOther() / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.current_year.numOther() / this.state.yearlyStats.current_year.totalVisits)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Number Black/African-American Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year_black}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj_black}</td>
+                                        <td>{this.state.yearlyStats.current_year_black}</td>
+                                    </tr>
+                                    <tr className=''>
+                                        <td>Percent Black/African-American Visits</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year_black / this.state.yearlyStats.previous_year.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_black / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_black / this.state.yearlyStats.current_year.totalVisits)}</td>
                                     </tr>
                                     <tr>
                                         <td>Number White Visits</td>
@@ -271,24 +292,24 @@ class Dashboard extends React.Component<Props, State> {
                                         <td>{this.state.yearlyStats.current_year_white}</td>
                                     </tr>
                                     <tr>
-                                        <td>Number Non-white Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year_nonwhite}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj_nonwhite}</td>
-                                        <td>{this.state.yearlyStats.current_year_nonwhite}</td>
-                                    </tr>
-                                    <tr>
                                         <td>Percent White Visits</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.previous_year_white / this.state.yearlyStats.previous_year.totalVisits)}</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_white / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
                                         <td>{this.percentOrDash(this.state.yearlyStats.current_year_white / this.state.yearlyStats.current_year.totalVisits)}</td>
-
+                                    </tr>
+                                    <tr>
+                                        <td>Number Non-White and Non-Black/African-American Visits</td>
+                                        <td>{this.state.yearlyStats.previous_year_other}</td>
+                                        <td>{this.state.yearlyStats.current_year_proj_other}</td>
+                                        <td>{this.state.yearlyStats.current_year_other}</td>
                                     </tr>
                                     <tr className=''>
-                                        <td>Percent Non-white Visits</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year_nonwhite / this.state.yearlyStats.previous_year.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_nonwhite / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_nonwhite / this.state.yearlyStats.current_year.totalVisits)}</td>
+                                        <td>Percent Non-White and Non-Black/African-American Visits</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year_other / this.state.yearlyStats.previous_year.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_other / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
+                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_other / this.state.yearlyStats.current_year.totalVisits)}</td>
                                     </tr>
+
                                     </tbody>
                                 </table>
                             </div>
