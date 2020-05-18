@@ -337,6 +337,23 @@ export class ModifyClient extends React.Component<IProps, IState> {
                             {this.displayImage("Photo ID", "photoId")}
                         </div>
                         <div className='form-group row'>
+                            <label htmlFor='caseworker_name' className='col-sm-2'>Caseworker Full Name</label>
+                            <input type='text' className='form-control col-sm-10' id='caseworker_name'
+                                   placeholder='Caseworker Full Name'
+                                   value={this.state.client?.caseworkerName}
+                                   onChange={this.handleTextUpdate('caseworkerName')}
+                                   autoComplete="off"
+                                   required={true}
+                            />
+                        </div>
+                        <div className='form-group row'>
+                            <label htmlFor='caseworker_phone' className='col-sm-2'>Caseworker Phone</label>
+                            <input type='text' inputMode='numeric' pattern="[0-9 \-\(\)]*"
+                                   className='form-control col-sm-10' id='caseworker_phone'
+                                   value={this.state.client.caseworkerPhone}
+                                   onChange={this.handleTextUpdate('caseworkerPhone')}/>
+                        </div>
+                        <div className='form-group row'>
                             <label htmlFor='intake_date' className='col-sm-2'>Intake date</label>
                             <input type='date' className='form-control col-sm-10' id='intake_date'
                                    value={this.state.client?.intakeDate}

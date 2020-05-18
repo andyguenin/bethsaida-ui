@@ -215,7 +215,7 @@ class ShowClient extends React.Component<Props, IState> {
                         <div className='col-md-3 profile-side'>
                             {this.displayImage('photograph', client.fullName, client.clientPhoto)}
                         </div>
-                        <div className='col-md-4'>
+                        <div className='col-md-5'>
                             <table className='table table-bordered'>
                                 <thead className='thead-dark'>
                                 <tr>
@@ -231,6 +231,8 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Hispanic?', this.state.client?.hispanic ? 'Yes' : 'No')}
                                 {this.displayAttributeRow('Gender', formatEnum(Gender[this.state.client?.gender].toString()))}
                                 {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}
+                                {this.displayAttributeRow('Caseworker Name', this.state.client.caseworkerName)}
+                                {this.displayAttributeRow('Caseworker Phone', this.state.client.caseworkerPhone)}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}
                                 {this.displayAttributeRow('Intake User', this.state.client?.intakeUser?.getFullName())}
                                 <tr>

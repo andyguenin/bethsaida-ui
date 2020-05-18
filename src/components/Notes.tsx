@@ -27,7 +27,7 @@ export default class Notes extends React.Component<Props, State> {
     }
 
     private createEditorFromString(s?: string): EditorValue {
-        return RichTextEditor.createValueFromString(s|| '', 'html')
+        return RichTextEditor.createValueFromString(s || '', 'html')
     }
 
     private setEditMode = (editable: boolean): void => {
@@ -59,18 +59,36 @@ export default class Notes extends React.Component<Props, State> {
     private submit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         this.props.onUpdate(this.state.notes.toString('html'), (note) => {
-            this.setState((s, p) => Object.assign({}, s, {
-                initialNote: s.notes,
-                inEditMode: false
-            }))
+                this.setState((s, p) => Object.assign({}, s, {
+                    initialNote: s.notes,
+                    inEditMode: false
+                }))
             }
         );
     }
 
     render() {
         return (
-            <div className='col-md-5'>
-                <h3 className='text-right'>Notes</h3>
+            <div className='col-md-4'>
+                <div className='row'>
+                    {
+                        (
+                            () => {
+                                if (this.state.inEditMode) {
+                                    return <div className={'col-6'}/>
+                                } else {
+                                    return <div className='col-6 text-right'>
+                                        <button type={'button'} className={'btn btn-info'} onClick={() => this.setEditMode(true)}>Edit</button>
+                                    </div>
+                                }
+                            }
+                        )()
+                    }
+                    <div className='col-6'>
+                        <h3 className='text-right'>Notes</h3>
+                    </div>
+                </div>
+
                 {
                     (
                         () => {
@@ -90,21 +108,21 @@ export default class Notes extends React.Component<Props, State> {
                                                 inEditMode: false
                                             }))
                                         }}>Cancel Changes</Button>
-                                    </div>
-                                    <div className='button-row'>
+                                    {/*</div>*/}
+                                    {/*<div className='button-row'>*/}
                                         <Button type='submit' className='btn'>Save Note</Button>
                                     </div>
 
                                 </form>
                             } else {
                                 let innerHtml = this.state.notes.toString('html');
-                                if(innerHtml === undefined) {
+                                if (innerHtml === undefined) {
                                     innerHtml = ''
                                 }
-                                if(innerHtml === '<p><br></p>') {
+                                if (innerHtml === '<p><br></p>') {
                                     innerHtml = ''
                                 }
-                                if(innerHtml === '') {
+                                if (innerHtml === '') {
                                     innerHtml = '<i>No Notes</i>'
                                 }
                                 return <div

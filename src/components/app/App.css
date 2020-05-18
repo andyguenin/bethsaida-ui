@@ -39,6 +39,9 @@ img {
   .button-row .form-control {
     margin-left: 10px; }
 
+.button-row button {
+  margin-left: 10px; }
+
 #buttonid {
   margin-left: auto;
   flex-direction: row-reverse; }

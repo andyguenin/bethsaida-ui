@@ -286,7 +286,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                                 </tbody>
                             </table>
                         </div>
-                        <div className='col-md-4'>
+                        <div className='col-md-5'>
                             <div className='row buttonid'>
                                 <button className='btn btn-success' onClick={() => this.showModal(true)}>+ Sign in
                                     client

@@ -168,6 +168,24 @@ export default class ClientBuilder {
         return this._intakeUser;
     }
 
+    public setCaseworkerPhone(value?: string): ClientBuilder {
+        this._caseworkerPhone = value;
+        return this;
+    }
+
+    public setCaseworkerName(value?: string): ClientBuilder {
+        this._caseworkerName = value;
+        return this;
+    }
+
+    get caseworkerName(): string | undefined {
+        return this._caseworkerName;
+    }
+
+    get caseworkerPhone(): string | undefined {
+        return this._caseworkerPhone
+    }
+
     private _id?: string;
     private _firstName?: string;
     private _middleName?: string;
@@ -185,6 +203,8 @@ export default class ClientBuilder {
     private _hispanic?: boolean;
     private _banId?: string;
     private _intakeUser?: User;
+    private _caseworkerName?: string;
+    private _caseworkerPhone?: string;
 
     public setField(id: string, value: string) {
         switch (id) {
@@ -218,6 +238,10 @@ export default class ClientBuilder {
                 return this.setHispanic(value.toLowerCase() === 'true')
             case 'banId':
                 return this.setBanId(value)
+            case 'caseworkerName':
+                return this.setCaseworkerName(value);
+            case 'caseworkerPhone':
+                return this.setCaseworkerPhone(value)
         }
     }
 
@@ -257,7 +281,9 @@ export default class ClientBuilder {
                 (this.phone || '').replace(new RegExp('[^0-9]', 'g'), ''),
                 this._raceSecondary,
                 this._hispanic,
-                this._banId
+                this._banId,
+                this._caseworkerName,
+                (this._caseworkerPhone || '').replace(new RegExp('[^0-9]', 'g'), '')
             )
         } else {
             throw new Error('Could not create client due to missing required fields.')
@@ -296,6 +322,8 @@ export default class ClientBuilder {
             .setHispanic(client.hispanic || false)
             .setBanId(client.banId)
             .setIntakeUser(client.intakeUser)
+            .setCaseworkerName(client.caseworkerName)
+            .setCaseworkerPhone(client.caseworkerPhone)
 
 
     }
@@ -318,6 +346,8 @@ export default class ClientBuilder {
             .setIntakeDate(BDate.fromDate(new Date()).jsDate)
             .setHispanic(false)
             .setBanId(undefined)
+            .setCaseworkerName('')
+            .setCaseworkerPhone('')
             ;
     }
 }
