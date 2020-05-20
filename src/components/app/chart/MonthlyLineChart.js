@@ -21,11 +21,42 @@ export class MonthlyLineChart extends React.Component {
 
     raw_data = {};
     dates = [];
+    beginDate = undefined;
+    beginOffset = undefined
+    monthOffsetSeries = []
+    monthOffsets = []
+
+    shouldShow = true
 
     constructor(props) {
         super(props)
-        this.raw_data = this.props.data;
-        this.dates = ArrayUtil.getUniqueElements(DateUtil.getEqualSpacedSeries(this.raw_data.flatMap(r => r.data.map(s => s.t)), true));
+        const raw_data = this.props.data;
+        const dates = ArrayUtil.getUniqueElements(DateUtil.getEqualSpacedSeries(raw_data.flatMap(r => r.data.map(s => s.t)), true));
+
+        const beginDate = dates[0]
+
+        const beginOffset = beginDate.getFullYear()*12 + beginDate.getMonth();
+
+        const monthOffsetSeries = raw_data.map(rd => rd.data.map(function (d) {
+            return {
+                t: d.t.getFullYear() * 12 + d.t.getMonth() - beginOffset,
+                y: d.y
+            }
+        }).sort(function (a, b) {
+            return a.t - b.t
+        }))
+
+        const monthOffsets = ArrayUtil.getUniqueElements(monthOffsetSeries.flatMap(s => s.map(r => r.t)).sort((a, b) => a - b));
+
+        const shouldShow = dates.length > 1 && this.props.data > 0 && monthOffsets.length > 0
+
+        this.raw_data = raw_data
+        this.dates = dates
+        this.beginDate = beginDate
+        this.beginOffset = beginOffset
+        this.monthOffsetSeries = monthOffsetSeries
+        this.monthOffsets = monthOffsets
+        this.shouldShow = shouldShow
     }
 
 
@@ -39,7 +70,8 @@ export class MonthlyLineChart extends React.Component {
     }
 
     create_chart = () => {
-        if (this.dates.length > 1 && this.raw_data.length > 0) {
+
+        if (this.shouldShow) {
             select('#' + this.props.id).selectAll("*").remove()
 
             const dateformat = require('dateformat')
@@ -73,25 +105,9 @@ export class MonthlyLineChart extends React.Component {
             let yScale = scaleLinear()
                 .range([plotHeight, 0]);
 
-
-            const beginDate = this.dates[0]
-
-            const beginOffset = beginDate.getFullYear()*12 + beginDate.getMonth();
-
-            const monthOffsetSeries = this.raw_data.map(rd => rd.data.map(function (d) {
-                return {
-                    t: d.t.getFullYear() * 12 + d.t.getMonth() - beginOffset,
-                    y: d.y
-                }
-            }).sort(function (a, b) {
-                return a.t - b.t
-            }))
-
-            const monthOffsets = ArrayUtil.getUniqueElements(monthOffsetSeries.flatMap(s => s.map(r => r.t)).sort((a, b) => a - b));
-
             const extentT = [
-                monthOffsets[0],
-                monthOffsets[monthOffsets.length - 1]
+                this.monthOffsets[0],
+                this.monthOffsets[this.monthOffsets.length - 1]
             ];
 
             xScale.domain(extentT).nice();
@@ -100,11 +116,11 @@ export class MonthlyLineChart extends React.Component {
                 .attr('transform', 'translate(0, ' + (plotHeight) + ')')
                 .call(
                     axisBottom(xScale)
-                        .tickValues(range(0, monthOffsets[monthOffsets.length - 1] + 1, 1))
+                        .tickValues(range(0, this.monthOffsets[this.monthOffsets.length - 1] + 1, 1))
                         .tickFormat(function (d, i) {
                             const date =
-                                new Date(Math.floor(d / 12) + beginDate.getFullYear() + Math.floor((d % 12 + beginDate.getMonth()) / 12),
-                                    ((d % 12 + beginDate.getMonth())) % 12
+                                new Date(Math.floor(d / 12) + this.beginDate.getFullYear() + Math.floor((d % 12 + this.beginDate.getMonth()) / 12),
+                                    ((d % 12 + this.beginDate.getMonth())) % 12
                                 );
                             return dateformat(date, "mmm 'yy")
                         })
@@ -112,7 +128,7 @@ export class MonthlyLineChart extends React.Component {
                 .selectAll("text")
                 .attr('transform', 'rotate(-75) translate(-24, -8)')
 
-            const tempExtentY = extent(monthOffsetSeries.flatMap(d => d), d => d.y)
+            const tempExtentY = extent(this.monthOffsetSeries.flatMap(d => d), d => d.y)
             const extentY = [0, tempExtentY[1] || 0];
 
             yScale.domain(extentY).nice();
@@ -151,12 +167,12 @@ export class MonthlyLineChart extends React.Component {
                 })
 
             for (let i = 0; i < this.raw_data.length; ++i) {
-                const series_raw = monthOffsetSeries[i]
+                const series_raw = this.monthOffsetSeries[i]
 
                 let series = []
-                for(let i = 0; i <= monthOffsets[monthOffsets.length - 1]; ++i) {
+                for(let i = 0; i <= this.monthOffsets[this.monthOffsets.length - 1]; ++i) {
                     series = series.concat({
-                        t: new Date(beginDate.getFullYear(), beginDate.getMonth() + i, 1),
+                        t: new Date(this.beginDate.getFullYear(), this.beginDate.getMonth() + i, 1),
                         y: (series_raw.find(function(d) { return d.t === i}) || {y: 0}).y
                     })
                 }
@@ -168,7 +184,7 @@ export class MonthlyLineChart extends React.Component {
                     .attr('stroke-width', 2.5)
                     .attr('d', line()
                         .x(function (d) {
-                            return xScale(d.t.getFullYear() * 12 + d.t.getMonth() - beginOffset)
+                            return xScale(d.t.getFullYear() * 12 + d.t.getMonth() - this.beginOffset)
                         })
                         .y(function (d) {
                             return yScale(d.y)
@@ -215,14 +231,14 @@ export class MonthlyLineChart extends React.Component {
 
             const getAdjustedT = function (mouseX) {
                 const selectedTime = xScale.invert(mouseX)
-                const fap = monthOffsets.filter(function (d) {
+                const fap = this.monthOffsets.filter(function (d) {
                     return (d <= selectedTime)
                 }).sort(function (a, b) {
                     return b - a;
                 })
                 const pointBefore = fap[0]
 
-                const fap2 = monthOffsets.filter(function (d) {
+                const fap2 = this.monthOffsets.filter(function (d) {
                     return (d >= selectedTime)
                 }).sort(function (a, b) {
                     return a - b;
@@ -286,7 +302,7 @@ export class MonthlyLineChart extends React.Component {
                             let date = getAdjustedT(lmouse[0])
                             const series = raw_data[i]
                             const point = series.data.find(function (d) {
-                                const dc = new Date(beginDate.getFullYear(), beginDate.getMonth() + date, 1)
+                                const dc = new Date(this.beginDate.getFullYear(), this.beginDate.getMonth() + date, 1)
                                 return d.t.getFullYear() === dc.getFullYear() && d.t.getMonth() === dc.getMonth()
                             })
                             const yValue = (point === undefined ? 0 : point.y)
@@ -304,7 +320,7 @@ export class MonthlyLineChart extends React.Component {
     }
 
     getGraphHtml = () => {
-        if (this.props.data.length > 1) {
+        if (this.shouldShow) {
             return <div id={this.props.id} className={this.props.className}></div>
         } else {
             return <h3>Chart cannot be produced due to lack of data</h3>
