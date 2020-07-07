@@ -276,10 +276,6 @@ class ShowAttendance extends React.Component<Props, IState> {
                                         ? this.state.user.getFullName() : '-'}</td>
                                 </tr>
                                 <tr>
-                                    <td>Capacity</td>
-                                    <td>{this.state.event?.capacity === 0 ? '-' : this.state.event?.capacity}</td>
-                                </tr>
-                                <tr>
                                     <td>Current Attendance</td>
                                     <td>{this.state.attendances.length}</td>
                                 </tr>

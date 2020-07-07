@@ -154,7 +154,6 @@ class AllAttendance extends React.Component<Props, State> {
                         <tr>
                             <th>Service Type</th>
                             <th>Date</th>
-                            <th>Capacity</th>
                             <th>Event Creator</th>
                         </tr>
                         </thead>
@@ -176,7 +175,6 @@ class AllAttendance extends React.Component<Props, State> {
                                         )()
                                     }</td>
                                     <td className='align-content-center'>{s.date ? s.date.mmddyyyy : ''}</td>
-                                    <td className='align-content-center'>{s.capacity === 0 ? '-' : s.capacity}</td>
                                     <td className='align-content-center'>{
                                         (() => {
                                             if (s.userCreatorId) {

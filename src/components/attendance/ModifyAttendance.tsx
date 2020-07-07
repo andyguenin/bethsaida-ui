@@ -141,17 +141,6 @@ export default class ModifyAttendance extends React.Component<Props, State> {
                                 </div>
                             </div>
                             <div className='form-group row'>
-                                <label htmlFor='capacity' className='col-sm-2'>Capacity</label>
-                                <input type='text' inputMode='numeric' pattern="[0-9]*"
-                                       className='form-control col-sm-10'
-                                       id='service_name'
-                                       placeholder='Capacity (leave blank for unspecified capacity)'
-                                       value={this.state.attendance.capacity() === 0 ? '' : this.state.attendance.capacity()}
-                                       onChange={this.handleTextUpdate('capacity')}
-                                       autoComplete="off"
-                                />
-                            </div>
-                            <div className='form-group row'>
                                 <label htmlFor='intake_date' className='col-sm-2'>Attendance Date</label>
                                 <input type='date' className='form-control col-sm-10' id='date'
                                        value={this.state.attendance?.getDate()}

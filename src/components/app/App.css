@@ -168,3 +168,8 @@ div.text-editor {
 
 .divider {
   border-bottom: 2px solid; }
+
+.note-border {
+  border-left: 2px solid black;
+  padding-left: 10px;
+  height: 100%; }

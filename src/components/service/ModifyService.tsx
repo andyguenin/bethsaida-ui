@@ -93,18 +93,6 @@ export default class ModifyService extends React.Component<Props, State> {
                                 <label htmlFor='shower' className='form-check-label'>Shower</label>
                             </div>
                         </div>
-                        <div className='form-group row'>
-                            <label htmlFor='capacity' className='col-sm-2'>Capacity</label>
-                            <input type='text' inputMode='numeric' pattern="[0-9]*"
-                                   className='form-control col-sm-10'
-                                   id='service_name'
-                                   placeholder='Capacity (leave blank for unspecified capacity)'
-                                   value={this.state.service.defaultCapacity() === -1 ? '' : this.state.service.defaultCapacity()}
-                                // value=''
-                                   onChange={this.handleTextUpdate('defaultCapacity')}
-                                   autoComplete="off"
-                            />
-                        </div>
                         <div className="form-group row">
                             <div className='offset-sm-3 col-sm-3'>
                                 <button
