@@ -15,6 +15,8 @@ import Stats from "../../data/Stats";
 import Expander from "../../components/app/Expander";
 import {MonthlyLineChart} from "../../components/app/chart/MonthlyLineChart";
 import DataTable from "../../components/app/DataTable";
+import YearlyStats from "../../data/YearlyStats"
+import Summary from "../../components/Summary";
 
 
 const mapStateToProps = (state: AppState) => state
@@ -34,21 +36,6 @@ const connector = connect(
 type PropsFromRedux = ConnectedProps<typeof connector>
 
 type Props = PropsFromRedux & {}
-
-interface YearlyStats {
-    previous_year: Stats,
-    current_year: Stats,
-    current_year_proj: Stats,
-    previous_year_white: number,
-    current_year_white: number,
-    current_year_proj_white: number,
-    previous_year_black: number,
-    current_year_black: number,
-    current_year_proj_black: number,
-    previous_year_other: number,
-    current_year_other: number,
-    current_year_proj_other: number
-}
 
 interface State {
     stats?: SummaryStats
@@ -192,14 +179,6 @@ class Dashboard extends React.Component<Props, State> {
         })
     }
 
-    private percentOrDash(num: number): string {
-        if(isNaN(num)) {
-            return '-'
-        } else {
-            return (num * 100).toFixed(2) + '%'
-        }
-    }
-
     public render() {
         return (
             <FileContainer>
@@ -207,112 +186,7 @@ class Dashboard extends React.Component<Props, State> {
                 <Loader loading={this.state.stats === undefined} emptyText={''} isEmpty={false}>
                     <div className='row'>
                         <div className='col-xl-6'>
-                            <div className={'chart-group'}>
-                                <table className='table table-hover'>
-                                    <thead className='thead-dark'>
-                                    <tr>
-                                        <th> </th>
-                                        <th>{new Date().getFullYear() - 1}</th>
-                                        <th>{new Date().getFullYear()} (projected)</th>
-                                        <th>{new Date().getFullYear()}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td>Unique Client Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year.numClients}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj.numClients}</td>
-                                        <td>{this.state.yearlyStats.current_year.numClients}</td>
-
-                                    </tr>
-                                    <tr className={'divider'}>
-                                        <td>Total Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year.totalVisits}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj.totalVisits}</td>
-                                        <td>{this.state.yearlyStats.current_year.totalVisits}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Number Female Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year.numFemale}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj.numFemale}</td>
-                                        <td>{this.state.yearlyStats.current_year.numFemale}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Percent Female Visits</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year.numFemale / this.state.yearlyStats.previous_year.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj.numFemale / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year.numFemale / this.state.yearlyStats.current_year.totalVisits)}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Number Male Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year.numMale}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj.numMale}</td>
-                                        <td>{this.state.yearlyStats.current_year.numMale}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Percent Male Visits</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year.numMale / this.state.yearlyStats.previous_year.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj.numMale / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year.numMale / this.state.yearlyStats.current_year.totalVisits)}</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td>Number Other Gender Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year.numOther()}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj.numOther()}</td>
-                                        <td>{this.state.yearlyStats.current_year.numOther()}</td>
-
-                                    </tr>
-                                    <tr className='divider'>
-                                        <td>Percent Other Gender Visits</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year.numOther() / this.state.yearlyStats.previous_year.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj.numOther() / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year.numOther() / this.state.yearlyStats.current_year.totalVisits)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Number Black/African-American Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year_black}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj_black}</td>
-                                        <td>{this.state.yearlyStats.current_year_black}</td>
-                                    </tr>
-                                    <tr className=''>
-                                        <td>Percent Black/African-American Visits</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year_black / this.state.yearlyStats.previous_year.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_black / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_black / this.state.yearlyStats.current_year.totalVisits)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Number White Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year_white}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj_white}</td>
-                                        <td>{this.state.yearlyStats.current_year_white}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Percent White Visits</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year_white / this.state.yearlyStats.previous_year.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_white / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_white / this.state.yearlyStats.current_year.totalVisits)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Number Non-White and Non-Black/African-American Visits</td>
-                                        <td>{this.state.yearlyStats.previous_year_other}</td>
-                                        <td>{this.state.yearlyStats.current_year_proj_other}</td>
-                                        <td>{this.state.yearlyStats.current_year_other}</td>
-                                    </tr>
-                                    <tr className=''>
-                                        <td>Percent Non-White and Non-Black/African-American Visits</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.previous_year_other / this.state.yearlyStats.previous_year.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_proj_other / this.state.yearlyStats.current_year_proj.totalVisits)}</td>
-                                        <td>{this.percentOrDash(this.state.yearlyStats.current_year_other / this.state.yearlyStats.current_year.totalVisits)}</td>
-                                    </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
+                            <Summary yearlyStats={this.state.yearlyStats}/>
                         </div>
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>

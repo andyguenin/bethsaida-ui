@@ -22,7 +22,6 @@ export default class DateUtil {
         const sorted = l.sort((a, b) => b < a ? 1 : (b === a ? 0 : -1))
 
         if(monthly) {
-            console.log(sorted)
             const months = ((sorted[sorted.length - 1].getFullYear() * 12 + sorted[sorted.length - 1].getMonth())) -
                 (sorted[0].getFullYear() * 12 + sorted[0].getMonth()) + 1
 

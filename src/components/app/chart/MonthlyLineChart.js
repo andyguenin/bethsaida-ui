@@ -48,7 +48,7 @@ export class MonthlyLineChart extends React.Component {
 
         const monthOffsets = ArrayUtil.getUniqueElements(monthOffsetSeries.flatMap(s => s.map(r => r.t)).sort((a, b) => a - b));
 
-        const shouldShow = dates.length > 1 && this.props.data > 0 && monthOffsets.length > 0
+        const shouldShow = dates.length > 1 && this.props.data.length > 0 && monthOffsets.length > 0
 
         this.raw_data = raw_data
         this.dates = dates
@@ -111,6 +111,7 @@ export class MonthlyLineChart extends React.Component {
             ];
 
             xScale.domain(extentT).nice();
+            const beginDate = this.beginDate
 
             plotGroup.append('g')
                 .attr('transform', 'translate(0, ' + (plotHeight) + ')')
@@ -119,8 +120,8 @@ export class MonthlyLineChart extends React.Component {
                         .tickValues(range(0, this.monthOffsets[this.monthOffsets.length - 1] + 1, 1))
                         .tickFormat(function (d, i) {
                             const date =
-                                new Date(Math.floor(d / 12) + this.beginDate.getFullYear() + Math.floor((d % 12 + this.beginDate.getMonth()) / 12),
-                                    ((d % 12 + this.beginDate.getMonth())) % 12
+                                new Date(Math.floor(d / 12) + beginDate.getFullYear() + Math.floor((d % 12 + beginDate.getMonth()) / 12),
+                                    ((d % 12 + beginDate.getMonth())) % 12
                                 );
                             return dateformat(date, "mmm 'yy")
                         })
@@ -166,6 +167,8 @@ export class MonthlyLineChart extends React.Component {
                     return d.name
                 })
 
+            const beginOffset = this.beginOffset;
+
             for (let i = 0; i < this.raw_data.length; ++i) {
                 const series_raw = this.monthOffsetSeries[i]
 
@@ -184,7 +187,7 @@ export class MonthlyLineChart extends React.Component {
                     .attr('stroke-width', 2.5)
                     .attr('d', line()
                         .x(function (d) {
-                            return xScale(d.t.getFullYear() * 12 + d.t.getMonth() - this.beginOffset)
+                            return xScale(d.t.getFullYear() * 12 + d.t.getMonth() - beginOffset)
                         })
                         .y(function (d) {
                             return yScale(d.y)
@@ -227,18 +230,18 @@ export class MonthlyLineChart extends React.Component {
             mousePerLine.append("text")
                 .attr("transform", "translate(10,3)")
 
-            const dates = this.dates
+            const monthOffsets = this.monthOffsets
 
             const getAdjustedT = function (mouseX) {
                 const selectedTime = xScale.invert(mouseX)
-                const fap = this.monthOffsets.filter(function (d) {
+                const fap = monthOffsets.filter(function (d) {
                     return (d <= selectedTime)
                 }).sort(function (a, b) {
                     return b - a;
                 })
                 const pointBefore = fap[0]
 
-                const fap2 = this.monthOffsets.filter(function (d) {
+                const fap2 = monthOffsets.filter(function (d) {
                     return (d >= selectedTime)
                 }).sort(function (a, b) {
                     return a - b;
@@ -302,7 +305,7 @@ export class MonthlyLineChart extends React.Component {
                             let date = getAdjustedT(lmouse[0])
                             const series = raw_data[i]
                             const point = series.data.find(function (d) {
-                                const dc = new Date(this.beginDate.getFullYear(), this.beginDate.getMonth() + date, 1)
+                                const dc = new Date(beginDate.getFullYear(), beginDate.getMonth() + date, 1)
                                 return d.t.getFullYear() === dc.getFullYear() && d.t.getMonth() === dc.getMonth()
                             })
                             const yValue = (point === undefined ? 0 : point.y)
