@@ -343,7 +343,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                    value={this.state.client?.caseworkerName}
                                    onChange={this.handleTextUpdate('caseworkerName')}
                                    autoComplete="off"
-                                   required={true}
                             />
                         </div>
                         <div className='form-group row'>

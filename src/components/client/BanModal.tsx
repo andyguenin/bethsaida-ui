@@ -160,7 +160,6 @@ export default class BanModal extends React.Component<Props, State> {
                         <div className='form-group row align-items-start'>
                             <label htmlFor='term' className='col-sm-3 ban-label'><b>Reason for ban</b></label>
                             <div className={'col-sm-9'}>
-                                {/*<textarea className={'form-control'} rows={10}/>*/}
                                 <RichTextEditor className='text-editor' value={this.state.notes} onChange={(notes) => {
                                     this.setState((os, op) => Object.assign({}, os, {notes}))
                                 }}/>
