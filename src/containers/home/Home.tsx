@@ -133,14 +133,13 @@ class Dashboard extends React.Component<Props, State> {
                     stats.monthlyStats
                         .filter(s => s.serviceName.toLowerCase() === 'day shelter')
                         .filter(s => {
-                            const d = new Date(s.year, s.month, s.day)
+                            const d = new Date(s.year, s.month - 1, s.day)
                             const com = (d >= month12Ago && d <= new Date())
                             return com
                         })
-                        .map(r => new DatePoint(new Date(r.year, r.month, r.day), f(r)))
+                        .map(r => new DatePoint(new Date(r.year, r.month - 1, r.day), f(r)))
                 )
             })
-
             this.setState(Object.assign({}, this.state, {
                 stats,
                 month12uniqueVisits: this.extractSeries(

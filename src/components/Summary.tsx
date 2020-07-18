@@ -4,7 +4,7 @@ import Stats from "../data/Stats";
 
 interface Props {
     yearlyStats: YearlyStats,
-    yearlyServiceStats: Stats
+    // yearlyServiceStats: Stats
 }
 
 interface Feature {
@@ -31,7 +31,7 @@ export default class Summary extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
-        this.props.yearlyServiceStats.
+        // this.props.yearlyServiceStats
 
         this.state = {
             unique: {

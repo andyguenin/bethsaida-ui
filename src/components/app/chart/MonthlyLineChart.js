@@ -31,32 +31,37 @@ export class MonthlyLineChart extends React.Component {
     constructor(props) {
         super(props)
         const raw_data = this.props.data;
-        const dates = ArrayUtil.getUniqueElements(DateUtil.getEqualSpacedSeries(raw_data.flatMap(r => r.data.map(s => s.t)), true));
+        if (raw_data.length > 0) {
+            const dates = ArrayUtil.getUniqueElements(DateUtil.getEqualSpacedSeries(raw_data.flatMap(r => r.data.map(s => s.t)), true));
 
-        const beginDate = dates[0]
+            const beginDate = dates[0]
 
-        const beginOffset = beginDate.getFullYear()*12 + beginDate.getMonth();
+            const beginOffset = beginDate.getFullYear() * 12 + beginDate.getMonth();
 
-        const monthOffsetSeries = raw_data.map(rd => rd.data.map(function (d) {
-            return {
-                t: d.t.getFullYear() * 12 + d.t.getMonth() - beginOffset,
-                y: d.y
-            }
-        }).sort(function (a, b) {
-            return a.t - b.t
-        }))
+            const monthOffsetSeries = raw_data.map(rd => rd.data.map(function (d) {
+                return {
+                    t: d.t.getFullYear() * 12 + d.t.getMonth() - beginOffset,
+                    y: d.y
+                }
+            }).sort(function (a, b) {
+                return a.t - b.t
+            }))
 
-        const monthOffsets = ArrayUtil.getUniqueElements(monthOffsetSeries.flatMap(s => s.map(r => r.t)).sort((a, b) => a - b));
+            const monthOffsets = ArrayUtil.getUniqueElements(monthOffsetSeries.flatMap(s => s.map(r => r.t)).sort((a, b) => a - b));
 
-        const shouldShow = dates.length > 1 && this.props.data.length > 0 && monthOffsets.length > 0
+            const shouldShow = dates.length > 1 && this.props.data.length > 0 && monthOffsets.length > 0
 
-        this.raw_data = raw_data
-        this.dates = dates
-        this.beginDate = beginDate
-        this.beginOffset = beginOffset
-        this.monthOffsetSeries = monthOffsetSeries
-        this.monthOffsets = monthOffsets
-        this.shouldShow = shouldShow
+            this.raw_data = raw_data
+            this.dates = dates
+            this.beginDate = beginDate
+            this.beginOffset = beginOffset
+            this.monthOffsetSeries = monthOffsetSeries
+            this.monthOffsets = monthOffsets
+            this.shouldShow = shouldShow
+        }
+        else {
+            this.shouldShow = false
+        }
     }
 
 
