@@ -186,6 +186,15 @@ export default class ClientBuilder {
         return this._caseworkerPhone
     }
 
+    public setLast4Ssn(value?: string): ClientBuilder{
+        this._last4ssn = value
+        return this;
+    }
+
+    get last4Ssn(): string | undefined {
+        return this._last4ssn;
+    }
+
     private _id?: string;
     private _firstName?: string;
     private _middleName?: string;
@@ -205,6 +214,7 @@ export default class ClientBuilder {
     private _intakeUser?: User;
     private _caseworkerName?: string;
     private _caseworkerPhone?: string;
+    private _last4ssn?: string
 
     public setField(id: string, value: string) {
         switch (id) {
@@ -242,6 +252,8 @@ export default class ClientBuilder {
                 return this.setCaseworkerName(value);
             case 'caseworkerPhone':
                 return this.setCaseworkerPhone(value)
+            case 'last4Ssn':
+                return this.setLast4Ssn(value)
         }
     }
 
@@ -283,7 +295,8 @@ export default class ClientBuilder {
                 this._hispanic,
                 this._banId,
                 this._caseworkerName,
-                (this._caseworkerPhone || '').replace(new RegExp('[^0-9]', 'g'), '')
+                (this._caseworkerPhone || '').replace(new RegExp('[^0-9]', 'g'), ''),
+                this._last4ssn
             )
         } else {
             throw new Error('Could not create client due to missing required fields.')
@@ -324,6 +337,7 @@ export default class ClientBuilder {
             .setIntakeUser(client.intakeUser)
             .setCaseworkerName(client.caseworkerName)
             .setCaseworkerPhone(client.caseworkerPhone)
+            .setLast4Ssn(client.last4Ssn)
 
 
     }
@@ -348,6 +362,7 @@ export default class ClientBuilder {
             .setBanId(undefined)
             .setCaseworkerName('')
             .setCaseworkerPhone('')
+            .setLast4Ssn('')
             ;
     }
 }

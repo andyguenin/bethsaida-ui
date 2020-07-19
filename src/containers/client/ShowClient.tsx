@@ -93,7 +93,7 @@ class ShowClient extends React.Component<Props, IState> {
     }
 
     private displayAttributeRow(key: string, value?: string): any {
-        if (value !== undefined) {
+        if (value !== undefined && value !== '') {
             return (<tr>
                 <td className='w-25'>{key}</td>
                 <td className='text-right'>{value}</td>
@@ -104,7 +104,7 @@ class ShowClient extends React.Component<Props, IState> {
     private displayImage(imageType: string, name: string, imageTag?: string) {
         if (imageTag !== undefined && imageTag !== '') {
             return (<img width='100%'
-                         src={Env.get().imageUrl + '/' + imageTag + '_250.png'}
+                         src={Env.get().imageUrl + '/' + imageTag + '_400.png'}
                          alt={imageType.charAt(0).toUpperCase() + imageType.slice(1) + ' of ' + name}/>)
         } else {
             if(imageType === 'photograph') {
@@ -231,6 +231,7 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Hispanic?', this.state.client?.hispanic ? 'Yes' : 'No')}
                                 {this.displayAttributeRow('Gender', formatEnum(Gender[this.state.client?.gender].toString()))}
                                 {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}
+                                {this.displayAttributeRow('Last 4 SSN', this.state.client.last4Ssn)}
                                 {this.displayAttributeRow('Caseworker Name', this.state.client.caseworkerName)}
                                 {this.displayAttributeRow('Caseworker Phone', this.state.client.caseworkerPhone)}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}

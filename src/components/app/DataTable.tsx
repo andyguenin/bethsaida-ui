@@ -30,7 +30,7 @@ export default class DataTable extends React.Component<Props, State> {
             this.dateformatstring = 'mmm dd, yyyy'
         }
         let dates: Date[] = []
-        if(this.props.data.length !== 0) {
+        if(this.props.data.flatMap(r => r.data.map(s => s.t)).length !== 0) {
             dates = DateUtil.getEqualSpacedSeries(this.props.data.flatMap(r => r.data.map(s => s.t)), this.props.monthly)
         }
         this.state = {

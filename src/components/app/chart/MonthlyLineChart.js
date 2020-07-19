@@ -31,7 +31,7 @@ export class MonthlyLineChart extends React.Component {
     constructor(props) {
         super(props)
         const raw_data = this.props.data;
-        if (raw_data.length > 0) {
+        if (raw_data.flatMap(r => r.data.map(s => s.t)).length > 0) {
             const dates = ArrayUtil.getUniqueElements(DateUtil.getEqualSpacedSeries(raw_data.flatMap(r => r.data.map(s => s.t)), true));
 
             const beginDate = dates[0]

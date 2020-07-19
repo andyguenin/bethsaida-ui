@@ -307,13 +307,13 @@ export class ModifyClient extends React.Component<IProps, IState> {
                         <div className='form-group row'>
                             <label htmlFor='race' className='col-sm-2'>Primary Race</label>
                             <div className='col-md-10'>
-                                {this.renderRaceChoice('race', [Race.ASIAN, Race.BLACK, Race.CAUCASIAN, Race.NATIVE_AMERICAN, Race.PACIFIC_ISLANDER, Race.REFUSED, Race.OTHER_RACE])}
+                                {this.renderRaceChoice('race', [Race.ASIAN, Race.BLACK, Race.WHITE, Race.NATIVE_AMERICAN, Race.PACIFIC_ISLANDER, Race.REFUSED, Race.OTHER_RACE])}
                             </div>
                         </div>
                         <div className='form-group row'>
                             <label htmlFor='race' className='col-sm-2'>Seconday Race</label>
                             <div className='col-md-10'>
-                                {this.renderRaceChoice('race_secondary', [Race.ASIAN, Race.BLACK, Race.CAUCASIAN, Race.NATIVE_AMERICAN, Race.PACIFIC_ISLANDER, Race.REFUSED, Race.OTHER_RACE, Race.NOT_APPLICABLE])}
+                                {this.renderRaceChoice('race_secondary', [Race.ASIAN, Race.BLACK, Race.WHITE, Race.NATIVE_AMERICAN, Race.PACIFIC_ISLANDER, Race.REFUSED, Race.OTHER_RACE, Race.NOT_APPLICABLE])}
                             </div>
                         </div>
                         <div className='form-group row'>
@@ -333,6 +333,13 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                    onChange={this.handleTextUpdate('phone')}/>
                         </div>
                         <div className='form-group row'>
+                            <label htmlFor='ssn' className='col-sm-2'>Last 4 SSN</label>
+                            <input type='text' inputMode='numeric' pattern="[0-9]*"
+                                   className='form-control col-sm-10' id='ssn'
+                                   value={this.state.client.last4Ssn}
+                                   onChange={this.handleTextUpdate('last4Ssn')}/>
+                        </div>
+                        <div className='form-group row'>
                             {this.displayImage("Client Photo", "clientPhoto")}
                             {this.displayImage("Photo ID", "photoId")}
                         </div>
@@ -349,6 +356,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
                             <label htmlFor='caseworker_phone' className='col-sm-2'>Caseworker Phone</label>
                             <input type='text' inputMode='numeric' pattern="[0-9 \-\(\)]*"
                                    className='form-control col-sm-10' id='caseworker_phone'
+                                   placeholder='Caseworker Phone Number'
                                    value={this.state.client.caseworkerPhone}
                                    onChange={this.handleTextUpdate('caseworkerPhone')}/>
                         </div>
