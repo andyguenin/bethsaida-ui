@@ -132,7 +132,7 @@ class AllClients extends React.Component<Props, State> {
                 <button
                     type='button'
                     onClick={() => (this.state.page !== 0) ? this.setPage(this.state.page - 1) : undefined}
-                    className={'btn btn-info ' + (this.state.page === 0 ? 'disabled' : '')}
+                    className={'btn btn-lg btn-info ' + (this.state.page === 0 ? 'disabled' : '')}
                 >&lt; Previous
                 </button>
                 &nbsp;&nbsp;&nbsp;
@@ -141,7 +141,7 @@ class AllClients extends React.Component<Props, State> {
                 <button
                     type='button'
                     onClick={() => (this.state.page !== this.state.maxpage) ? this.setPage(this.state.page + 1) : undefined}
-                    className={'btn btn-info ' + (this.state.page === this.state.maxpage ? 'disabled' : '')}>Next &gt;</button>
+                    className={'btn btn-lg btn-info ' + (this.state.page === this.state.maxpage ? 'disabled' : '')}>Next &gt;</button>
             </Fragment>
         )
     }
@@ -150,10 +150,10 @@ class AllClients extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name={(this.state.showOnlyBannedClients ? 'Banned ' : '') + 'Client Management'}>
-                    <button type='button' className='btn btn-success form-control'
+                    <button type='button' className='btn btn-lg btn-success form-control'
                             onClick={() => window.location.href = '/client/new'}>New Client
                     </button>
-                    <button type='button' className='btn btn-danger form-control'
+                    <button type='button' className='btn btn-lg btn-danger form-control'
                             onClick={this.toggleOnlyBannedClients}>
                         View {this.state.viewBannedButtonText} clients
                     </button>

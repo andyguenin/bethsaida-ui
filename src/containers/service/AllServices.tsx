@@ -66,7 +66,7 @@ class AllServices extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name='Service Management'>
-                    <button type='button' className='btn btn-success form-control'
+                    <button type='button' className='btn btn-lg btn-success form-control'
                             onClick={() => window.location.href = '/service/new'}>New Service
                     </button>
                 </Title>
