@@ -67,6 +67,7 @@ interface IState {
     event?: BethsaidaEvent
     service?: Service
     user?: User,
+    createUser?: User,
     attendanceLoading: boolean,
     attendances: Attendance[],
     showModal: boolean,
@@ -109,6 +110,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                                                 event: event,
                                                 service: service,
                                                 user: currentUser,
+                                                createUser: users.find(r => r.id === event.userCreatorId),
                                                 loading: false,
                                                 attendances,
                                                 note: note
@@ -272,8 +274,8 @@ class ShowAttendance extends React.Component<Props, IState> {
                                 <tbody>
                                 <tr>
                                     <td>Event Creator</td>
-                                    <td>{(this.state.user !== undefined)
-                                        ? this.state.user.getFullName() : '-'}</td>
+                                    <td>{(this.state.createUser !== undefined)
+                                        ? this.state.createUser.getFullName() : '-'}</td>
                                 </tr>
                                 <tr>
                                     <td>Current Attendance</td>
