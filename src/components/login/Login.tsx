@@ -111,27 +111,31 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
                         </div>
                     </div>
                     <div className='row d-block d-lg-none'>
-                        <img src={ddb} className='col-12'/>
+                        <img src={ddb} className='col-12 mobile-img'/>
+                        <br/><br/>
                         <form onSubmit={this.submitLogin}>
-                            <div className='form-group'>
-                                <input type='email' id='inputEmail' className='form-control form-control-lg'
+                            <div className='form-group form-group-mobile'>
+                                <label htmlFor='inputEmail'>Email Address</label>
+                                <input type='email' id='inputEmail' className='form-control form-control-xl'
                                        placeholder='Email Address' required autoFocus
                                        value={this.state.email} onChange={this.updateField('email')}/>
-                                <label htmlFor='inputEmail'>Email Address</label>
                             </div>
-                            <div className="form-group">
-                                <input type="password" id="inputPassword" className="form-control"
+                            <div className="form-group form-group-mobile">
+                                <label htmlFor="inputPassword">Password</label>
+                                <input type="password" id="inputPassword" className="form-control form-control-xl"
                                        placeholder="Password" required value={this.state.password}
                                        onChange={this.updateField('password')}/>
-                                <label htmlFor="inputPassword">Password</label>
                             </div>
                             <div className='form-group'>
-                                Forgot Password
+                                {/*Forgot Password*/}
                             </div>
-                            <button
-                                className={"btn btn-lg btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
-                                type="submit">Sign in
-                            </button>
+                            <br/><br/>
+                            <div className="form-group form-group-mobile">
+                                <button
+                                    className={"btn btn-lg btn-primary btn-block btn-mobile text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
+                                    type="submit">Sign in
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>

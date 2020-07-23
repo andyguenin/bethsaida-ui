@@ -241,7 +241,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                 >
                     <Title name={this.state.service?.name + ' - ' + this.state.event?.date.mmddyyyy}>
                         <button
-                            className='btn btn-success form-control'
+                            className='btn btn-lg btn-success form-control'
                             type='button'
                             onClick={() => window.location.href = '/shelter/' + (this.state.event?.id || '') + '/edit'}>
                             Edit
@@ -286,7 +286,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                         </div>
                         <div className='col-md-5'>
                             <div className='row buttonid'>
-                                <button className='btn btn-success' onClick={() => this.showModal(true)}>+ Sign in
+                                <button className='btn btn-lg btn-success' onClick={() => this.showModal(true)}>+ Sign in
                                     client
                                 </button>
                             </div>

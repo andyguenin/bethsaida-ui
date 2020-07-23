@@ -126,7 +126,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
                              alt={'photo of ' + name}/>
                     </div>
                     <div className='row remove-button'>
-                        <button className='btn btn-success form-control'
+                        <button className='btn btn-lg btn-success form-control'
                                 onClick={() => DeleteImage(file, () => {
                                     this.handleImageStateUpdate(id, undefined);
                                 })} type='button'>Remove Image

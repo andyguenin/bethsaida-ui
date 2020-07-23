@@ -167,7 +167,7 @@ class AllShowers extends React.Component<Props, State> {
                     <td>{client.fullName}</td>
                     <td>{user.getFullName()}</td>
                     <td>
-                        <button type={'button'} className='btn btn-danger'
+                        <button type={'button'} className='btn btn-lg btn-danger'
                                 onClick={() => this.removeAttendance(attendance)}>Remove Client
                         </button>
                     </td>
@@ -245,7 +245,7 @@ class AllShowers extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name='Showers'>
-                    <button type={'button'} className='btn btn-success' onClick={() => this.toggleAddClientModal(true)}>
+                    <button type={'button'} className='btn btn-lg btn-success' onClick={() => this.toggleAddClientModal(true)}>
                         Check in Client
                     </button>
                     &nbsp;

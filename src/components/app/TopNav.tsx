@@ -117,7 +117,7 @@ class TopNav extends React.Component<Props, State> {
                             )()
                         }
                     </ul>
-                    <button type='button' className='btn btn-outline-dark '
+                    <button type='button' className='btn btn-lg btn-outline-dark '
                             onClick={() => window.location.href = '/profile'}>Edit Account
                     </button>
                     <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout

@@ -192,7 +192,7 @@ class AllMail extends React.Component<Props, State> {
             <td>{r.onboardDate.toDateString()}</td>
             <td>{r.onboardUser.getFullName()}</td>
             <td>
-                <button type={'button'} className='btn btn-danger'
+                <button type={'button'} className='btn btn-lg btn-danger'
                         onClick={() => this.toggleCloseModal(true, r.client.id)}>Remove
                     Client
                 </button>
@@ -203,7 +203,7 @@ class AllMail extends React.Component<Props, State> {
     render(): React.ReactNode {
         return <FileContainer>
             <Title name={'Mail'}>
-                <button type='button' className='btn btn-success' onClick={() => this.toggleAddModal(true)}>Add Mail
+                <button type='button' className='btn btn-lg btn-success' onClick={() => this.toggleAddModal(true)}>Add Mail
                     Record
                 </button>
             </Title>

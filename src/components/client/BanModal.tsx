@@ -170,13 +170,13 @@ export default class BanModal extends React.Component<Props, State> {
 
                 </ModalBody>
                 <ModalFooter>
-                    <button type="button" className='btn btn-info pointer' onClick={() => this.props.closeModal()}>Close
+                    <button type="button" className='btn btn-lg btn-info pointer' onClick={() => this.props.closeModal()}>Close
                     </button>
                     {
                         (
                             () => {
                                 if (this.props.newBan) {
-                                    return <button type='button' className='btn btn-danger'
+                                    return <button type='button' className='btn btn-lg btn-danger'
                                                    onClick={this.deleteBan}>Remove Ban</button>
                                 }
                             }

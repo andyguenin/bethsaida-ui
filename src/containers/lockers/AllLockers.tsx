@@ -196,7 +196,7 @@ class AllLockers extends React.Component<Props, State> {
                 }
                 <td>{locker.inputUser.getFullName()}</td>
                 <td>
-                    <button type='button' className='btn btn-danger' onClick={
+                    <button type='button' className='btn btn-lg btn-danger' onClick={
                         () => this.setState((state, props) => Object.assign({}, state, {
                             lockerBuilder: LockerBuilder.load(locker).setEndDate(BDate.fromDate(new Date()).jsDate),
                             showCloseModal: true
@@ -213,7 +213,7 @@ class AllLockers extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name='Lockers'>
-                    <button type='button' className='btn btn-success' onClick={() => this.toggleAddModal(true)}>Add
+                    <button type='button' className='btn btn-lg btn-success' onClick={() => this.toggleAddModal(true)}>Add
                         Locker Assignment
                     </button>
                 </Title>

@@ -30,7 +30,7 @@ export default class Summary extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-        
+
         this.state = {
             unique: {
                 current: this.props.yearlyStats.current_year.numClients,

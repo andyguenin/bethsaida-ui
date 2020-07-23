@@ -79,7 +79,7 @@ export default class Notes extends React.Component<Props, State> {
                                         return <div className={'col-6'}/>
                                     } else {
                                         return <div className='col-6'>
-                                            <button type={'button'} className={'btn btn-info'}
+                                            <button type={'button'} className={'btn btn-lg btn-info'}
                                                     onClick={() => this.setEditMode(true)}>Edit Note
                                             </button>
                                         </div>

@@ -69,7 +69,7 @@ class AllUsers extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name='Employee Management'>
-                    <button type='button' className='btn btn-success form-control'
+                    <button type='button' className='btn btn-lg btn-success form-control'
                             onClick={() => window.location.href = '/user/new'}>New Employee
                     </button>
                 </Title>
