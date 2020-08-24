@@ -126,7 +126,7 @@ class Dashboard extends React.Component<Props, State> {
                 } else if(g === "Female") {
                     f = (s) => s.numFemale
                 } else {
-                    f = (s) => s.numClients - (s.numFemale + s.numMale)
+                    f = (s) => s.totalVisits - (s.numFemale + s.numMale)
                 }
                 return new Series(
                     g,
