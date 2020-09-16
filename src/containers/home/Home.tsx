@@ -126,7 +126,7 @@ class Dashboard extends React.Component<Props, State> {
                 } else if(g === "Female") {
                     f = (s) => s.numFemale
                 } else {
-                    f = (s) => s.numClients - (s.numFemale + s.numMale)
+                    f = (s) => s.totalVisits - (s.numFemale + s.numMale)
                 }
                 return new Series(
                     g,
@@ -166,8 +166,8 @@ class Dashboard extends React.Component<Props, State> {
                     current_year_black: stats.getNumberOfBlack('current_total'),
                     current_year_proj_black: stats.getNumberOfBlack('current_projection'),
                     previous_year_black: stats.getNumberOfBlack('prev_total'),
-                    current_year_proj_white: stats.getNumberOfWhite('current_total'),
-                    current_year_white: stats.getNumberOfWhite('current_projection'),
+                    current_year_proj_white: stats.getNumberOfWhite('current_projection'),
+                    current_year_white: stats.getNumberOfWhite('current_total'),
                     previous_year_white: stats.getNumberOfWhite('prev_total'),
                     current_year_other: stats.getNumberOfOther('current_total'),
                     current_year_proj_other: stats.getNumberOfOther('current_projection'),
