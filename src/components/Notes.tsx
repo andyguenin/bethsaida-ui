@@ -69,72 +69,70 @@ export default class Notes extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className='col-md-4'>
-                <div className='note-border'>
-                    <div className='row'>
-                        {
-                            (
-                                () => {
-                                    if (this.state.inEditMode) {
-                                        return <div className={'col-6'}/>
-                                    } else {
-                                        return <div className='col-6'>
-                                            <button type={'button'} className={'btn btn-lg btn-info'}
-                                                    onClick={() => this.setEditMode(true)}>Edit Note
-                                            </button>
-                                        </div>
-                                    }
-                                }
-                            )()
-                        }
-                        <div className='col-6'>
-                            <h3 className='text-right'>Notes</h3>
-                        </div>
+            <div className='col-md-12 col-lg-4 note-col'>
+                <div className='row'>
+                    <div className='col-md-12 col-lg-6'>
+                        <h3 className=''>Notes</h3>
                     </div>
-
                     {
                         (
                             () => {
                                 if (this.state.inEditMode) {
-                                    return <form onSubmit={this.submit}>
-                                        <RichTextEditor
-                                            className='text-editor'
-                                            toolbarConfig={this.toolbarConfig()}
-                                            value={this.state.notes}
-                                            onChange={(notes) => {
-                                                this.setState((os, op) => Object.assign({}, os, {notes}))
-                                            }}/>
-                                        <div className='button-row text-right'>
-                                            <Button type='button' className='btn' onClick={() => {
-                                                this.setState((s, p) => Object.assign({}, s, {
-                                                    notes: s.initialNote,
-                                                    inEditMode: false
-                                                }))
-                                            }}>Cancel Changes</Button>
-                                            <Button type='submit' className='btn'>Save Note</Button>
-                                        </div>
-
-                                    </form>
+                                    return <div className={'col-md-12 col-lg-6'}/>
                                 } else {
-                                    let innerHtml = this.state.notes.toString('html');
-                                    if (innerHtml === undefined) {
-                                        innerHtml = ''
-                                    }
-                                    if (innerHtml === '<p><br></p>') {
-                                        innerHtml = ''
-                                    }
-                                    if (innerHtml === '') {
-                                        innerHtml = '<i></i>'
-                                    }
-                                    return <div
-                                        dangerouslySetInnerHTML={{__html: innerHtml}}
-                                        onClick={() => this.setEditMode(true)}
-                                    />
+                                    return <div className='col-md-12 col-lg-6 text-right edit-note'>
+                                        <button type={'button'} className={'btn btn-info full-btn'}
+                                                onClick={() => this.setEditMode(true)}>Edit Note
+                                        </button>
+                                    </div>
                                 }
                             }
                         )()
                     }
                 </div>
+
+                {
+                    (
+                        () => {
+                            if (this.state.inEditMode) {
+                                return <form onSubmit={this.submit}>
+                                    <RichTextEditor
+                                        className='text-editor'
+                                        toolbarConfig={this.toolbarConfig()}
+                                        value={this.state.notes}
+                                        onChange={(notes) => {
+                                            this.setState((os, op) => Object.assign({}, os, {notes}))
+                                        }}/>
+                                    <div className='button-row text-right'>
+                                        <Button type='button' className='btn' onClick={() => {
+                                            this.setState((s, p) => Object.assign({}, s, {
+                                                notes: s.initialNote,
+                                                inEditMode: false
+                                            }))
+                                        }}>Cancel Changes</Button>
+                                        <Button type='submit' className='btn'>Save Note</Button>
+                                    </div>
+
+                                </form>
+                            } else {
+                                let innerHtml = this.state.notes.toString('html');
+                                if (innerHtml === undefined) {
+                                    innerHtml = ''
+                                }
+                                if (innerHtml === '<p><br></p>') {
+                                    innerHtml = ''
+                                }
+                                if (innerHtml === '') {
+                                    innerHtml = '<i></i>'
+                                }
+                                return <div
+                                    dangerouslySetInnerHTML={{__html: innerHtml}}
+                                    onClick={() => this.setEditMode(true)}
+                                />
+                            }
+                        }
+                    )()
+                }
             </div>
         )
     }

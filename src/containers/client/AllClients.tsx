@@ -61,7 +61,7 @@ class AllClients extends React.Component<Props, State> {
             gridClients: [],
             loading: false,
             filterText: '',
-            viewBannedButtonText: 'banned',
+            viewBannedButtonText: 'Banned',
             showOnlyBannedClients: false,
 
             page: 0,
@@ -105,7 +105,7 @@ class AllClients extends React.Component<Props, State> {
     private toggleOnlyBannedClients = (): void => {
         this.setState((prevState, props) => Object.assign({}, prevState, {
             showOnlyBannedClients: !prevState.showOnlyBannedClients,
-            viewBannedButtonText: prevState.showOnlyBannedClients ? 'banned' : 'all'
+            viewBannedButtonText: prevState.showOnlyBannedClients ? 'Banned' : 'All'
         }), () => {
             this.filterClients(this.state.filterText);
         })
@@ -126,13 +126,35 @@ class AllClients extends React.Component<Props, State> {
         }))
     }
 
-    private pageControls = () => {
+    private separatePageControls = () => {
         return (
-            <Fragment>
+            <div className='d-inline d-lg-none'>
+                <div className={'text-center full'}>
+                    <button
+                        type='button'
+                        onClick={() => (this.state.page !== 0) ? this.setPage(this.state.page - 1) : undefined}
+                        className={'btn btn-info ' + (this.state.page === 0 ? 'disabled' : '')}
+                    >&lt; Previous
+                    </button>
+                    &nbsp;&nbsp;&nbsp;
+                    Page {this.state.page + 1} / {this.state.maxpage + 1}
+                    &nbsp;&nbsp;&nbsp;
+                    <button
+                        type='button'
+                        onClick={() => (this.state.page !== this.state.maxpage) ? this.setPage(this.state.page + 1) : undefined}
+                        className={'btn btn-info ' + (this.state.page === this.state.maxpage ? 'disabled' : '')}>Next &gt;</button>
+                </div>
+            </div>
+        )
+    }
+
+    private inlinePageControls = () => {
+        return (
+            <div className='d-none d-lg-inline'>
                 <button
                     type='button'
                     onClick={() => (this.state.page !== 0) ? this.setPage(this.state.page - 1) : undefined}
-                    className={'btn btn-lg btn-info ' + (this.state.page === 0 ? 'disabled' : '')}
+                    className={'btn btn-info ' + (this.state.page === 0 ? 'disabled' : '')}
                 >&lt; Previous
                 </button>
                 &nbsp;&nbsp;&nbsp;
@@ -141,21 +163,21 @@ class AllClients extends React.Component<Props, State> {
                 <button
                     type='button'
                     onClick={() => (this.state.page !== this.state.maxpage) ? this.setPage(this.state.page + 1) : undefined}
-                    className={'btn btn-lg btn-info ' + (this.state.page === this.state.maxpage ? 'disabled' : '')}>Next &gt;</button>
-            </Fragment>
+                    className={'btn btn-info ' + (this.state.page === this.state.maxpage ? 'disabled' : '')}>Next &gt;</button>
+            </div>
         )
     }
 
     public render() {
         return (
             <FileContainer>
-                <Title name={(this.state.showOnlyBannedClients ? 'Banned ' : '') + 'Client Management'}>
-                    <button type='button' className='btn btn-lg btn-success form-control'
+                <Title name={'Client Management'}>
+                    <button type='button' className='btn btn-success form-control'
                             onClick={() => window.location.href = '/client/new'}>New Client
                     </button>
-                    <button type='button' className='btn btn-lg btn-danger form-control'
+                    <button type='button' className='btn btn-danger form-control'
                             onClick={this.toggleOnlyBannedClients}>
-                        View {this.state.viewBannedButtonText} clients
+                        {this.state.viewBannedButtonText} Clients
                     </button>
                     <input
                         type='text'
@@ -169,29 +191,29 @@ class AllClients extends React.Component<Props, State> {
                     isEmpty={this.state.gridClients.length === 0}
                     emptyText='Cannot find any matching clients.'
                 >
-                    <div className='col-md-12'>
+                    <div className='col-12'>
+                        {this.separatePageControls()}
+                    </div>
+                    <div className='col-12'>
                         <table className="table table-striped client-table table-hover">
                             <thead className='thead-dark'>
                             <tr>
-                                <th>{this.pageControls()}</th>
+                                <th>{this.inlinePageControls()}</th>
                                 <th>Name</th>
-                                <th>Gender</th>
-                                <th>Race</th>
-                                <th>Secondary Race</th>
-                                <th>Hispanic</th>
-                                <th>Age</th>
+                                <th className='d-none d-lg-table-cell'>Gender</th>
+                                <th className='d-none d-lg-table-cell'>Race</th>
+                                <th className='d-none d-lg-table-cell'>Secondary Race</th>
+                                <th className='d-none d-lg-table-cell'>Hispanic</th>
+                                <th className='d-none d-lg-table-cell'>Age</th>
                             </tr>
                             </thead>
                             <tbody>
                             {this.state.show.map(c => this.singleRow(c))}
                             </tbody>
                         </table>
-                        {/*<div className='d-sm-none d-lg-flex row padding-bottom-15'>*/}
-                        {/*    <div className='col-12 text-center'>*/}
-                        {/*        {this.pageControls()}*/}
-                        {/*    </div>*/}
-
-                        {/*</div>*/}
+                        <div className='col-12'>
+                            {this.separatePageControls()}
+                        </div>
                     </div>
                 </Loader>
             </FileContainer>
@@ -209,19 +231,19 @@ class AllClients extends React.Component<Props, State> {
                 <td>
                     {client.fullName}
                 </td>
-                <td>
+                <td className='d-none d-lg-table-cell'>
                     {formatEnum(Gender[client.gender])}
                 </td>
-                <td>
+                <td className='d-none d-lg-table-cell'>
                     {formatEnum(Race[client.race])}
                 </td>
-                <td>
+                <td className='d-none d-lg-table-cell'>
                     {(client.raceSecondary !== undefined && client.raceSecondary !== Race.NOT_APPLICABLE) ? formatEnum(Race[client.raceSecondary]) : ''}
                 </td>
-                <td>
+                <td className='d-none d-lg-table-cell'>
                     {client.hispanic ? 'Yes' : ''}
                 </td>
-                <td>
+                <td className='d-none d-lg-table-cell'>
                     {DateUtil.getAge(client.dateOfBirth)}
                 </td>
             </tr>

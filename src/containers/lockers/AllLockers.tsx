@@ -180,31 +180,54 @@ class AllLockers extends React.Component<Props, State> {
     private renderSingleRow = (locker: Locker) => {
         const isExpired = new Date() > locker.expectedEndDate
         return (
-            <tr key={'locker-' + locker.id} className={(isExpired ? 'error-background' : '')}>
-                <td>{locker.lockerNumber}</td>
-                <td><a href={'/client/' + locker.client.id}>{locker.client.fullName}</a></td>
-                <td>{locker.startDate.toDateString()}</td>
-                {
-                    (() => {
-                            if (isExpired) {
-                                return <td><b>{locker.expectedEndDate.toDateString()}</b></td>
-                            } else {
-                                return <td>{locker.expectedEndDate.toDateString()}</td>
+            <Fragment key={locker.client.id + '-joint'}>
+                <tr key={'locker-' + locker.id} className={(isExpired ? 'error-background' : '')}>
+                    <td>{locker.lockerNumber}</td>
+                    <td>
+                        {/*<span className='d-none d-lg-inline'><a href={'/client/' + locker.client.id}>{locker.client.fullName}</a></span>*/}
+                        {/*<span className='d-inline d-lg-none'>*/}
+                            <button className='btn btn-primary' type={'button'} data-toggle='collapse' data-target={'#' + locker.client.id + '-detail-row'} aria-expanded="false" aria-controls={locker.client.id + '-detail-row'}>
+                                {locker.client.fullName}
+                            </button>
+                        {/*</span>*/}
+
+                    </td>
+                    <td className='d-none d-lg-table-cell'>{locker.startDate.toDateString()}</td>
+                    {
+                        (() => {
+                                if (isExpired) {
+                                    return <td className='d-none d-lg-table-cell'>
+                                        <b>{locker.expectedEndDate.toDateString()}</b></td>
+                                } else {
+                                    return <td
+                                        className='d-none d-lg-table-cell'>{locker.expectedEndDate.toDateString()}</td>
+                                }
                             }
-                        }
-                    )()
-                }
-                <td>{locker.inputUser.getFullName()}</td>
-                <td>
-                    <button type='button' className='btn btn-lg btn-danger' onClick={
-                        () => this.setState((state, props) => Object.assign({}, state, {
-                            lockerBuilder: LockerBuilder.load(locker).setEndDate(BDate.fromDate(new Date()).jsDate),
-                            showCloseModal: true
-                        }))
-                    }>Remove Assignment
-                    </button>
-                </td>
-            </tr>
+                        )()
+                    }
+                    <td className='d-none d-lg-table-cell'>{locker.inputUser.getFullName()}</td>
+                    <td>
+                        <button type='button' className='btn btn-danger' onClick={
+                            () => this.setState((state, props) => Object.assign({}, state, {
+                                lockerBuilder: LockerBuilder.load(locker).setEndDate(BDate.fromDate(new Date()).jsDate),
+                                showCloseModal: true
+                            }))
+                        }>Remove <span className='d-none d-lg-inline'>Assignment</span>
+                        </button>
+                    </td>
+                </tr>
+                <tr key={locker.client.id + '-detail-row'} id={locker.client.id + '-detail-row'} className='collapse out'>
+                    <td colSpan={6}>
+                        <table className='table'>
+                            <tbody>
+                            <tr><td>Client Profile</td><td><button type='button' className='btn btn-info' onClick={() => {window.location.href = '/client/' + locker.client.id}}>{locker.client.fullName}</button></td></tr>
+                            <tr><td>Start Date</td><td>{locker.startDate.toDateString()}</td></tr>
+                            <tr><td>Expected End Date</td><td>{locker.expectedEndDate.toDateString()}</td></tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </Fragment>
         )
     }
 
@@ -213,7 +236,7 @@ class AllLockers extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name='Lockers'>
-                    <button type='button' className='btn btn-lg btn-success' onClick={() => this.toggleAddModal(true)}>Add
+                    <button type='button' className='btn btn-success' onClick={() => this.toggleAddModal(true)}>Add
                         Locker Assignment
                     </button>
                 </Title>
@@ -335,11 +358,14 @@ class AllLockers extends React.Component<Props, State> {
                     <table className='table table-hover'>
                         <thead className='thead-dark'>
                         <tr>
-                            <th>Locker Number</th>
+                            <th>
+                                <span className='d-none d-lg-inline'>Locker Number</span>
+                                <span className='d-inline d-lg-none'>Locker #</span>
+                            </th>
                             <th>Client</th>
-                            <th>Start Date</th>
-                            <th>Expected End Date</th>
-                            <th>Assignment Employee</th>
+                            <th className='d-none d-lg-table-cell'>Start Date</th>
+                            <th className='d-none d-lg-table-cell'>Expected End Date</th>
+                            <th className='d-none d-lg-table-cell'>Assignment Employee</th>
                             <th></th>
                         </tr>
                         </thead>

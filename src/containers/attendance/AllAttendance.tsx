@@ -115,7 +115,7 @@ class AllAttendance extends React.Component<Props, State> {
         return (
             <FileContainer>
                 <Title name='Shelter Attendance Management'>
-                    <button type='button' className='btn btn-lg btn-success form-control'
+                    <button type='button' className='btn btn-success form-control'
                             onClick={() => window.location.href = '/shelter/new'}>New Attendance Sheet
                     </button>
                     {
@@ -123,7 +123,7 @@ class AllAttendance extends React.Component<Props, State> {
                             () => {
                                 if(this.props.archive) {
                                     return <button
-                                        className='btn btn-lg btn-info form-control'
+                                        className='btn btn-info form-control'
                                         type='button'
                                         onClick={() => window.location.href = '/shelter'}
                                     >
@@ -131,7 +131,7 @@ class AllAttendance extends React.Component<Props, State> {
                                     </button>
                                 } else {
                                     return <button
-                                        className='btn btn-lg btn-info form-control'
+                                        className='btn btn-info form-control'
                                         type='button'
                                         onClick={() => window.location.href = '/shelter/archive'}
                                     >

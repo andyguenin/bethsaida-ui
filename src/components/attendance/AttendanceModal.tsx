@@ -99,7 +99,7 @@ export default class AttendanceModal extends React.Component<Props, State> {
 
             const overflow = clients.length > this.props.summaryCount && this.state.showOnlySummary ?
                 <div className='text-right'>
-                    <button type='button' className='btn btn-lg btn-outline-success' onClick={() => {
+                    <button type='button' className='btn btn-outline-success' onClick={() => {
                         this.updateGridState(false, this.state.clientSearchTerm)
                     }}>
                         Show {clients.length - this.props.summaryCount} more results
@@ -137,7 +137,7 @@ export default class AttendanceModal extends React.Component<Props, State> {
                         {this.renderClientGrid(this.state.filteredClients, this.state.clientSearchTerm !== undefined)}
                     </ModalBody>
                     <ModalFooter>
-                        <button type="button" className='btn btn-lg btn-info pointer' onClick={() => this.props.closeModal()}>Close
+                        <button type="button" className='btn btn-info pointer' onClick={() => this.props.closeModal()}>Close
                         </button>
                     </ModalFooter>
                 </Modal>)

@@ -33,6 +33,9 @@
 img {
   image-orientation: from-image; }
 
+h1.title {
+  color: red; }
+
 .button-row {
   align-items: center;
   margin-bottom: 10px; }
@@ -116,7 +119,8 @@ img {
   background-color: rgba(255, 0, 0, 0.65); }
 
 div.text-editor {
-  font-family: inherit; }
+  font-family: inherit;
+  width: 100%; }
 
 .padding-bottom-15 {
   padding-bottom: 15px; }
@@ -172,7 +176,8 @@ div.text-editor {
 .note-border {
   border-left: 2px solid black;
   padding-left: 10px;
-  height: 100%; }
+  height: 100%;
+  margin-bottom: 250px; }
 
 .mobile-img {
   padding: 50px;

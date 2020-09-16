@@ -76,7 +76,7 @@ class ShowService extends React.Component<Props, IState> {
                     <Fragment>
                         <Title name={this.state.service?.name}>
                             <button
-                                className='btn btn-lg btn-success form-control'
+                                className='btn btn-success form-control'
                                 type='button'
                                 onClick={() => window.location.href = '/service/' + (this.state.service?.id || '') + '/edit'}>
                                 Edit
@@ -86,7 +86,7 @@ class ShowService extends React.Component<Props, IState> {
                                     () => {
                                         if(new Credentials().getDisplayAdmin()) {
                                             return <button
-                                                className={'btn btn-lg btn-danger form-control ' + (new Credentials().getDisplayAdmin() ? '' : 'hide')}
+                                                className={'btn btn-danger form-control ' + (new Credentials().getDisplayAdmin() ? '' : 'hide')}
                                                 type='button'
                                                 onClick={() => {
                                                     const confirm = window.confirm("Are you sure you want to delete this service?");

@@ -42,7 +42,8 @@ function parseClient(users: User[]): (input: any) => Client {
                 input['banId'],
                 input['caseworkerName'],
                 input['caseworkerPhone'],
-                input['last4Ssn']
+                input['last4Ssn'],
+                input['veteran']
             )
         } else {
             throw Error("Could not find intake user id")

@@ -126,7 +126,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
                              alt={'photo of ' + name}/>
                     </div>
                     <div className='row remove-button'>
-                        <button className='btn btn-lg btn-success form-control'
+                        <button className='btn btn-success form-control'
                                 onClick={() => DeleteImage(file, () => {
                                     this.handleImageStateUpdate(id, undefined);
                                 })} type='button'>Remove Image
@@ -259,7 +259,13 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                    required={true}
                             />
                         </div>
-
+                        <div className='form-group row'>
+                            <label htmlFor='ssn' className='col-sm-2'>Last 4 SSN</label>
+                            <input type='text' inputMode='numeric' pattern="[0-9]*"
+                                   className='form-control col-sm-10' id='ssn'
+                                   value={this.state.client.last4Ssn}
+                                   onChange={this.handleTextUpdate('last4Ssn')}/>
+                        </div>
                         <div className='form-group row'>
                             <label htmlFor='gender' className='col-sm-2'>Gender</label>
                             <div className='col-md-10'>
@@ -326,18 +332,20 @@ export class ModifyClient extends React.Component<IProps, IState> {
                             </div>
                         </div>
                         <div className='form-group row'>
+                            <label htmlFor='veteran' className='col-sm-2'>Veteran?</label>
+                            <div className='col-md-10'>
+                                <input name='veteran'
+                                       type='checkbox'
+                                       checked={this.state.client.getVeteran()}
+                                       onChange={this.handleBooleanUpdate('veteran')}/>
+                            </div>
+                        </div>
+                        <div className='form-group row'>
                             <label htmlFor='phone' className='col-sm-2'>Phone</label>
                             <input type='text' inputMode='numeric' pattern="[0-9 \-\(\)]*"
                                    className='form-control col-sm-10' id='phone'
                                    value={this.state.client.phone}
                                    onChange={this.handleTextUpdate('phone')}/>
-                        </div>
-                        <div className='form-group row'>
-                            <label htmlFor='ssn' className='col-sm-2'>Last 4 SSN</label>
-                            <input type='text' inputMode='numeric' pattern="[0-9]*"
-                                   className='form-control col-sm-10' id='ssn'
-                                   value={this.state.client.last4Ssn}
-                                   onChange={this.handleTextUpdate('last4Ssn')}/>
                         </div>
                         <div className='form-group row'>
                             {this.displayImage("Client Photo", "clientPhoto")}
@@ -356,7 +364,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
                             <label htmlFor='caseworker_phone' className='col-sm-2'>Caseworker Phone</label>
                             <input type='text' inputMode='numeric' pattern="[0-9 \-\(\)]*"
                                    className='form-control col-sm-10' id='caseworker_phone'
-                                   placeholder='Caseworker Phone Number'
+                                   placeholder='Clastaseworker Phone Number'
                                    value={this.state.client.caseworkerPhone}
                                    onChange={this.handleTextUpdate('caseworkerPhone')}/>
                         </div>

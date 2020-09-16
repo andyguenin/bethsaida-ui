@@ -150,7 +150,7 @@ class ShowClient extends React.Component<Props, IState> {
                 <FileContainer>
                     <Title name={client.fullName}>
                         <button
-                            className='btn-lg btn-success form-control'
+                            className='btn-success form-control'
                             type='button'
                             onClick={() => window.location.href = '/client/' + (this.state.client?.id || '') + '/edit'}>
                             Edit
@@ -167,7 +167,7 @@ class ShowClient extends React.Component<Props, IState> {
                         <TextModal title='Ban Notes' text={
                             this.state.ban?.notes
                         } show={this.state.showTextModal} close={() => this.setTextModal(false)}/>
-                        <button className='btn btn-lg btn-warning form-control' type='button'
+                        <button className='btn btn-warning form-control' type='button'
                                 onClick={() => this.setBanModal(true)}>Ban From DDB Services
                         </button>
                         {
@@ -175,7 +175,7 @@ class ShowClient extends React.Component<Props, IState> {
                                 () => {
                                     if (new Credentials().getDisplayAdmin()) {
                                         return <button
-                                            className='btn btn-lg btn-danger form-control'
+                                            className='btn btn-danger form-control'
                                             type={'button'}
                                             onClick={() => {
                                                 if (this.state.client !== undefined && this.state.client.id !== undefined) {
@@ -229,6 +229,7 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Race', formatEnum(Race[this.state.client?.race].toString()))}
                                 {this.displayAttributeRow('Secondary Race', formatEnum(Race[this.state.client.raceSecondary || Race.NOT_APPLICABLE].toString()))}
                                 {this.displayAttributeRow('Hispanic?', this.state.client?.hispanic ? 'Yes' : 'No')}
+                                {this.displayAttributeRow('Veteran?', this.state.client?.veteran ? 'Yes' : 'No')}
                                 {this.displayAttributeRow('Gender', formatEnum(Gender[this.state.client?.gender].toString()))}
                                 {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}
                                 {this.displayAttributeRow('Last 4 SSN', this.state.client.last4Ssn)}

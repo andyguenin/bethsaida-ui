@@ -102,7 +102,7 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
                                             <a href='/forgot-password'>Forgot Password</a>
                                         </div>
                                         <button
-                                            className={"btn btn-lg btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
+                                            className={"btn btn-primary btn-block text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
                                             type="submit">Sign in
                                         </button>
                                     </form>
@@ -132,7 +132,7 @@ class Login extends React.Component<RouteComponentProps<any> & Props, IState> {
                             <br/><br/>
                             <div className="form-group form-group-mobile">
                                 <button
-                                    className={"btn btn-lg btn-primary btn-block btn-mobile text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
+                                    className={"btn btn-primary btn-block btn-mobile text-uppercase " + (this.state.submitDisabled ? "disabled" : "")}
                                     type="submit">Sign in
                                 </button>
                             </div>

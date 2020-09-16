@@ -28,10 +28,10 @@ export default class ElemModal extends React.Component<Props> {
                         if(this.props.submitButton !== undefined && this.props.submitButton) {
                             return (
                                 <ModalFooter>
-                                    <button type='button' className='btn btn-lg btn-danger' onClick={() => this.props.close()}>
+                                    <button type='button' className='btn btn-danger' onClick={() => this.props.close()}>
                                         Close
                                     </button>
-                                    <button type='submit' className='btn btn-lg btn-success'>
+                                    <button type='submit' className='btn btn-success'>
                                         Submit
                                     </button>
                                 </ModalFooter>

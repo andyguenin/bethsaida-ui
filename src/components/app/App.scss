@@ -1,7 +1,6 @@
-//@import "~bootstrap/scss/_functions.scss";
-//@import "~bootstrap/scss/_variables.scss";
-//@import "~bootstrap/scss/mixins/_breakpoints.scss";
-//@import "~open-iconic/font/css/open-iconic-bootstrap.scss";
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/_variables.scss";
+@import "~bootstrap/scss/mixins/_breakpoints.scss";
 
 $ddb-orange: orange;
 
@@ -49,6 +48,49 @@ $ddb-orange: orange;
 
 img {
   image-orientation: from-image;
+}
+
+#ddb-logo {
+  height: 50px;
+}
+
+.note-border {
+  border-left: 2px solid black;
+  padding-left: 10px;
+  height: 100%;
+  margin-bottom: 250px;
+}
+
+
+@include media-breakpoint-down(md) {
+
+  .nav-link {
+    font-size: 2em;
+    border-top: 1px solid grey;
+  }
+  #ddb-logo {
+    height: 120px;
+  }
+  html {
+    font-size: 2rem;
+  }
+  .full-btn {
+    width: 100%;
+  }
+  .note-border{
+    border-left: 0px;
+    padding-left: 0px;
+  }
+  .note-col {
+    padding-bottom: 200px;
+  }
+  .edit-note {
+    margin-bottom: 20px;
+  }
+  .full {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 }
 
 .button-row {
@@ -165,6 +207,7 @@ img {
 
 div.text-editor {
   font-family: inherit;
+  width: 100%;
 }
 
 .padding-bottom-15 {
@@ -236,11 +279,7 @@ div.text-editor {
   border-bottom: 2px solid;
 }
 
-.note-border {
-  border-left: 2px solid black;
-  padding-left: 10px;
-  height: 100%;
-}
+
 
 .mobile-img {
   padding: 50px;

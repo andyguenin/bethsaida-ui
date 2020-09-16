@@ -65,65 +65,55 @@ class TopNav extends React.Component<Props, State> {
     render() {
         return (
             <Fragment>
-                <nav className="navbar navbar-expand-md navbar-light bg-light shadow">
-                    <a className="navbar-brand" href="/"><img src={ddb} height='50px' alt='Downtown Daily Bread'/> </a>
+
+
+                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                        <a className="navbar-brand" href="/"><img src={ddb} id='ddb-logo' alt='Downtown Daily Bread'/> </a>
                     <button className="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false"
-                            aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"> </span>
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
                     </button>
 
+                    <div className="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul className="navbar-nav mr-auto">
+                            <a className="nav-link" href="/">Home</a>
+                            <a className="nav-link" href="/client" id='client'>Clients</a>
+                            <a className="nav-link" href="/shelter" id="Shelter">
+                                Shelters
+                            </a>
+                            <a className='nav-link' href='/locker' id='Locker'>
+                                Lockers
+                            </a>
+                            <a className='nav-link' href='/mail' id='Mail'>
+                                Mail
+                            </a>
+                            <a className='nav-link' href='/shower' id='Shower'>
+                                Showers
+                            </a>
+                            {
+                                (
+                                    () => {
+                                        if (new Credentials().getDisplayAdmin()) {
+                                            return (
+                                                <Fragment>
+                                                    {/*<a className="nav-link" href="/service" id="Services">Services Management</a>*/}
+                                                    <a className='nav-link' href='/admin' id='Admin'>Admin
+                                                    </a>
+                                                </Fragment>
+                                            )
+                                        } else {
+                                            return <Fragment/>
+                                        }
 
-                    <ul className="navbar-nav mr-auto">
-
-                        <a className="nav-link" href="/">Home</a>
-
-                        <a className="nav-link" href="/client" id='client'>Clients</a>
-
-                        <a className="nav-link" href="/shelter" id="Shelter">
-                            Shelters
-                        </a>
-
-                        <a className='nav-link' href='/locker' id='Locker'>
-                            Lockers
-                        </a>
-
-                        <a className='nav-link' href='/mail' id='Mail'>
-                            Mail
-                        </a>
-
-                        <a className='nav-link' href='/shower' id='Shower'>
-                            Showers
-                        </a>
-
-
-                        {
-                            (
-                                () => {
-                                    if (new Credentials().getDisplayAdmin()) {
-                                        return (
-                                            <Fragment>
-                                                {/*<a className="nav-link" href="/service" id="Services">Services Management</a>*/}
-                                                <a className='nav-link' href='/admin' id='Admin'>Admin
-                                                </a>
-                                            </Fragment>
-                                        )
-                                    } else {
-                                        return <Fragment/>
                                     }
-
-                                }
-                            )()
-                        }
-                    </ul>
-                    <button type='button' className='btn btn-lg btn-outline-dark '
-                            onClick={() => window.location.href = '/profile'}>Edit Account
-                    </button>
-                    <button type='button' className="btn btn-outline-danger" onClick={() => this.logout()}>Logout
-                    </button>
+                                )()
+                            }
+                        </ul>
+                    </div>
                 </nav>
-                <ErrorMessage show={this.props.base.error.enabled} errorMessage={this.props.base.error.message} className='site-error'/>
+                <ErrorMessage show={this.props.base.error.enabled} errorMessage={this.props.base.error.message}
+                              className='site-error'/>
             </Fragment>
 
         )
