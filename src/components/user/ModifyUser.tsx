@@ -87,7 +87,7 @@ export default class ModifyUser extends React.Component<Props, State> {
                                    id='lastName'
                                    placeholder='Last Name'
                                    value={this.state.user.getLastName()}
-                                   onChange={this.handleTextUpdate('lastsName')}
+                                   onChange={this.handleTextUpdate('lastName')}
                                    autoComplete="off"
                                    required={true}
                             />
