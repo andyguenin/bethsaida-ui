@@ -9,6 +9,9 @@ import {clearErrorMessage, setErrorMessage} from "../actions/Base";
 import Ban from "../data/Ban";
 import BanBuilder from "../data/BanBuilder";
 import User from "../data/User";
+import Attendance from "../data/Attendance";
+import DateUtil from "../util/DateUtil";
+import AttendanceData from "../data/AttendanceData";
 
 function parseClient(users: User[]): (input: any) => Client {
     return (input) => {
@@ -100,6 +103,33 @@ export const NewClientBan = (clientId: string, ban: Ban, action: (ban: Ban) => v
                     }
                 }
             )
+        )
+    }
+export const GetClientEvents = (clientId: String, updateFunc: (attendance: AttendanceData[]) => void): AsyncAction =>
+    (dispatch) => {
+        fetch(Env.get().fullUrl() + '/attendance/event/client/' + clientId, {
+            method: 'GET',
+            headers: ServiceBase.authenticationHeader
+        }).then(
+            r => {
+                r.json().then(
+                    json => {
+                        if(r.ok) {
+                            dispatch(clearErrorMessage())
+                            let a = json.map((d: any) => {
+                                return {
+                                    name: d['eventName'],
+                                    date: new BDate(
+                                        d['eventDate']['year'],
+                                        d['eventDate']['month'] - 1,
+                                        d['eventDate']['day']).toDate()
+                                }
+                            })
+                            updateFunc(a)
+                        }
+                    }
+                )
+            }
         )
     }
 

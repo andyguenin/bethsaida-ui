@@ -1,5 +1,5 @@
 import React from 'react'
-import {axisLeft, axisBottom, mouse, scaleTime, scaleLinear, select, extent, selectAll, line, bisector, range} from 'd3';
+import {axisLeft, axisBottom, scaleTime, scaleLinear, select, extent, range} from 'd3';
 import {colors} from './Color'
 import {gcd} from "../../../util/Math";
 

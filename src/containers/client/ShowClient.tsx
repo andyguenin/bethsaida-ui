@@ -2,7 +2,14 @@ import React, {Fragment} from 'react';
 import {AppState} from "../../reducers/AppState";
 import {AsyncDispatch} from "../../actions/Async";
 import {connect, ConnectedProps} from "react-redux";
-import {DeleteClient, DeleteClientBan, GetSingleClient, GetSingleClientBan, NewClientBan} from "../../services/Client";
+import {
+    DeleteClient,
+    DeleteClientBan,
+    GetClientEvents,
+    GetSingleClient,
+    GetSingleClientBan,
+    NewClientBan
+} from "../../services/Client";
 import {RouteChildrenProps, withRouter} from 'react-router-dom'
 import FileContainer from "../../components/app/FileContainer";
 import Client from "../../data/Client";
@@ -22,16 +29,21 @@ import {formatEnum} from "../../util/StringUtil";
 import User from "../../data/User";
 import {GetAllUsers} from "../../services/User";
 import unknown from '../../assets/unknown-image.png';
+import {ActivityGrid} from "../../components/client/ActivityGrid";
+import Attendance from "../../data/Attendance";
+import AttendanceData from "../../data/AttendanceData";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
     base: state.base
 })
 
+
 const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         getSingleClient: (id: string, action: (c: Client) => void, users: User[]) => dispatch(GetSingleClient(id, action, users)),
         getSingleClientBan: (id: string, action: (ban?: Ban) => void) => dispatch(GetSingleClientBan(id, action)),
+        getClientEvents: (id: string, action: (c: AttendanceData[]) => void) => dispatch(GetClientEvents(id, action)),
         newBan: (id: string, ban: Ban, action: (ban: Ban) => void) => dispatch(NewClientBan(id, ban, action)),
         deleteBan: (id: string, action: () => void) => dispatch(DeleteClientBan(id, action)),
         deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action)),
@@ -52,13 +64,16 @@ interface RouteProps {
     id: string
 }
 
+
+
 interface IState {
     client?: Client,
     showBanModal: boolean,
     showTextModal: boolean,
     ban?: Ban,
     note?: string,
-    users: User[]
+    users: User[],
+    events?: AttendanceData[]
 }
 
 type Props = PropsFromRedux & RouteChildrenProps<RouteProps>
@@ -83,8 +98,10 @@ class ShowClient extends React.Component<Props, IState> {
             this.props.getUsers((users) => {
                 this.props.getSingleClient(id, (c: Client) => {
                     this.props.getSingleClientBan(id, (b?: Ban) => {
-                        this.props.getNote(id, (note: string) => {
-                            this.setState({client: c, ban: b, note: note, users})
+                        this.props.getClientEvents(id, (a: AttendanceData[]) => {
+                            this.props.getNote(id, (note: string) => {
+                                this.setState({client: c, ban: b, note: note, events: a, users})
+                            })
                         })
                     })
                 }, users)
@@ -237,6 +254,11 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Caseworker Phone', this.state.client.caseworkerPhone)}
                                 {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}
                                 {this.displayAttributeRow('Intake User', this.state.client?.intakeUser?.getFullName())}
+                                <tr>
+                                    <td colSpan={2} className={'grid-to-align'}>
+                                        <ActivityGrid data={this.state.events}/>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <td>Photo ID</td>
                                     <td>{this.displayImage('photo id scan', client.fullName, client.photoId)}

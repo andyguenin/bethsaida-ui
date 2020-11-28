@@ -1,6 +1,6 @@
-@import "~bootstrap/scss/_functions.scss";
-@import "~bootstrap/scss/_variables.scss";
-@import "~bootstrap/scss/mixins/_breakpoints.scss";
+@import "node_modules/bootstrap/scss/_functions.scss";
+@import "node_modules/bootstrap/scss/_variables.scss";
+@import "node_modules/bootstrap/scss/mixins/_breakpoints.scss";
 
 $ddb-orange: orange;
 
@@ -140,6 +140,29 @@ img {
   margin-top: 10px;
 }
 
+.grid-tooltip {
+  padding: 10px;
+  opacity: .85;
+  div ul {
+    margin-bottom: 0px;
+  }
+}
+
+.grid-capture {
+  position: absolute;
+  height: 112px;
+  width: 448px;
+
+}
+
+.grid-to-align {
+  //text-align: center;
+}
+
+.grid-class {
+  padding: 0px;
+}
+
 .site-error {
   margin-top: 25px;
 }
@@ -155,6 +178,11 @@ img {
 
 .pointer {
   cursor: pointer;
+}
+
+.grid-master {
+  margin: 20px;
+  margin-top: 0px;
 }
 
 .ban-radio-row {

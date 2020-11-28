@@ -34,6 +34,7 @@ import AllShowers from "../../containers/shower/AllShowers";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import {ActivityGrid} from "../client/ActivityGrid";
 
 library.add(fab, faChevronDown, faChevronUp)
 
@@ -46,6 +47,7 @@ export default class App extends React.Component<{}> {
                 <DevInfo>
                     <Router>
                         <Switch>
+                            <Route exact path='/activity' component={ActivityGrid} />
                             <Route exact path='/m' component={Maintenance} />
                             <Route exact path='/login' component={Login}/>
                             <Route exact path='/logout' component={Logout}/>
