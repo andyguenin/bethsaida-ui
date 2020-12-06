@@ -256,7 +256,14 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Intake User', this.state.client?.intakeUser?.getFullName())}
                                 <tr>
                                     <td colSpan={2} className={'grid-to-align'}>
-                                        <ActivityGrid data={this.state.events}/>
+                                        { ( () => {
+                                            if(this.state.events) {
+                                                return <ActivityGrid data={this.state.events}/>
+                                            } else {
+                                                return <Fragment />
+                                            }
+                                        })()}
+
                                     </td>
                                 </tr>
                                 <tr>

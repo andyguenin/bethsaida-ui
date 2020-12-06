@@ -15,7 +15,7 @@ interface DateServiceEnhanced {
 }
 
 interface Props {
-    data?: AttendanceData[]
+    data: AttendanceData[]
 }
 
 interface State {
@@ -26,22 +26,21 @@ export class ActivityGrid extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
         let d: DateService[] = []
-        let all_data = props.data
-        if (all_data) {
-            for (let i = 0; i < all_data.length; i++) {
-                const data = all_data[i]
-                if (data) {
-                    let f = d.find((dd) => dd.date === data.date)
-                    if (f === undefined) {
-                        d.push({
-                            date: data.date,
-                            service: [data.name]
-                        })
-                    } else {
-                        f.service.push(data.name)
-                    }
-                }
+        let all_data = props.data.sort((f, g) => f.date.getTime() - g.date.getTime())
+        let map: any = {}
+        for (let i = 0; i < all_data.length; i++) {
+            const data = all_data[i]
+            const date = data.date.getTime().toString()
+            if (map.hasOwnProperty(date)) {
+                map[date] = map[date].concat(data.name)
+                console.log(map)
+            } else {
+                map[date] = [data.name]
+                console.log(map)
             }
+        }
+        for (const key in map) {
+            d = d.concat({date: new Date(+key), service: map[key]})
         }
         this.state = {data: d}
 
@@ -55,13 +54,13 @@ export class ActivityGrid extends React.Component<Props, State> {
         while (lower_bound_date.getDay() != 0) {
             lower_bound_date = new Date(lower_bound_date.getFullYear(), lower_bound_date.getMonth(), lower_bound_date.getDate() - 1)
         }
-        const lower_bound_day = lower_bound_date.getDay()
         let current_day = new Date(lower_bound_date)
         const today = new Date()
         visits = visits.filter((f) => f.date >= lower_bound_date && f.date <= today)
         let grid_data: Array<DateServiceEnhanced> = []
         let week = -1
         while (current_day <= today) {
+            // let service = visits.filter((f) => f.date.getTime() == current_day.getTime()).map((f) => f.service)
             let service = (() => {
                 if (visits.length > 0 &&
                     current_day.getTime() === visits[0].date.getTime()) {
@@ -84,6 +83,7 @@ export class ActivityGrid extends React.Component<Props, State> {
             })
             current_day.setDate(current_day.getDate() + 1)
         }
+
         return <Fragment>
             <div>Check-ins</div>
             <Grid id='grid-container' className='grid-class' data={grid_data}/>

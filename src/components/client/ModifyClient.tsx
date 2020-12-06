@@ -173,6 +173,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
         return (e) => {
             const newState: IState = Object.assign({}, this.state, {client: this.state.client.setField(field, e.target.value)});
             this.setState(newState);
+            console.log(newState.client);
         }
     }
 

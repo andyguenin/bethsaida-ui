@@ -121,7 +121,7 @@ export const GetClientEvents = (clientId: String, updateFunc: (attendance: Atten
                                     name: d['eventName'],
                                     date: new BDate(
                                         d['eventDate']['year'],
-                                        d['eventDate']['month'] - 1,
+                                        d['eventDate']['month'],
                                         d['eventDate']['day']).toDate()
                                 }
                             })

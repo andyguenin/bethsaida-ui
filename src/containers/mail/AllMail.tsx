@@ -5,12 +5,9 @@ import {AsyncDispatch} from "../../actions/Async";
 import FileContainer from "../../components/app/FileContainer";
 import {Title} from "../../components/app/Title";
 import {Loader} from "../../components/app/loader/Loader";
-import {EndLockerAssignment, GetAllLockers, PutLocker} from "../../services/Locker";
-import Locker from "../../data/Locker";
 import Client from "../../data/Client";
 import {GetAllClients} from "../../services/Client";
 import ClientSelect from "../../components/app/ClientSelect";
-import LockerBuilder from "../../data/LockerBuilder";
 import BDate from "../../data/BDate";
 import FormModal from "../../components/app/FormModal";
 import ErrorMessage from "../../components/app/ErrorMessage";
@@ -167,10 +164,10 @@ class AllMail extends React.Component<Props, State> {
     private submitForm = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const rb = this.state.mailClientBuilder
-        if (rb.date === undefined || rb.user === undefined || rb.client === undefined) {
+        if ( rb.user === undefined || rb.client === undefined) {
             this.setState((state, props) => Object.assign({}, state, {modalError: 'Please fill out all records.'}))
         } else {
-            const mr = new MailRecord('', rb.client, rb.user, rb.date)
+            const mr = new MailRecord('', rb.client, rb.user, rb.date || new Date())
             this.props.putMailRecord(mr, () => {
                 this.setState((state, props) => Object.assign({}, state, {
                     showAddModal: false
@@ -189,7 +186,6 @@ class AllMail extends React.Component<Props, State> {
     private renderRow = (r: MailRecord) => {
         return <tr key={'mrkey-' + r.id}>
             <td>{r.client.fullName}</td>
-            <td>{r.onboardDate.toDateString()}</td>
             <td>{r.onboardUser.getFullName()}</td>
             <td>
                 <button type={'button'} className='btn btn-danger'
@@ -246,17 +242,17 @@ class AllMail extends React.Component<Props, State> {
                         />
                     </div>
                 </div>
-                <div className='form-group row'>
-                    <label htmlFor='start_date' className='col-sm-2'>Start Date</label>
-                    <div className={'col-sm-10'}>
-                        <input type='date' className='form-control' id='start_date'
-                               placeholder='Start Date'
-                               value={this.state.mailClientBuilder.date === undefined ? '' : BDate.fromDate(this.state.mailClientBuilder.date).jsDate}
-                               onChange={(e) => this.setDate(new Date(e.target.value))}
-                               autoComplete="off"
-                        />
-                    </div>
-                </div>
+                {/*<div className='form-group row'>*/}
+                {/*    <label htmlFor='start_date' className='col-sm-2'>Start Date</label>*/}
+                {/*    <div className={'col-sm-10'}>*/}
+                {/*        <input type='date' className='form-control' id='start_date'*/}
+                {/*               placeholder='Start Date'*/}
+                {/*               value={this.state.mailClientBuilder.date === undefined ? '' : BDate.fromDate(this.state.mailClientBuilder.date).jsDate}*/}
+                {/*               onChange={(e) => this.setDate(new Date(e.target.value))}*/}
+                {/*               autoComplete="off"*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*</div>*/}
                 <div className='form-group row'>
                     <label htmlFor='user' className='col-sm-2'>Intake Employee</label>
                     <div className='col-sm-10'>
@@ -299,7 +295,6 @@ class AllMail extends React.Component<Props, State> {
                     <thead className='thead-dark'>
                     <tr>
                         <th>Client</th>
-                        <th>Start Date</th>
                         <th>Onboard Employee</th>
                         <th></th>
                     </tr>
