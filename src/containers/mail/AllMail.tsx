@@ -186,7 +186,7 @@ class AllMail extends React.Component<Props, State> {
     private renderRow = (r: MailRecord) => {
         return <tr key={'mrkey-' + r.id}>
             <td>{r.client.fullName}</td>
-            <td>{r.onboardUser.getFullName()}</td>
+            {/*<td>{r.onboardUser.getFullName()}</td>*/}
             <td>
                 <button type={'button'} className='btn btn-danger'
                         onClick={() => this.toggleCloseModal(true, r.client.id)}>Remove
@@ -295,7 +295,6 @@ class AllMail extends React.Component<Props, State> {
                     <thead className='thead-dark'>
                     <tr>
                         <th>Client</th>
-                        <th>Onboard Employee</th>
                         <th></th>
                     </tr>
                     </thead>
