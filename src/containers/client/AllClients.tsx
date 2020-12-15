@@ -121,7 +121,7 @@ class AllClients extends React.Component<Props, State> {
     private setPage = (page: number): void => {
         this.setState(Object.assign({}, this.state, {
             page,
-            show: this.state.gridClients.slice(page * this.state.perpage, (page + 1) * this.state.perpage),
+            show: this.state.showOnlyBannedClients ? this.state.gridClients : this.state.gridClients.slice(page * this.state.perpage, (page + 1) * this.state.perpage),
             maxpage: Math.floor(this.state.gridClients.length / this.state.perpage)
         }))
     }
@@ -168,6 +168,25 @@ class AllClients extends React.Component<Props, State> {
         )
     }
 
+    private getHeader = () => {
+        if (this.state.showOnlyBannedClients) {
+            return <tr>
+                <th></th>
+                <th>Information</th>
+            </tr>
+        } else {
+            return <tr>
+                <th>{this.inlinePageControls()}</th>
+                <th>Name</th>
+                <th className='d-none d-lg-table-cell'>Gender</th>
+                <th className='d-none d-lg-table-cell'>Race</th>
+                <th className='d-none d-lg-table-cell'>Secondary Race</th>
+                <th className='d-none d-lg-table-cell'>Hispanic</th>
+                <th className='d-none d-lg-table-cell'>Age</th>
+            </tr>
+        }
+    }
+
     public render() {
         return (
             <FileContainer>
@@ -197,15 +216,7 @@ class AllClients extends React.Component<Props, State> {
                     <div className='col-12'>
                         <table className="table table-striped client-table table-hover">
                             <thead className='thead-dark'>
-                            <tr>
-                                <th>{this.inlinePageControls()}</th>
-                                <th>Name</th>
-                                <th className='d-none d-lg-table-cell'>Gender</th>
-                                <th className='d-none d-lg-table-cell'>Race</th>
-                                <th className='d-none d-lg-table-cell'>Secondary Race</th>
-                                <th className='d-none d-lg-table-cell'>Hispanic</th>
-                                <th className='d-none d-lg-table-cell'>Age</th>
-                            </tr>
+                            {this.getHeader()}
                             </thead>
                             <tbody>
                             {this.state.show.map(c => this.singleRow(c))}
@@ -221,33 +232,65 @@ class AllClients extends React.Component<Props, State> {
     }
 
     private singleRow(client: Client) {
-        return (
-            <tr className={'clickable-row ' + (client.isBanned ? 'banned-row' : '')} key={client.id} onClick={() => {
-                window.location.href = '/client/' + client.id
-            }}>
+        if (this.state.showOnlyBannedClients) {
+            return <tr className={'clickable-row '} key={client.id}
+                       onClick={() => {
+                           window.location.href = '/client/' + client.id
+                       }}>
                 <td>
                     {client.smallImageTag()}
                 </td>
                 <td>
-                    {client.fullName}
-                </td>
-                <td className='d-none d-lg-table-cell'>
-                    {formatEnum(Gender[client.gender])}
-                </td>
-                <td className='d-none d-lg-table-cell'>
-                    {formatEnum(Race[client.race])}
-                </td>
-                <td className='d-none d-lg-table-cell'>
-                    {(client.raceSecondary !== undefined && client.raceSecondary !== Race.NOT_APPLICABLE) ? formatEnum(Race[client.raceSecondary]) : ''}
-                </td>
-                <td className='d-none d-lg-table-cell'>
-                    {client.hispanic ? 'Yes' : ''}
-                </td>
-                <td className='d-none d-lg-table-cell'>
-                    {DateUtil.getAge(client.dateOfBirth)}
+                    <table>
+                        <tr>
+                            <td>Name</td>
+                            <td>{client.fullName}</td>
+                        </tr>
+                        <tr>
+                            <td>Age</td>
+                            <td>{DateUtil.getAge(client.dateOfBirth)}</td>
+                        </tr>
+                        <tr>
+                            <td>Gender</td>
+                            <td>{formatEnum(Gender[client.gender])}</td>
+                        </tr>
+                        <tr>
+                            <td>Race</td>
+                            <td>{formatEnum(Race[client.race])}</td>
+                        </tr>
+                    </table>
                 </td>
             </tr>
-        )
+        } else {
+            return (
+                <tr className={'clickable-row ' + (client.isBanned ? 'banned-row' : '')} key={client.id}
+                    onClick={() => {
+                        window.location.href = '/client/' + client.id
+                    }}>
+                    <td>
+                        {client.smallImageTag()}
+                    </td>
+                    <td>
+                        {client.fullName}
+                    </td>
+                    <td className='d-none d-lg-table-cell'>
+                        {formatEnum(Gender[client.gender])}
+                    </td>
+                    <td className='d-none d-lg-table-cell'>
+                        {formatEnum(Race[client.race])}
+                    </td>
+                    <td className='d-none d-lg-table-cell'>
+                        {(client.raceSecondary !== undefined && client.raceSecondary !== Race.NOT_APPLICABLE) ? formatEnum(Race[client.raceSecondary]) : ''}
+                    </td>
+                    <td className='d-none d-lg-table-cell'>
+                        {client.hispanic ? 'Yes' : ''}
+                    </td>
+                    <td className='d-none d-lg-table-cell'>
+                        {DateUtil.getAge(client.dateOfBirth)}
+                    </td>
+                </tr>
+            )
+        }
     }
 }
 
