@@ -2,6 +2,7 @@ import Environment from "./Environment";
 import Dev from "./Dev";
 import Prod from "./Prod";
 import Edge from "./Edge";
+import DevWithIp from "./DevWithIp";
 import NoInternet from "./NoInternet";
 
 export default class Env {
@@ -27,6 +28,8 @@ export default class Env {
                 return new NoInternet();
             case 'dev':
                 return new Dev();
+            case 'dev_ip':
+                return new DevWithIp();
             case 'default':
             default:
                 if (window.location.host !== 'bethsaida.downtowndailybread.org') {

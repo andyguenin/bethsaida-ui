@@ -15,6 +15,7 @@ interface Feature {
 
 interface State {
     unique: Feature,
+    day_shelter: Feature,
     total: Feature,
     numFemale: Feature,
     pctFemale: Feature,
@@ -30,12 +31,16 @@ export default class Summary extends React.Component<Props, State> {
 
     constructor(props: Props) {
         super(props);
-
         this.state = {
             unique: {
                 current: this.props.yearlyStats.current_year.numClients,
                 projected: this.props.yearlyStats.current_year_proj.numClients,
                 previous: this.props.yearlyStats.previous_year.numClients
+            },
+            day_shelter: {
+                current: this.props.yearlyStats.current_year.dayShelterVisits,
+                projected: this.props.yearlyStats.current_year_proj.dayShelterVisits,
+                previous: this.props.yearlyStats.previous_year.dayShelterVisits
             },
             total: {
                 current: this.props.yearlyStats.current_year.totalVisits,
@@ -106,7 +111,8 @@ export default class Summary extends React.Component<Props, State> {
                 </tr>
                 </thead>
                 <tbody>
-                {this.getRow('Unique Client Visits', this.state.unique)}
+                {this.getRow('Unique Client Visits', this.state.unique, true)}
+                {this.getRow('Total Day Shelter Visits', this.state.day_shelter)}
                 {this.getRow('Total Visits', this.state.total, true)}
                 {this.getRow('Number Female Visits', this.state.numFemale)}
                 {this.getRow('Percent Female Visits', this.state.pctFemale)}
@@ -121,6 +127,11 @@ export default class Summary extends React.Component<Props, State> {
         </div>
     }
 
+    private thousandify(num: number): string {
+        // const a = num.toString()
+        return ''
+
+    }
     private percentOrDash(num: number): string {
         if (isNaN(num)) {
             return '-'

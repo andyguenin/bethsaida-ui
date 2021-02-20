@@ -14,6 +14,7 @@ export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction 
             if (resp.ok) {
                 resp.json().then(
                     json => {
+                        console.log(json)
                         const stats = new SummaryStats(
                             json['numAttendanceSheets'],
                             json['numClients'],
@@ -26,6 +27,7 @@ export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction 
                                 d['numFemale'],
                                 d['numMale'],
                                 d['serviceName'],
+                                0,
                                 d['totalVisits']
                                 )
                             ),
@@ -37,6 +39,7 @@ export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction 
                                 d['numFemale'],
                                 d['numMale'],
                                 d['serviceName'],
+                                0,
                                 d['totalVisits'],
                                 d['day']
                                 )
@@ -49,6 +52,7 @@ export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction 
                                 d['numFemale'],
                                 d['numMale'],
                                 d['serviceName'],
+                                d['dayShelterVisits'],
                                 d['totalVisits'],
                                 d['day']
                                 )

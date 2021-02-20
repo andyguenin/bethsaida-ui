@@ -7,6 +7,7 @@ export default class  Stats {
     readonly numFemale: number
     readonly numMale: number
     readonly serviceName: string
+    readonly dayShelterVisits: number
     readonly totalVisits: number
 
     constructor(
@@ -17,6 +18,7 @@ export default class  Stats {
         numFemale: number,
         numMale: number,
         serviceName: string,
+        dayShelterVisits: number,
         totalVisits: number,
         day: number = 1
     ) {
@@ -28,6 +30,7 @@ export default class  Stats {
         this.numFemale = numFemale;
         this.numMale = numMale;
         this.serviceName = serviceName;
+        this.dayShelterVisits = dayShelterVisits
         this.totalVisits = totalVisits;
     }
 
@@ -37,7 +40,7 @@ export default class  Stats {
 
 
     public static empty(): Stats {
-        return new Stats(1, 1900, 0, 0, 0, 0, '', 0)
+        return new Stats(1, 1900, 0, 0, 0, 0, '', 0, 0)
     }
 
 }
