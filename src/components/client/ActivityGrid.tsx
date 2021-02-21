@@ -105,7 +105,7 @@ export class ActivityGrid extends React.Component<Props, State> {
             <div>Check-ins</div>
             <Grid id='grid-container' className='grid-class' data={grid_data}/>
         </div>
-            <div>
+            <div className='d-sm-inline d-lg-none'>
                 {this.checkinSummary(grid_data)}
             </div>
         </Fragment>
