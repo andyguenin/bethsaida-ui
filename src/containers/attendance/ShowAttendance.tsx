@@ -263,7 +263,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                         {this.state.errorModalMessage}
                     </ElemModal>
                     <div className='row'>
-                        <div className='col-md-3'>
+                        <div className='col-lg-3'>
                             <table className='table table-bordered table-hover'>
                                 <thead className='thead-dark'>
                                 <tr>
@@ -284,7 +284,7 @@ class ShowAttendance extends React.Component<Props, IState> {
                                 </tbody>
                             </table>
                         </div>
-                        <div className='col-md-5'>
+                        <div className='col-lg-5'>
                             <div className='row buttonid'>
                                 <button className='btn btn-success' onClick={() => this.showModal(true)}>+ Sign in
                                     client

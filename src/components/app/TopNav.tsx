@@ -67,7 +67,7 @@ class TopNav extends React.Component<Props, State> {
             <Fragment>
 
 
-                <nav className="navbar navbar-expand-lg navbar-light bg-light">
+                <nav className="navbar navbar-expand-lg navbar-light bg-light shadow">
                         <a className="navbar-brand" href="/"><img src={ddb} id='ddb-logo' alt='Downtown Daily Bread'/> </a>
                     <button className="navbar-toggler" type="button" data-toggle="collapse"
                             data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

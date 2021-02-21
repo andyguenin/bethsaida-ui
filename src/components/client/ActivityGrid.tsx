@@ -46,6 +46,22 @@ export class ActivityGrid extends React.Component<Props, State> {
 
     }
 
+    public checkinSummary = (grid: Array<DateServiceEnhanced>) => {
+        const reversed_filtered = grid.filter((f) => f.service.length > 0).reverse()
+        const a = reversed_filtered.slice(0, Math.min(reversed_filtered.length, 5))
+            .map((f) => <li>{f.date.toLocaleDateString()}<ul>{f.service.map((g) => <li>{g}</li>)}</ul></li>)
+        if (a.length === 0) {
+            return <Fragment>
+                <div><b>No user check-ins have been recorded.</b></div>
+            </Fragment>
+        } else {
+            return <Fragment>
+                <div><b>Latest {a.length} checkins</b></div>
+                <ul>{a}</ul>
+            </Fragment>
+        }
+    }
+
     public render() {
         let visits = this.state.data
         visits.sort((a, b) => a.date.getTime() - b.date.getTime())
@@ -77,7 +93,7 @@ export class ActivityGrid extends React.Component<Props, State> {
             }
             grid_data.push({
                 date: new Date(current_day),
-                service: service,
+                service: service.sort(),
                 day_of_week: current_day.getDay(),
                 week
             })
@@ -85,8 +101,13 @@ export class ActivityGrid extends React.Component<Props, State> {
         }
 
         return <Fragment>
+            <div className='d-sm-none d-lg-inline'>
             <div>Check-ins</div>
             <Grid id='grid-container' className='grid-class' data={grid_data}/>
+        </div>
+            <div>
+                {this.checkinSummary(grid_data)}
+            </div>
         </Fragment>
     }
 }
