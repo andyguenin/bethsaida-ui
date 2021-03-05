@@ -53,7 +53,7 @@ class Dashboard extends React.Component<Props, State> {
 
     extractFilteredIntakeSeries = (monthlyStats: Stats[]) => {
         const s = new Series("Intake", monthlyStats.map(ms =>
-                new DatePoint(new Date(ms.year, ms.month), ms.totalVisits)
+                new DatePoint(new Date(ms.year, ms.month - 1), ms.totalVisits)
             )
                 .filter(dp => {
                     const monthDiff =
