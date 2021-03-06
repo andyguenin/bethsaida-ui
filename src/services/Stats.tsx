@@ -14,7 +14,6 @@ export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction 
             if (resp.ok) {
                 resp.json().then(
                     json => {
-                        console.log(json)
                         const stats = new SummaryStats(
                             json['numAttendanceSheets'],
                             json['numClients'],

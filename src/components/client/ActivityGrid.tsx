@@ -33,10 +33,8 @@ export class ActivityGrid extends React.Component<Props, State> {
             const date = data.date.getTime().toString()
             if (map.hasOwnProperty(date)) {
                 map[date] = map[date].concat(data.name)
-                console.log(map)
             } else {
                 map[date] = [data.name]
-                console.log(map)
             }
         }
         for (const key in map) {
