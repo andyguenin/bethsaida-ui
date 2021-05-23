@@ -173,7 +173,6 @@ export class ModifyClient extends React.Component<IProps, IState> {
         return (e) => {
             const newState: IState = Object.assign({}, this.state, {client: this.state.client.setField(field, e.target.value)});
             this.setState(newState);
-            console.log(newState.client);
         }
     }
 
@@ -330,6 +329,15 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                        type='checkbox'
                                        checked={this.state.client.getHispanic()}
                                        onChange={this.handleBooleanUpdate('hispanic')}/>
+                            </div>
+                        </div>
+                        <div className='form-group row'>
+                            <label htmlFor='covid_vaccine' className='col-sm-2'>Proof of Covid Vaccine?</label>
+                            <div className='col-md-10'>
+                                <input name='covid_vaccine'
+                                       type='checkbox'
+                                       checked={this.state.client.getCovidVaccine()}
+                                       onChange={this.handleBooleanUpdate('covid_vaccine')}/>
                             </div>
                         </div>
                         <div className='form-group row'>

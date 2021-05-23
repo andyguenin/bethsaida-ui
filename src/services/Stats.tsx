@@ -4,6 +4,7 @@ import ServiceBase from "./ServiceBase";
 import SummaryStats from "../data/SummaryStats";
 import Stats from "../data/Stats";
 import RaceStats from "../data/RaceStats";
+import CovidStats from "../data/CovidStats";
 
 export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction => {
     return (d) => {
@@ -14,7 +15,6 @@ export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction 
             if (resp.ok) {
                 resp.json().then(
                     json => {
-                        console.log(json)
                         const stats = new SummaryStats(
                             json['numAttendanceSheets'],
                             json['numClients'],
@@ -61,7 +61,11 @@ export const GetSummaryStats = (action: (s: SummaryStats) => void): AsyncAction 
                                 d['name'],
                                 d['race'],
                                 d['count']
-                            ))
+                            )),
+                            new CovidStats(
+                                json['covidStats']['numberVaccinatedActiveClientsPastYear'],
+                                json['covidStats']['numberUnvaccinatedActiveClientsPastYear']
+                            )
                         )
                         action(stats)
                     }

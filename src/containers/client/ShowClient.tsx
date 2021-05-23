@@ -246,6 +246,7 @@ class ShowClient extends React.Component<Props, IState> {
                                 {this.displayAttributeRow('Race', formatEnum(Race[this.state.client?.race].toString()))}
                                 {this.displayAttributeRow('Secondary Race', formatEnum(Race[this.state.client.raceSecondary || Race.NOT_APPLICABLE].toString()))}
                                 {this.displayAttributeRow('Hispanic?', this.state.client?.hispanic ? 'Yes' : 'No')}
+                                {this.displayAttributeRow('COVID-19 Vaccine?', this.state.client?.covidVaccine ? 'Yes' : 'Unknown')}
                                 {this.displayAttributeRow('Veteran?', this.state.client?.veteran ? 'Yes' : 'No')}
                                 {this.displayAttributeRow('Gender', formatEnum(Gender[this.state.client?.gender].toString()))}
                                 {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}

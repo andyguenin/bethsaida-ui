@@ -204,6 +204,16 @@ export default class ClientBuilder {
         return this;
     }
 
+    public getCovidVaccine(): boolean {
+        return this._covidVaccine || false
+    }
+
+    public setCovidVaccine(covidVaccine: boolean): ClientBuilder {
+        this._covidVaccine = covidVaccine;
+        return this;
+    }
+
+
     private _id?: string;
     private _firstName?: string;
     private _middleName?: string;
@@ -225,6 +235,7 @@ export default class ClientBuilder {
     private _caseworkerName?: string;
     private _caseworkerPhone?: string;
     private _last4ssn?: string
+    private _covidVaccine?: boolean
 
     public setField(id: string, value: string) {
         switch (id) {
@@ -266,6 +277,8 @@ export default class ClientBuilder {
                 return this.setLast4Ssn(value)
             case 'veteran':
                 return this.setVeteran(value.toLowerCase() === 'true')
+            case 'covid_vaccine':
+                return this.setCovidVaccine(value.toLowerCase() === 'true')
         }
     }
 
@@ -309,7 +322,8 @@ export default class ClientBuilder {
                 this._caseworkerName,
                 (this._caseworkerPhone || '').replace(new RegExp('[^0-9]', 'g'), ''),
                 this._last4ssn,
-                this._veteran
+                this._veteran,
+                this._covidVaccine,
             )
         } else {
             throw new Error('Could not create client due to missing required fields.')
@@ -352,6 +366,7 @@ export default class ClientBuilder {
             .setCaseworkerPhone(client.caseworkerPhone)
             .setLast4Ssn(client.last4Ssn)
             .setVeteran(client.veteran || false)
+            .setCovidVaccine(client.covidVaccine || false)
 
 
     }

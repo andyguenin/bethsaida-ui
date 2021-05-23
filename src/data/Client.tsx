@@ -34,6 +34,8 @@ export default class Client{
     public readonly caseworkerName?: string;
     public readonly caseworkerPhone?: string;
 
+    public readonly covidVaccine?: boolean;
+
     constructor(
         firstName: string,
         lastName: string,
@@ -55,7 +57,8 @@ export default class Client{
         caseworkerName?: string,
         caseworkerPhone?: string,
         last4Ssn?: string,
-        veteran?: boolean
+        veteran?: boolean,
+        covidVaccine?: boolean
 
     ) {
         this.id = id;
@@ -80,6 +83,7 @@ export default class Client{
         this.last4Ssn = last4Ssn;
         this.veteran = veteran;
         this.fullName = firstName + (middleName === undefined ? ' ' : ' ' + middleName + ' ') + lastName;
+        this.covidVaccine = covidVaccine;
     }
 
     private imageUrl = Env.get().imageUrl;

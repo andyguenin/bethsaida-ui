@@ -17,6 +17,7 @@ import {MonthlyLineChart} from "../../components/app/chart/MonthlyLineChart";
 import DataTable from "../../components/app/DataTable";
 import YearlyStats from "../../data/YearlyStats"
 import Summary from "../../components/Summary";
+import CovidStats from "../../data/CovidStats";
 
 
 const mapStateToProps = (state: AppState) => state
@@ -45,6 +46,7 @@ interface State {
     day30uniqueVisits: Series[]
     month30dayShelterGender: Series[]
     yearlyStats: YearlyStats
+    covidStats: CovidStats
 }
 
 class Dashboard extends React.Component<Props, State> {
@@ -107,7 +109,8 @@ class Dashboard extends React.Component<Props, State> {
                 current_year_other: 0,
                 current_year_proj_other: 0,
                 previous_year_other: 0
-            }
+            },
+            covidStats: new CovidStats(0, 0)
         }
 
         const now = new Date()
@@ -121,9 +124,9 @@ class Dashboard extends React.Component<Props, State> {
             const genderBreakdown = (["Male", "Female", "Other"]).map(g => {
 
                 let f: (s: Stats) => number
-                if(g === "Male") {
+                if (g === "Male") {
                     f = (s) => s.numMale
-                } else if(g === "Female") {
+                } else if (g === "Female") {
                     f = (s) => s.numFemale
                 } else {
                     f = (s) => s.totalVisits - (s.numFemale + s.numMale)
@@ -172,8 +175,8 @@ class Dashboard extends React.Component<Props, State> {
                     current_year_other: stats.getNumberOfOther('current_total'),
                     current_year_proj_other: stats.getNumberOfOther('current_projection'),
                     previous_year_other: stats.getNumberOfOther('prev_total')
-
-                }
+                },
+                covidStats: stats.covidStats
             }))
         })
     }
@@ -183,6 +186,29 @@ class Dashboard extends React.Component<Props, State> {
             <FileContainer>
                 <Title name='Dashboard'/>
                 <Loader loading={this.state.stats === undefined} emptyText={''} isEmpty={false}>
+                    <div className='row'>
+                        <div className={'col-xl-12'}>
+                            <div className='chart-group'>
+                                <h2>
+                                    Covid Stats
+                                </h2>
+                                <table className='table table-hover'>
+                                    <thead className='thead-dark'>
+                                    <tr>
+                                        <th>Number of vaccinated clients that visited in the past year</th>
+                                        <th>Number of un-vaccinated or unknown clients that visited in the past year</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>{this.state.covidStats.vaccinated}</td>
+                                            <td>{this.state.covidStats.unvaccinated}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     <div className='row'>
                         <div className='col-xl-6'>
                             <Summary yearlyStats={this.state.yearlyStats}/>
@@ -224,8 +250,8 @@ class Dashboard extends React.Component<Props, State> {
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
                                 <MonthlyLineChart id={'day-30-day-shelter-gender'} className={'tall-chart'}
-                                                 title={'Trailing 12 month Day Shelter visits by gender'}
-                                                 data={this.state.month30dayShelterGender}/> <br/>
+                                                  title={'Trailing 12 month Day Shelter visits by gender'}
+                                                  data={this.state.month30dayShelterGender}/> <br/>
                                 <Expander header={'Data Values'}>
                                     <DataTable data={this.state.month30dayShelterGender} monthly={true}/>
                                 </Expander>

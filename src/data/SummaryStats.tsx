@@ -1,5 +1,6 @@
 import Stats from "./Stats";
 import RaceStats from "./RaceStats";
+import CovidStats from "./CovidStats";
 
 export default class SummaryStats {
 
@@ -10,6 +11,7 @@ export default class SummaryStats {
     private _dailyStats: Stats[]
     private _yearlyStats: Stats[]
     private _raceStats: RaceStats[]
+    private _covidStats: CovidStats
 
     constructor(
         numAttendanceSheets: number,
@@ -18,7 +20,8 @@ export default class SummaryStats {
         monthlyStats: Stats[],
         dailyStats: Stats[],
         yearlyStats: Stats[],
-        raceStats: RaceStats[]
+        raceStats: RaceStats[],
+        covidStats: CovidStats
     ) {
         this._numAttendanceSheets = numAttendanceSheets;
         this._numClients = numClients;
@@ -27,6 +30,7 @@ export default class SummaryStats {
         this._dailyStats = dailyStats;
         this._yearlyStats = yearlyStats;
         this._raceStats = raceStats;
+        this._covidStats = covidStats;
     }
 
     get numAttendanceSheets(): number {
@@ -51,6 +55,10 @@ export default class SummaryStats {
 
     get yearlyStats(): Stats[] {
         return this._yearlyStats;
+    }
+
+    get covidStats(): CovidStats {
+        return this._covidStats
     }
 
     public getNumberOfWhite(name: string): number {
