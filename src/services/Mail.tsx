@@ -11,7 +11,7 @@ function parseMail(l: any, clients: Client[], users: User[]): MailRecord {
     const user = users.find(u => u.id === l['inputUser'])
 
     if(client === undefined) {
-        throw new Error("cannot find a matching client")
+        throw new Error("cannot find a matching client for client id: " + l['clientId'])
     }
     if(user === undefined) {
         throw new Error("cannot find a matching employee")

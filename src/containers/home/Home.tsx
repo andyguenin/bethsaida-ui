@@ -55,7 +55,7 @@ class Dashboard extends React.Component<Props, State> {
 
     extractFilteredIntakeSeries = (monthlyStats: Stats[]) => {
         const s = new Series("Intake", monthlyStats.map(ms =>
-                new DatePoint(new Date(ms.year, ms.month), ms.totalVisits)
+                new DatePoint(new Date(ms.year, ms.month - 1), ms.totalVisits)
             )
                 .filter(dp => {
                     const monthDiff =
@@ -216,10 +216,13 @@ class Dashboard extends React.Component<Props, State> {
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
                                 <MonthlyLineChart id={'month-12-unique-by-service'} className={'tall-chart'}
-                                                  title={'Trailing 12 month unique visits by service'}
-                                                  data={this.state.month12uniqueVisits}/>
+                                                  title={'Trailing 12 month unique clients by service'}
+                                                  data={this.state.month12uniqueVisits}
+                                                  description='Any individual client will be counted a maximum of once per month per service they use.'
+                                />
+
                                 <br/>
-                                <Expander header={'Data Values'}>
+                                <Expander header={'Raw Data'}>
                                     <DataTable data={this.state.month12uniqueVisits} monthly={true}/>
                                 </Expander>
                             </div>
@@ -227,10 +230,12 @@ class Dashboard extends React.Component<Props, State> {
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
                                 <MonthlyLineChart id={'month-12-total-by-service'} className={'tall-chart'}
-                                                  title={'Trailing 12 month total visits by service'}
-                                                  data={this.state.month12totalVisits}/>
+                                                  title={'Trailing 12 month interactions by service'}
+                                                  data={this.state.month12totalVisits}
+                                                  description='Any individual client will be counted once per interaction.'
+                                />
                                 <br/>
-                                <Expander header={'Data Values'}>
+                                <Expander header={'Raw Data'}>
                                     <DataTable data={this.state.month12totalVisits} monthly={true}/>
                                 </Expander>
                             </div>
@@ -241,7 +246,7 @@ class Dashboard extends React.Component<Props, State> {
                                 <MonthlyBarChart id={'month-12-intake'} className={'tall-chart'}
                                                  title={'Trailing 12 monthly new intake'}
                                                  data={this.state.filteredIntakeSeries}/> <br/>
-                                <Expander header={'Data Values'}>
+                                <Expander header={'Raw Data'}>
                                     <DataTable data={[this.state.filteredIntakeSeries]} monthly={true}/>
                                 </Expander>
                             </div>
@@ -250,9 +255,11 @@ class Dashboard extends React.Component<Props, State> {
                         <div className='col-xl-6'>
                             <div className={'chart-group'}>
                                 <MonthlyLineChart id={'day-30-day-shelter-gender'} className={'tall-chart'}
-                                                  title={'Trailing 12 month Day Shelter visits by gender'}
-                                                  data={this.state.month30dayShelterGender}/> <br/>
-                                <Expander header={'Data Values'}>
+                                                 title={'Trailing 12 month Day Shelter visits by gender'}
+                                                 data={this.state.month30dayShelterGender}
+                                                  description='Starting with the Day Shelter line from "Trailing 12 month interactions by service", break out the trend line by reported gender.'
+                                /> <br/>
+                                <Expander header={'Raw Data'}>
                                     <DataTable data={this.state.month30dayShelterGender} monthly={true}/>
                                 </Expander>
                             </div>
@@ -261,9 +268,11 @@ class Dashboard extends React.Component<Props, State> {
                         <div className='col-xl-12'>
                             <div className={'chart-group'}>
                                 <DailyLineChart id={'day-30-usage'} className={'tall-chart'}
-                                                title={'30 day service usage'}
-                                                data={this.state.day30uniqueVisits}/><br/>
-                                <Expander header={'30 day service usage values'}>
+                                                title={'Trailing 30 day interactions by service'}
+                                                data={this.state.day30uniqueVisits}
+                                                description='Any individual client will be counted once per interaction.'
+                                /><br/>
+                                <Expander header={'Raw Data'}>
                                     <DataTable data={this.state.day30uniqueVisits} monthly={false}/>
                                 </Expander>
                             </div>

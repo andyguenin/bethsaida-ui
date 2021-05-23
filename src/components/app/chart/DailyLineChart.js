@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import {
     axisLeft,
     axisBottom,
@@ -123,7 +123,7 @@ export class DailyLineChart extends React.Component {
                         })
                 )
                 .selectAll("text")
-                .attr('transform', 'rotate(-75) translate(-35, -8)')
+                .attr('transform', 'rotate(-45) translate(-35, -8)')
 
             const tempExtentY = extent(dayOffsetSeries.flatMap(d => d), d => d.y)
             const extentY = [0, tempExtentY[1] || 0];
@@ -324,10 +324,20 @@ export class DailyLineChart extends React.Component {
 
     }
 
+    getDescription = () => {
+        if (this.props.hasOwnProperty("description")) {
+            return <i>{this.props.description}</i>
+        } else {
+            return <Fragment></Fragment>
+        }
+    }
+
+
     render() {
         if(this.props.title !== undefined) {
             return <div>
                 <h2>{this.props.title}</h2>
+                {this.getDescription()}
                 {this.getGraphHtml()}
             </div>
         } else {

@@ -90,12 +90,29 @@ export default class Summary extends React.Component<Props, State> {
         }
     }
 
+    commafy(num: string | number) {
+        if(typeof num === "string") {
+            return num
+        }
+        let str = num.toString().split("").reverse().reduce((prev: string, current: string, idx: number, ar: string[]) => {
+            const nw = current + prev
+            if(nw.length % 4 === 3) {
+                return ',' + nw
+            }
+            return nw
+        }).split("")
+        if(str[0] === ',') {
+            str = str.splice(1)
+        }
+        return str.join("")
+    }
+
     getRow(label: string, feature: Feature, dividerAfter: boolean = false) {
         return <tr className={dividerAfter ? 'divider' : ''}>
             <td>{label}</td>
-            <td>{feature.current}</td>
-            <td>{feature.projected}</td>
-            <td>{feature.previous}</td>
+            <td>{this.commafy(feature.current)}</td>
+            <td>{this.commafy(feature.projected)}</td>
+            <td>{this.commafy(feature.previous)}</td>
         </tr>
     }
 

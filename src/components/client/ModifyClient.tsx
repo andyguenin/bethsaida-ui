@@ -373,7 +373,7 @@ export class ModifyClient extends React.Component<IProps, IState> {
                             <label htmlFor='caseworker_phone' className='col-sm-2'>Caseworker Phone</label>
                             <input type='text' inputMode='numeric' pattern="[0-9 \-\(\)]*"
                                    className='form-control col-sm-10' id='caseworker_phone'
-                                   placeholder='Clastaseworker Phone Number'
+                                   placeholder='Caseworker Phone Number'
                                    value={this.state.client.caseworkerPhone}
                                    onChange={this.handleTextUpdate('caseworkerPhone')}/>
                         </div>
