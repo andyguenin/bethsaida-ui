@@ -15,7 +15,9 @@ interface DateServiceEnhanced {
 }
 
 interface Props {
+    id: string
     data: AttendanceData[]
+    size?: number
 }
 
 interface State {
@@ -63,9 +65,9 @@ export class ActivityGrid extends React.Component<Props, State> {
     public render() {
         let visits = this.state.data
         visits.sort((a, b) => a.date.getTime() - b.date.getTime())
-        let lower_bound_date = new Date() // 2020, 9, 1)
+        let lower_bound_date = new Date()
         lower_bound_date = new Date(lower_bound_date.getFullYear(), lower_bound_date.getMonth(), lower_bound_date.getDate() - 220)
-        while (lower_bound_date.getDay() != 0) {
+        while (lower_bound_date.getDay() !== 0) {
             lower_bound_date = new Date(lower_bound_date.getFullYear(), lower_bound_date.getMonth(), lower_bound_date.getDate() - 1)
         }
         let current_day = new Date(lower_bound_date)
@@ -101,7 +103,7 @@ export class ActivityGrid extends React.Component<Props, State> {
         return <Fragment>
             <div className='d-sm-none d-lg-inline'>
             <div>Check-ins</div>
-            <Grid id='grid-container' className='grid-class' data={grid_data}/>
+            <Grid id={'grid-container-' + this.props.id} className='grid-class' data={grid_data} size={this.props.size}/>
         </div>
             <div className='d-sm-inline d-lg-none'>
                 {this.checkinSummary(grid_data)}

@@ -7,6 +7,8 @@ import {
 
 export class Grid extends React.Component {
 
+    b = 8
+
     tooltip_width = 250
     tooltip_height = 150
 
@@ -87,6 +89,7 @@ export class Grid extends React.Component {
     }
 
     create_grid() {
+        const size = this.props.size || this.b
         let svg = select('#' + this.props.id)
             .append('svg')
             .attr('width', '432')
@@ -111,9 +114,9 @@ export class Grid extends React.Component {
                 }
             })
             .attr('transform', function (d, i) {
-                return "translate(" + (d.week * 16 + 8) + ", " + (d.day_of_week * 16 + 8) + ")"
+                return "translate(" + (d.week * (2 * size) + size) + ", " + (d.day_of_week * (2 * size) + size) + ")"
             })
-            .attr('r', '7')
+            .attr('r', (size - 1))
             .attr('class', 'grid-date')
             .attr('stroke', 'black')
             .attr('stroke-width', '1px')
@@ -135,33 +138,20 @@ export class Grid extends React.Component {
                 return month_mapping[d.date.getMonth()]
             })
             .attr('transform', function(d) {
-                return 'translate(' + ((d.week * 16) + 20) + ', 12)'
+                return 'translate(' + ((d.week * (2 * size)) + 20) + ', 12)'
             })
             .style('z-index', '200')
-
-        // let rect = svg.append('rect')
-        //     .attr('width', '100%')
-        //     .attr('height', '100%')
-        //     .attr('fill', 'none')
-        //     .attr('pointer-events', 'all')
-        //     .style("z-index", "100")
-        //     .on('mouseover', this.on_mouse_move(this.tooltip_width, this.props))
-        //     .on('mousemove', this.on_mouse_move(this.tooltip_width, this.props))
-        //     .attr('stroke', 'black')
-        //     .attr('stroke-width', '1px')
-        //
-
-
     }
 
     getGridHtml = () => {
+        const size = this.props.size || this.b
         return <Fragment>
             <div id={this.props.id + '-header'}></div>
             <div id={this.props.id} className={this.props.className + ' grid-master'}>
                 <div id={this.props.id + '-capture'} className={'grid-capture'}
-                     onMouseOver={this.on_mouse_move(this.props, 16)}
-                     onMouseMove={this.on_mouse_move(this.props, 16)}
-                     onMouseOut={this.on_mouse_move(this.props, 16)}>
+                     onMouseOver={this.on_mouse_move(this.props, size * 2)}
+                     onMouseMove={this.on_mouse_move(this.props, size * 2)}
+                     onMouseOut={this.on_mouse_move(this.props, size * 2)}>
                     <div
                         id={this.props.id + '-tooltip'}
                         className={'grid-tooltip'}

@@ -115,7 +115,7 @@ export const GetClientEvents = (clientId: String, updateFunc: (attendance: Atten
             r => {
                 r.json().then(
                     json => {
-                        if(r.ok) {
+                        if (r.ok) {
                             dispatch(clearErrorMessage())
                             let a = json.map((d: any) => {
                                 return {
@@ -276,6 +276,24 @@ export const NewClientRequest = (clientBuilder: ClientBuilder, successAction: (i
         )
     }
 
+export const MergeClients = (fromClient: Client, toClient: Client, success: (id: string) => void): AsyncAction =>
+    (dispatch) => {
+        console.log(fromClient, toClient)
+        console.log("redirecting to: " + toClient.id)
+        fetch(Env.get().fullUrl() + '/client/merge', {
+            method: 'Post',
+            headers: ServiceBase.jsonHeader,
+            body: JSON.stringify({
+                from: fromClient.id,
+                to: toClient.id
+            })
+        }).then((r) => r.json())
+            .then(r => {
+                const id = r['id']
+                success(id)
+            })
+    }
+
 
 export const UploadImage = (file: File, success: (imageName: string) => void, errorHandler: (message: string) => void): void => {
     const formData = new FormData();
@@ -298,3 +316,4 @@ export const UploadImage = (file: File, success: (imageName: string) => void, er
         )
     )
 }
+

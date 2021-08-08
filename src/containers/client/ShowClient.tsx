@@ -32,6 +32,8 @@ import unknown from '../../assets/unknown-image.png';
 import {ActivityGrid} from "../../components/client/ActivityGrid";
 import Attendance from "../../data/Attendance";
 import AttendanceData from "../../data/AttendanceData";
+import ClientPage from "../../components/client/ClientPage";
+import ClientImage from "../../components/client/ClientImage";
 
 const mapStateToProps = (state: AppState) => ({
     clientState: state.clientState,
@@ -109,30 +111,6 @@ class ShowClient extends React.Component<Props, IState> {
         }
     }
 
-    private displayAttributeRow(key: string, value?: string): any {
-        if (value !== undefined && value !== '') {
-            return (<tr>
-                <td className='w-25'>{key}</td>
-                <td className='text-right'>{value}</td>
-            </tr>)
-        }
-    }
-
-    private displayImage(imageType: string, name: string, imageTag?: string) {
-        if (imageTag !== undefined && imageTag !== '') {
-            return (<img width='100%'
-                         src={Env.get().imageUrl + '/' + imageTag + '_400.png'}
-                         alt={imageType.charAt(0).toUpperCase() + imageType.slice(1) + ' of ' + name}/>)
-        } else {
-            if(imageType === 'photograph') {
-                return (<img width='100%' src={unknown} />)
-            } else {
-                return <b>No photo id found for {name}</b>
-            }
-
-
-        }
-    }
 
     private handleBan = (ban: BanBuilder): void => {
         const action = (b: Ban): void => {
@@ -230,60 +208,24 @@ class ShowClient extends React.Component<Props, IState> {
                     </div>
                     <div className='row profile-body'>
                         <div className='col-lg-3 profile-side'>
-                            {this.displayImage('photograph', client.fullName, client.clientPhoto)}
+                            <ClientImage client={this.state.client} tpe='photograph'/>
                         </div>
                         <div className='col-lg-5'>
-                            <table className='table table-bordered'>
-                                <thead className='thead-dark'>
-                                <tr>
-                                    <th></th>
-                                    <th className='text-right'>Client Information</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {this.displayAttributeRow('DOB', this.state.client?.dateOfBirth.mmddyyyy)}
-                                {this.displayAttributeRow('Age', DateUtil.getAge(this.state.client?.dateOfBirth))}
-                                {this.displayAttributeRow('Race', formatEnum(Race[this.state.client?.race].toString()))}
-                                {this.displayAttributeRow('Secondary Race', formatEnum(Race[this.state.client.raceSecondary || Race.NOT_APPLICABLE].toString()))}
-                                {this.displayAttributeRow('Hispanic?', this.state.client?.hispanic ? 'Yes' : 'No')}
-                                {this.displayAttributeRow('COVID-19 Vaccine?', this.state.client?.covidVaccine ? 'Yes' : 'Unknown')}
-                                {this.displayAttributeRow('Veteran?', this.state.client?.veteran ? 'Yes' : 'No')}
-                                {this.displayAttributeRow('Gender', formatEnum(Gender[this.state.client?.gender].toString()))}
-                                {this.displayAttributeRow('Phone', this.state.client?.getPrettyPhone())}
-                                {this.displayAttributeRow('Last 4 SSN', this.state.client.last4Ssn)}
-                                {this.displayAttributeRow('Caseworker Name', this.state.client.caseworkerName)}
-                                {this.displayAttributeRow('Caseworker Phone', this.state.client.caseworkerPhone)}
-                                {this.displayAttributeRow('Intake Date', this.state.client?.intakeDate?.mmddyyyy)}
-                                {this.displayAttributeRow('Intake User', this.state.client?.intakeUser?.getFullName())}
-                                <tr>
-                                    <td colSpan={2} className={'grid-to-align'}>
-                                        { ( () => {
-                                            if(this.state.events) {
-                                                return <ActivityGrid data={this.state.events}/>
-                                            } else {
-                                                return <Fragment />
-                                            }
-                                        })()}
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>Photo ID</td>
-                                    <td>{this.displayImage('photo id scan', client.fullName, client.photoId)}
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <ClientPage client={this.state.client} events={this.state.events} id={'clientpage'}/>
                         </div>
-                        <Notes
-                            onUpdate={
-                                (d, e) => this.props.setNote((this.state.client as Client).id || '', d, (note) => {
-                                    e(note)
-                                })}
-                            notes={this.state.note}
-                        />
+                        <div className='col-md-12 col-lg-4 note-col'>
+                            <Notes
+                                onUpdate={
+                                    (d, e) => this.props.setNote((this.state.client as Client).id || '', d, (note) => {
+                                        e(note)
+                                    })}
+                                notes={this.state.note}
+                            />
+                        </div>
                     </div>
-                    {/*<ModifyClient client={this.props.client.workingClient} />*/}
+
+
+                    {/*</ClientPage>*/}
                 </FileContainer>
             )
         } else {

@@ -31,12 +31,13 @@ import AllLockers from "../../containers/lockers/AllLockers";
 import AllMail from "../../containers/mail/AllMail";
 import ForgotPassword from "../../containers/user/ForgotPassword";
 import AllShowers from "../../containers/shower/AllShowers";
+import MergeClient from "../../containers/client/MergeClient";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import { faChevronDown, faChevronUp, faArrowRight, faLongArrowAltRight } from '@fortawesome/free-solid-svg-icons'
 import {ActivityGrid} from "../client/ActivityGrid";
 
-library.add(fab, faChevronDown, faChevronUp)
+library.add(fab, faChevronDown, faChevronUp, faArrowRight, faLongArrowAltRight)
 
 
 export default class App extends React.Component<{}> {
@@ -76,6 +77,7 @@ export default class App extends React.Component<{}> {
                             <Route exact path="/client/:id/edit" component={EditClient}/>
                             <Route exact path="/client/:id" component={ShowClient}/>
                             <Route exact path="/client" component={ClientList}/>
+                            <Route exact path="/clientmerge" component={MergeClient}/>
 
                             <Route exact path="/locker" component={AllLockers} />
 

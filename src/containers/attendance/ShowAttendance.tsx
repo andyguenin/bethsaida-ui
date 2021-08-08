@@ -96,7 +96,7 @@ class ShowAttendance extends React.Component<Props, IState> {
     componentDidMount(): void {
         this.props.getAllUsers((users: User[]) => {
             const currentUser = users.find((u) => new Credentials().getId() === u.id)
-            if(currentUser !== undefined) {
+            if (currentUser !== undefined) {
                 this.props.loadAllClients(() => {
                     if (this.props.match?.params) {
                         const id = this.props.match?.params.id || '';
@@ -307,11 +307,13 @@ class ShowAttendance extends React.Component<Props, IState> {
                                 </table>
                             </Loader>
                         </div>
-                        <Notes
-                            onUpdate={(d, e) => this.props.setNote((this.state.event as BethsaidaEvent).id || '', d, (note) => {
-                                e(note)
-                            })}
-                            notes={this.state.note}/>
+                        <div className='col-md-12 col-lg-4 note-col'>
+                            <Notes
+                                onUpdate={(d, e) => this.props.setNote((this.state.event as BethsaidaEvent).id || '', d, (note) => {
+                                    e(note)
+                                })}
+                                notes={this.state.note}/>
+                        </div>
                     </div>
                 </Loader>
             </FileContainer>

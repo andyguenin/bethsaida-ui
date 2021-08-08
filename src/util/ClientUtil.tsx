@@ -24,5 +24,5 @@ export const clientFilterFunc = (searchString: string, c: Client[]): Client[] =>
             return (l + '.*' + c)
         }) + '.*';
     const regex = RegExp(newFilter);
-    return c.filter((c) => (c.last4Ssn + ' ' + c.fullName + ' ' + c.last4Ssn).toLowerCase().match(regex));
+    return c.filter((c) => (c.id + " " + c.last4Ssn + " " + c.fullName.toLowerCase() + " " + c.id).match(regex));
 }

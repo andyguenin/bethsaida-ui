@@ -69,7 +69,8 @@ export default class Notes extends React.Component<Props, State> {
 
     render() {
         return (
-            <div className='col-md-12 col-lg-4 note-col'>
+            // <div className='col-md-12 col-lg-4 note-col'>
+            <div>
                 <div className='row'>
                     <div className='col-md-12 col-lg-6'>
                         <h3 className=''>Notes</h3>
