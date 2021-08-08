@@ -43,6 +43,7 @@ export default class ClientPage extends React.Component<Props, {}> {
                     </tr>
                     </thead>
                     <tbody>
+                    {this.displayAttributeRow('ID', this.props.client.id)}
                     {this.displayAttributeRow('DOB', this.props.client?.dateOfBirth.mmddyyyy)}
                     {this.displayAttributeRow('Age', DateUtil.getAge(this.props.client?.dateOfBirth))}
                     {this.displayAttributeRow('Race', formatEnum(Race[this.props.client?.race].toString()))}
