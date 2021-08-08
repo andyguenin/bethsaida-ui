@@ -15,6 +15,7 @@ import {formatEnum} from "../../util/StringUtil";
 import {clientFilterFunc, clientSortFunc} from '../../util/ClientUtil';
 import User from "../../data/User";
 import {GetAllUsers} from "../../services/User";
+import Credentials from "../../data/Credentials";
 
 
 const mapStateToProps = (state: AppState) => ({
@@ -26,7 +27,7 @@ const mapDispatchToProps = (dispatch: AsyncDispatch) => {
     return {
         loadAllClients: (updateFunc: (clients: Client[]) => void, users: User[]) => dispatch(GetAllClients(updateFunc, users)),
         deleteClient: (id: string, action: () => void) => dispatch(DeleteClient(id, action)),
-        getAllUsers: (action: (users: User[]) => void) => dispatch(GetAllUsers(action))
+        getAllUsers: (action: (users: User[]) => void) => dispatch(GetAllUsers(action)),
     }
 }
 
@@ -187,6 +188,17 @@ class AllClients extends React.Component<Props, State> {
         }
     }
 
+    showMergeButton = () => {
+        if (new Credentials().isAdmin()) {
+            return <button type='button' className='btn btn-dark form-control'
+                    onClick={() => window.location.href = '/clientmerge'}>Merge Clients
+            </button>
+
+        } else {
+            return <Fragment />
+        }
+    }
+
     public render() {
         return (
             <FileContainer>
@@ -198,6 +210,7 @@ class AllClients extends React.Component<Props, State> {
                             onClick={this.toggleOnlyBannedClients}>
                         {this.state.viewBannedButtonText} Clients
                     </button>
+                    {this.showMergeButton()}
                     <input
                         type='text'
                         className='form-control'
