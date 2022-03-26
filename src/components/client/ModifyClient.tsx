@@ -357,6 +357,65 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                    onChange={this.handleTextUpdate('phone')}/>
                         </div>
                         <div className='form-group row'>
+                            <label htmlFor='idVoucher' className='col-sm-2'>ID Voucher</label>
+                            <input type='date' className='form-control col-sm-10' id='idVoucher'
+                                   value={this.state.client.idVoucher}
+                                   onChange={this.handleTextUpdate('idVoucher')}
+                                   required={false}
+                            />
+                        </div>
+                        <div className='form-group row'>
+                            <label htmlFor='hmis' className='col-sm-2'>HMIS</label>
+                            <input type='text' inputMode='numeric' pattern="[0-9]*"
+                                   className='form-control col-sm-10' id='hmis'
+                                   value={this.state.client.hmis}
+                                   onChange={this.handleTextUpdate('hmis')}/>
+                        </div>
+                        <div className='form-group row'>
+                            <label htmlFor='path' className='col-sm-2'>PATH</label>
+                            <div className='col-md-10'>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='path-yes'
+                                        name='path'
+                                        className='form-check-input'
+                                        value='true'
+                                        onChange={this.handleTextUpdate('path')}
+                                        checked={this.state.client.path}
+                                    />
+                                    <label htmlFor='path-yes' className='form-check-label'>Yes</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='path-no'
+                                        name='path'
+                                        className='form-check-input'
+                                        value='false'
+                                        onChange={this.handleTextUpdate('path')}
+                                        checked={this.state.client.path === false}
+                                    />
+                                    <label htmlFor='path-no' className='form-check-label'>No</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='path-na'
+                                        name='path'
+                                        className='form-check-input'
+                                        value='na'
+                                        onChange={this.handleTextUpdate('path')}
+                                        checked={this.state.client.path === undefined}
+                                    />
+                                    <label htmlFor='path-na' className='form-check-label'>N/A</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='form-group row'>
                             {this.displayImage("Client Photo", "clientPhoto")}
                             {this.displayImage("Photo ID", "photoId")}
                         </div>

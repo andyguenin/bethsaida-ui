@@ -53,6 +53,9 @@ export default class ClientPage extends React.Component<Props, {}> {
                     {this.displayAttributeRow('Veteran?', this.props.client?.veteran ? 'Yes' : 'No')}
                     {this.displayAttributeRow('Gender', formatEnum(Gender[this.props.client?.gender].toString()))}
                     {this.displayAttributeRow('Phone', this.props.client?.getPrettyPhone())}
+                    {this.displayAttributeRow('ID Voucher', this.props.client?.idVoucher()?.mmddyyyy)}
+                    {this.displayAttributeRow('HMIS', this.props.client?.hmisString())}
+                    {this.displayAttributeRow('PATH', this.props.client?.pathString())}
                     {this.displayAttributeRow('Last 4 SSN', this.props.client?.last4Ssn)}
                     {this.displayAttributeRow('Caseworker Name', this.props.client?.caseworkerName)}
                     {this.displayAttributeRow('Caseworker Phone', this.props.client?.caseworkerPhone)}

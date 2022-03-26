@@ -54,6 +54,18 @@ export default class ClientBuilder {
         return this._gender;
     }
 
+    get idVoucher(): string | undefined {
+        return this._idVoucher
+    }
+
+    get hmis(): number | undefined {
+        return this._hmis
+    }
+
+    get path(): boolean | undefined {
+        return this._path
+    }
+
     get intakeDate(): string | undefined {
         return this._intakeDate
     }
@@ -213,6 +225,25 @@ export default class ClientBuilder {
         return this;
     }
 
+    public setIDVoucher(idVoucher?: string): ClientBuilder {
+        this._idVoucher = idVoucher
+        return this;
+    }
+
+    public setHMIS(hmis?: number): ClientBuilder {
+        if (Number.isNaN(hmis)) {
+            this._hmis = undefined;
+        } else {
+            this._hmis = hmis;
+        }
+        console.log(this._hmis)
+        return this;
+    }
+
+    public setPATH(path?: boolean): ClientBuilder {
+        this._path = path;
+        return this;
+    }
 
     private _id?: string;
     private _firstName?: string;
@@ -236,6 +267,9 @@ export default class ClientBuilder {
     private _caseworkerPhone?: string;
     private _last4ssn?: string
     private _covidVaccine?: boolean
+    private _idVoucher?: string
+    private _hmis?: number
+    private _path?: boolean
 
     public setField(id: string, value: string) {
         switch (id) {
@@ -279,6 +313,12 @@ export default class ClientBuilder {
                 return this.setVeteran(value.toLowerCase() === 'true')
             case 'covid_vaccine':
                 return this.setCovidVaccine(value.toLowerCase() === 'true')
+            case 'idVoucher':
+                return this.setIDVoucher(value)
+            case 'hmis':
+                return this.setHMIS(parseInt(value))
+            case 'path':
+                return this.setPATH(value === 'na' ? undefined : value === 'true')
         }
     }
 
@@ -301,7 +341,7 @@ export default class ClientBuilder {
             || this._intakeDate === undefined
             || this._intakeUser === undefined
         )) {
-            return new Client(
+            const client = new Client(
                 this._firstName,
                 this._lastName,
                 BDate.fromjsDate(this._dateOfBirth),
@@ -324,7 +364,10 @@ export default class ClientBuilder {
                 this._last4ssn,
                 this._veteran,
                 this._covidVaccine,
+                {idVoucher: this._idVoucher === undefined || this._idVoucher === '' ? undefined : BDate.fromjsDate(this._idVoucher), path: this._path, hmis: this._hmis}
+
             )
+            return client
         } else {
             throw new Error('Could not create client due to missing required fields.')
         }
@@ -367,6 +410,9 @@ export default class ClientBuilder {
             .setLast4Ssn(client.last4Ssn)
             .setVeteran(client.veteran || false)
             .setCovidVaccine(client.covidVaccine || false)
+            .setIDVoucher(client.extraParameters?.idVoucher?.jsDate)
+            .setHMIS(client.extraParameters?.hmis)
+            .setPATH(client.extraParameters?.path)
 
 
     }
@@ -393,6 +439,9 @@ export default class ClientBuilder {
             .setCaseworkerPhone('')
             .setLast4Ssn('')
             .setVeteran(false)
+            .setIDVoucher(undefined)
+            .setHMIS(undefined)
+            .setPATH(undefined)
             ;
     }
 }

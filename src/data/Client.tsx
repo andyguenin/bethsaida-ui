@@ -6,7 +6,21 @@ import Env from "../environment/Env";
 import React from "react";
 import User from "./User";
 
-export default class Client{
+export interface ExtraParameters {
+    idVoucher?: BDate
+    hmis?: number
+    path?: boolean
+}
+
+export const createExtraParameters: (p: any) => ExtraParameters = (p: any) => {
+    return {
+        idVoucher: p.hasOwnProperty('idVoucher') ? new BDate(p['idVoucher']['year'], p['idVoucher']['month'], p['idVoucher']['day']) : undefined,
+        hmis: p['hmis'],
+        path: p['path']
+    }
+}
+
+export default class Client {
     public readonly firstName: string;
     public readonly lastName: string;
     public readonly dateOfBirth: BDate;
@@ -23,6 +37,8 @@ export default class Client{
     public readonly clientPhoto?: string;
     public readonly photoId?: string;
     public readonly phone?: string;
+
+    public readonly extraParameters?: ExtraParameters;
 
     public readonly fullName: string;
     public readonly raceSecondary?: Race;
@@ -58,8 +74,8 @@ export default class Client{
         caseworkerPhone?: string,
         last4Ssn?: string,
         veteran?: boolean,
-        covidVaccine?: boolean
-
+        covidVaccine?: boolean,
+        extraParameters?: ExtraParameters
     ) {
         this.id = id;
         this.firstName = firstName;
@@ -84,13 +100,26 @@ export default class Client{
         this.veteran = veteran;
         this.fullName = firstName + (middleName === undefined ? ' ' : ' ' + middleName + ' ') + lastName;
         this.covidVaccine = covidVaccine;
+        this.extraParameters = extraParameters;
     }
 
     private imageUrl = Env.get().imageUrl;
 
+    public idVoucher(): BDate | undefined {
+        return this.extraParameters?.idVoucher
+    }
+
+    public hmisString(): string | undefined {
+        return this.extraParameters?.hmis === undefined ? undefined : this.extraParameters.hmis.toString()
+    }
+
+    public pathString(): string | undefined {
+        return this.extraParameters?.path === undefined ? undefined : (this.extraParameters.path ? "Yes" : "No")
+    }
+
     public getPrettyPhone(): string | undefined {
-        if(this.phone !== undefined) {
-            if(this.phone.length === 10) {
+        if (this.phone !== undefined) {
+            if (this.phone.length === 10) {
                 return "(" + this.phone.slice(0, 3) + ") " + this.phone.slice(3, 6) + "-" + this.phone.slice(6);
             } else {
                 return this.phone;
@@ -101,12 +130,12 @@ export default class Client{
     }
 
     public smallImageTag() {
-        if(this.clientPhoto !== undefined) {
-            return <img src={this.imageUrl + '/' + this.clientPhoto + '_250.png'} />
+        if (this.clientPhoto !== undefined) {
+            return <img src={this.imageUrl + '/' + this.clientPhoto + '_250.png'}/>
         }
 
         if (this.photoId !== undefined) {
-            return <img src={this.imageUrl + '/' + this.photoId + '_250.png'} />
+            return <img src={this.imageUrl + '/' + this.photoId + '_250.png'}/>
         }
         return <img src={emptyImage} width='250px'/>
     }

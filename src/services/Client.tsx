@@ -1,5 +1,5 @@
 import {AsyncAction} from "../actions/Async";
-import Client from "../data/Client";
+import Client, {createExtraParameters} from "../data/Client";
 import BDate from "../data/BDate";
 import {removeClient, setClientData} from "../actions/Client";
 import ClientBuilder from "../data/ClientBuilder";
@@ -47,7 +47,9 @@ function parseClient(users: User[]): (input: any) => Client {
                 input['caseworkerPhone'],
                 input['last4Ssn'],
                 input['veteran'],
-                input['covidVaccine']
+                input['covidVaccine'],
+                createExtraParameters(input['extraParameters'])
+
             )
         } else {
             throw Error("Could not find intake user id")
@@ -278,8 +280,6 @@ export const NewClientRequest = (clientBuilder: ClientBuilder, successAction: (i
 
 export const MergeClients = (fromClient: Client, toClient: Client, success: (id: string) => void): AsyncAction =>
     (dispatch) => {
-        console.log(fromClient, toClient)
-        console.log("redirecting to: " + toClient.id)
         fetch(Env.get().fullUrl() + '/client/merge', {
             method: 'Post',
             headers: ServiceBase.jsonHeader,
