@@ -366,10 +366,48 @@ export class ModifyClient extends React.Component<IProps, IState> {
                         </div>
                         <div className='form-group row'>
                             <label htmlFor='hmis' className='col-sm-2'>HMIS</label>
-                            <input type='text' inputMode='numeric' pattern="[0-9]*"
-                                   className='form-control col-sm-10' id='hmis'
-                                   value={this.state.client.hmis}
-                                   onChange={this.handleTextUpdate('hmis')}/>
+
+                            <div className='col-md-10'>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='hmis-yes'
+                                        name='hmis'
+                                        className='form-check-input'
+                                        value={1}
+                                        onChange={this.handleTextUpdate('hmis')}
+                                        checked={this.state.client.hmis !== undefined && this.state.client.hmis !== 0}
+                                    />
+                                    <label htmlFor='path-yes' className='form-check-label'>Yes</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='hmis-no'
+                                        name='hmis'
+                                        className='form-check-input'
+                                        value={0}
+                                        onChange={this.handleTextUpdate('hmis')}
+                                        checked={this.state.client.hmis === 0}
+                                    />
+                                    <label htmlFor='path-no' className='form-check-label'>No</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='hmis-na'
+                                        name='hmis'
+                                        className='form-check-input'
+                                        value='na'
+                                        onChange={this.handleTextUpdate('hmis')}
+                                        checked={this.state.client.hmis === undefined}
+                                    />
+                                    <label htmlFor='path-na' className='form-check-label'>N/A</label>
+                                </div>
+                            </div>
                         </div>
                         <div className='form-group row'>
                             <label htmlFor='path' className='col-sm-2'>PATH</label>

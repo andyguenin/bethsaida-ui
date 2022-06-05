@@ -15,7 +15,7 @@ export interface ExtraParameters {
 export const createExtraParameters: (p: any) => ExtraParameters = (p: any) => {
     return {
         idVoucher: p.hasOwnProperty('idVoucher') ? new BDate(p['idVoucher']['year'], p['idVoucher']['month'], p['idVoucher']['day']) : undefined,
-        hmis: p['hmis'],
+        hmis: p['hmis'] === undefined ? undefined : (p['hmis'] !== 0 ? 1 : 0),
         path: p['path']
     }
 }
@@ -110,7 +110,7 @@ export default class Client {
     }
 
     public hmisString(): string | undefined {
-        return this.extraParameters?.hmis === undefined ? undefined : this.extraParameters.hmis.toString()
+        return this.extraParameters?.hmis === undefined ? undefined : (this.extraParameters.hmis !== 0 ? "Yes" : "No")
     }
 
     public pathString(): string | undefined {
