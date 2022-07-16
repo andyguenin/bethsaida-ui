@@ -1,4 +1,5 @@
 import {BanType} from "./BanType";
+import BDate from "./BDate";
 
 export default class Ban {
     public readonly start: Date;
@@ -37,6 +38,9 @@ export default class Ban {
         this.stringRepresentation = this.getString();
     }
 
+    public getDateString(): string {
+        return this.start.toLocaleDateString()
+    }
 
     private getString(): string {
         switch (this.banType) {

@@ -191,7 +191,7 @@ class ShowClient extends React.Component<Props, IState> {
                         }
                     </Title>
                     <div className={(this.state.ban === undefined ? 'd-none' : '') + ' banned-error'}>
-                        {this.state.client?.fullName} is banned from using Downtown Daily Bread
+                        {this.state.client?.fullName} is banned (starting {this.state.ban?.getDateString()}) from using Downtown Daily Bread
                         services {this.state.ban ? this.state.ban.stringRepresentation : ''}.&nbsp;
                         {
                             (

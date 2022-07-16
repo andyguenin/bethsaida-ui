@@ -65,7 +65,7 @@ function parseBan(input: any): Ban {
         .setNotes(input['notes'])
         .setType(input['banType'])
         .setActive(input['active'])
-        .setStart(input['start'])
+        .setStart(new Date(Date.parse(input['start'])))
         .setStop(new Date(input['stop']))
         .build()
 }
