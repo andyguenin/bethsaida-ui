@@ -10,13 +10,15 @@ export interface ExtraParameters {
     idVoucher?: BDate
     hmis?: number
     path?: boolean
+    prior_stay?: string
 }
 
 export const createExtraParameters: (p: any) => ExtraParameters = (p: any) => {
     return {
         idVoucher: p.hasOwnProperty('idVoucher') ? new BDate(p['idVoucher']['year'], p['idVoucher']['month'], p['idVoucher']['day']) : undefined,
         hmis: p['hmis'] === undefined ? undefined : (p['hmis'] !== 0 ? 1 : 0),
-        path: p['path']
+        path: p['path'],
+        prior_stay: p['prior_stay']
     }
 }
 

@@ -308,6 +308,45 @@ export class ModifyClient extends React.Component<IProps, IState> {
                                     />
                                     <label htmlFor='other' className='form-check-label'>Other</label>
                                 </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='nonbinary'
+                                        name='gender'
+                                        className='form-check-input'
+                                        value={Gender.NON_BINARY}
+                                        onChange={this.handleTextUpdate('gender')}
+                                        checked={this.state.client.gender === Gender.NON_BINARY}
+                                    />
+                                    <label htmlFor='nonbinary' className='form-check-label'>Non Binary</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='f_born_m'
+                                        name='gender'
+                                        className='form-check-input'
+                                        value={Gender.FEMALE_BORN_MALE}
+                                        onChange={this.handleTextUpdate('gender')}
+                                        checked={this.state.client.gender === Gender.FEMALE_BORN_MALE}
+                                    />
+                                    <label htmlFor='f_born_m' className='form-check-label'>Female Born Male</label>
+                                </div>
+                                <div className='form-check form-check-inline'>
+                                    <input
+                                        required={true}
+                                        type='radio'
+                                        id='m_born_f'
+                                        name='gender'
+                                        className='form-check-input'
+                                        value={Gender.MALE_BORN_FEMALE}
+                                        onChange={this.handleTextUpdate('gender')}
+                                        checked={this.state.client.gender === Gender.MALE_BORN_FEMALE}
+                                    />
+                                    <label htmlFor='m_born_f' className='form-check-label'>Male Born Female</label>
+                                </div>
                             </div>
                         </div>
                         <div className='form-group row'>
