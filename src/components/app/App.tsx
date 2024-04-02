@@ -27,7 +27,6 @@ import AllUsers from "../../containers/user/AllUsers";
 import NewUser from "../../containers/user/NewUser";
 import ResetPassword from "../../containers/user/ResetPassword";
 import Confirm from "../../containers/user/Confirm";
-import AllLockers from "../../containers/lockers/AllLockers";
 import AllMail from "../../containers/mail/AllMail";
 import ForgotPassword from "../../containers/user/ForgotPassword";
 import AllShowers from "../../containers/shower/AllShowers";
@@ -79,7 +78,7 @@ export default class App extends React.Component<{}> {
                             <Route exact path="/client" component={ClientList}/>
                             <Route exact path="/clientmerge" component={MergeClient}/>
 
-                            <Route exact path="/locker" component={AllLockers} />
+                            {/*<Route exact path="/locker" component={AllLockers} />*/}
 
                             <Route exact path='/mail' component={AllMail} />
 
