@@ -85,6 +85,9 @@ class TopNav extends React.Component<Props, State> {
                             <a className='nav-link' href='/mail' id='Mail'>
                                 Mail
                             </a>
+                            <a className='nav-link' href='/meal' id='Meal'>
+                                Meal
+                            </a>
                             <a className='nav-link' href='/shower' id='Shower'>
                                 Showers
                             </a>

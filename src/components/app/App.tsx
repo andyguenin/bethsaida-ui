@@ -35,6 +35,7 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
 import { faChevronDown, faChevronUp, faArrowRight, faLongArrowAltRight } from '@fortawesome/free-solid-svg-icons'
 import {ActivityGrid} from "../client/ActivityGrid";
+import AllMeal from "../../containers/meal/AllMeal";
 
 library.add(fab, faChevronDown, faChevronUp, faArrowRight, faLongArrowAltRight)
 
@@ -78,7 +79,7 @@ export default class App extends React.Component<{}> {
                             <Route exact path="/client" component={ClientList}/>
                             <Route exact path="/clientmerge" component={MergeClient}/>
 
-                            {/*<Route exact path="/locker" component={AllLockers} />*/}
+                            <Route exact path="/meal" component={AllMeal} />
 
                             <Route exact path='/mail' component={AllMail} />
 
